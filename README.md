@@ -5,17 +5,25 @@ Professional website of Michael Beijer (Dutch↔English patent & technical trans
 ## Development
 
 ```bash
-cd galactic-giant
 npm install
 npm run dev
+```
+
+## Admin Panel
+
+See [AGENTS.md](AGENTS.md) for admin panel documentation.
+
+```bash
+cd admin
+pip install -r requirements.txt
+python start_dev.py
 ```
 
 ## Deployment
 
 The GitHub Actions workflow deploys the built site to GitHub Pages.
 
-- Source: `galactic-giant/`
-- Build output: `galactic-giant/dist/`
-- Custom domain: `galactic-giant/public/CNAME`
+- Build output: `dist/`
+- Custom domain: `public/CNAME`
 
 If you ever need to deploy under a subpath (e.g. `/<repo>/`), set `ASTRO_BASE` in the workflow.
