@@ -1,23 +1,19 @@
 ---
 import Page from '../layouts/Page.astro';
+import { getEntry, render } from 'astro:content';
 import { CONTACT_EMAIL, CONTACT_PHONE, SITE_SEO_TITLE } from '../consts';
+
+const page = await getEntry('pages', 'contact');
+if (!page) throw new Error('contact.md not found');
+const { Content } = await render(page);
 ---
 
-<Page title={`Contact | ${SITE_SEO_TITLE}`}>
-	<h1>Contact</h1>
-	<p>
-		Email is the fastest way to reach me.
-	</p>
+<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
+	<h1>{page.data.title}</h1>
+	<p>Email is the fastest way to reach me.</p>
 	<ul>
 		<li>Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
 		<li>Phone: <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`}>{CONTACT_PHONE}</a></li>
 	</ul>
-	<h2>For a quick quote</h2>
-	<ul>
-		<li>Word count (or file(s) attached)</li>
-		<li>Deadline</li>
-		<li>Domain / subject matter</li>
-		<li>Source format (Word, PDF, XLIFF, etc.)</li>
-		<li>Any terminology or style guide</li>
-	</ul>
+	<Content />
 </Page>

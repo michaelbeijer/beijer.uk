@@ -3,16 +3,17 @@ import BackToTop from '../components/BackToTop.astro';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { getEntry, render } from 'astro:content';
 import {
-	BEIJERTERM_URL,
 	CONTACT_EMAIL,
 	PROZ_FEEDBACK_URL,
 	SITE_DESCRIPTION,
 	SITE_SEO_TITLE,
-	SUPERVERTALER_URL,
 } from '../consts';
 
-const base = import.meta.env.BASE_URL;
+const home = await getEntry('home', 'index');
+if (!home) throw new Error('home/index.md not found');
+const { Content } = await render(home);
 ---
 
 <!doctype html>
@@ -23,44 +24,22 @@ const base = import.meta.env.BASE_URL;
 	<body>
 		<Header />
 		<main>
-			<h1>Michael Beijer</h1>
-			<p class="lead">Dutch↔English patent &amp; technical translator and terminologist based in Hastings, United Kingdom.</p>
-			<p>
-				I help teams ship precise technical writing across languages—especially in patents, engineering,
-				and software. My workflow is CAT-tool compatible, confidentiality-first, and quality-assured.
-			</p>
+			<h1>{home.data.title}</h1>
+			<p class="lead">{home.data.tagline}</p>
+			<p>{home.data.intro}</p>
 			<div class="cta">
-				<a class="button" href={base + 'contact'}>Email me</a>
+				<a class="button" href="/contact">Email me</a>
 				<a class="button secondary" href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">ProZ feedback</a>
 			</div>
 			<p class="subtle-links">
-				<a href={base + 'about'}>About</a>
+				<a href="/about">About</a>
 				<span aria-hidden="true">·</span>
-				<a href={base + 'work'}>Work</a>
+				<a href="/work">Work</a>
 			</p>
 			<hr />
-			<section>
-				<h2>What I do</h2>
-				<ul class="clean">
-					<li><strong>Patents</strong> — translation, editing, terminology alignment, consistency checks.</li>
-					<li><strong>Technical translation</strong> — manuals, UI strings, documentation, specifications.</li>
-					<li><strong>Terminology</strong> — termbases, cleanup, extraction, and governance.</li>
-				</ul>
-			</section>
-			<section>
-				<h2>Side projects</h2>
-				<ul class="clean">
-					<li><a href={SUPERVERTALER_URL} target="_blank" rel="noopener">Supervertaler</a> — desktop translation companion for CAT workflows.</li>
-					<li><a href={BEIJERTERM_URL} target="_blank" rel="noopener">Beijerterm</a> — open multilingual terminology database.</li>
-				</ul>
-			</section>
-			<section>
-				<h2>Get in touch</h2>
-				<p>
-					Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
-					If you can, include word count, deadline, domain, and source format.
-				</p>
-			</section>
+			<div class="home-content">
+				<Content />
+			</div>
 		</main>
 		<Footer />
 		<BackToTop />
@@ -112,12 +91,12 @@ const base = import.meta.env.BASE_URL;
 	.subtle-links span {
 		margin: 0 0.5em;
 	}
-	.clean {
+	.home-content :global(ul) {
 		list-style: none;
 		padding: 0;
 		margin: 0;
 	}
-	.clean li {
+	.home-content :global(li) {
 		margin: 0.5em 0;
 	}
 </style>

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Homepage{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/jodit@4.2.27/es2021/jodit.min.css">
+<script src="https://unpkg.com/jodit@4.2.27/es2021/jodit.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="editor-page">
+    <div class="editor-header">
+        <h1>Edit Homepage</h1>
+        <div class="editor-actions">
+            <button class="btn btn-secondary" onclick="history.back()">Cancel</button>
+            <button class="btn btn-primary" id="saveBtn" onclick="saveHome()">Save</button>
+            <button class="btn btn-success" id="commitBtn" onclick="commitToGithub()">Save & Commit to GitHub</button>
+        </div>
+    </div>
+
+    <form id="homeForm" class="editor-form">
+        <div class="form-group">
+            <label for="title">Name / Title</label>
+            <input type="text" id="title" name="title" value="{{ home.title }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tagline">Tagline</label>
+            <textarea id="tagline" name="tagline" rows="2">{{ home.tagline }}</textarea>
+            <small>Short description that appears below your name</small>
+        </div>
+
+        <div class="form-group">
+            <label for="intro">Introduction</label>
+            <textarea id="intro" name="intro" rows="3">{{ home.intro }}</textarea>
+            <small>Main introduction paragraph on the homepage</small>
+        </div>
+
+        <div class="form-group">
+            <label for="editor">Additional Content</label>
+            <textarea id="editor">{{ home.body | safe }}</textarea>
+            <small>Content that appears below the main introduction (e.g., "What I do" section)</small>
+        </div>
+    </form>
+
+    <div id="status" class="status-message"></div>
+</div>
+
+<script>
+const editor = Jodit.make('#editor', {
+    height: 400,
+    toolbarButtonSize: 'middle',
+    buttons: [
+        'bold', 'italic', 'underline', '|',
+        'ul', 'ol', '|',
+        'outdent', 'indent', '|',
+        'font', 'fontsize', '|',
+        'image', 'link', '|',
+        'align', '|',
+        'undo', 'redo', '|',
+        'hr', 'eraser', 'fullsize'
+    ],
+    uploader: {
+        url: '/api/upload',
+        format: 'json',
+        filesVariableName: function() { return 'upload'; },
+        isSuccess: function(resp) {
+            return !resp.error;
+        },
+        getMsg: function(resp) {
+            return resp.error ? resp.error.message : 'Upload successful';
+        },
+        process: function(resp) {
+            return {
+                files: [resp.url],
+                path: '',
+                baseurl: '',
+                error: resp.error ? 1 : 0,
+                msg: resp.error ? resp.error.message : ''
+            };
+        },
+        defaultHandlerSuccess: function(data) {
+            if (data.files && data.files.length) {
+                this.s.insertImage(data.files[0]);
+            }
+        }
+    },
+    imageDefaultWidth: 400,
+    resizer: {
+        showSize: true,
+        useAspectRatio: true
+    }
+});
+
+function showStatus(message, isError = false) {
+    const status = document.getElementById('status');
+    status.textContent = message;
+    status.className = 'status-message ' + (isError ? 'error' : 'success');
+    status.style.display = 'block';
+    setTimeout(() => { status.style.display = 'none'; }, 5000);
+}
+
+function getFormData() {
+    return {
+        title: document.getElementById('title').value,
+        tagline: document.getElementById('tagline').value,
+        intro: document.getElementById('intro').value,
+        body: editor.value
+    };
+}
+
+function saveHome() {
+    const data = getFormData();
+
+    if (!data.title) {
+        showStatus('Title is required', true);
+        return;
+    }
+
+    fetch('/api/home', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showStatus('Homepage saved successfully!');
+        } else {
+            showStatus('Error: ' + (result.error || 'Unknown error'), true);
+        }
+    })
+    .catch(error => {
+        showStatus('Error saving homepage: ' + error.message, true);
+    });
+}
+
+function commitToGithub() {
+    const data = getFormData();
+
+    fetch('/api/home', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to save');
+        }
+
+        return fetch('/api/git/commit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                file_path: 'src/content/home/index.md',
+                commit_message: 'Update homepage content'
+            })
+        });
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showStatus(result.message || 'Committed to GitHub!');
+        } else {
+            showStatus('Error: ' + (result.error || 'Unknown error'), true);
+        }
+    })
+    .catch(error => {
+        showStatus('Error: ' + error.message, true);
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}{% if is_new %}New Page{% else %}Edit: {{ page.title }}{% endif %}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/jodit@4.2.27/es2021/jodit.min.css">
+<script src="https://unpkg.com/jodit@4.2.27/es2021/jodit.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="editor-page">
+    <div class="editor-header">
+        <h1>{% if is_new %}New Page{% else %}Edit Page{% endif %}</h1>
+        <div class="editor-actions">
+            <button class="btn btn-secondary" onclick="history.back()">Cancel</button>
+            <button class="btn btn-primary" id="saveBtn" onclick="savePage()">Save</button>
+            {% if not is_new %}
+            <button class="btn btn-success" id="commitBtn" onclick="commitToGithub()">Save & Commit to GitHub</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <form id="pageForm" class="editor-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" value="{{ page.title if page else '' }}" required>
+            </div>
+            {% if is_new %}
+            <div class="form-group">
+                <label for="slug">Slug (URL)</label>
+                <input type="text" id="slug" name="slug" placeholder="auto-generated from title">
+            </div>
+            {% else %}
+            <div class="form-group">
+                <label>Slug</label>
+                <input type="text" value="{{ page.slug }}" disabled>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description (for SEO)</label>
+            <textarea id="description" name="description" rows="2">{{ page.description if page else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="editor">Content</label>
+            <textarea id="editor">{{ page.body | safe if page else '' }}</textarea>
+        </div>
+    </form>
+
+    <div id="status" class="status-message"></div>
+</div>
+
+<script>
+const isNew = {{ 'true' if is_new else 'false' }};
+const slug = '{{ page.slug if page else '' }}';
+
+const editor = Jodit.make('#editor', {
+    height: 500,
+    toolbarButtonSize: 'middle',
+    buttons: [
+        'bold', 'italic', 'underline', '|',
+        'ul', 'ol', '|',
+        'outdent', 'indent', '|',
+        'font', 'fontsize', '|',
+        'image', 'link', 'table', '|',
+        'align', '|',
+        'undo', 'redo', '|',
+        'hr', 'eraser', 'fullsize'
+    ],
+    uploader: {
+        url: '/api/upload',
+        format: 'json',
+        filesVariableName: function() { return 'upload'; },
+        isSuccess: function(resp) {
+            return !resp.error;
+        },
+        getMsg: function(resp) {
+            return resp.error ? resp.error.message : 'Upload successful';
+        },
+        process: function(resp) {
+            return {
+                files: [resp.url],
+                path: '',
+                baseurl: '',
+                error: resp.error ? 1 : 0,
+                msg: resp.error ? resp.error.message : ''
+            };
+        },
+        defaultHandlerSuccess: function(data) {
+            if (data.files && data.files.length) {
+                this.s.insertImage(data.files[0]);
+            }
+        }
+    },
+    imageDefaultWidth: 400,
+    resizer: {
+        showSize: true,
+        useAspectRatio: true
+    }
+});
+
+function showStatus(message, isError = false) {
+    const status = document.getElementById('status');
+    status.textContent = message;
+    status.className = 'status-message ' + (isError ? 'error' : 'success');
+    status.style.display = 'block';
+    setTimeout(() => { status.style.display = 'none'; }, 5000);
+}
+
+function getFormData() {
+    const data = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        body: editor.value
+    };
+
+    if (isNew) {
+        const slugInput = document.getElementById('slug');
+        if (slugInput && slugInput.value) {
+            data.slug = slugInput.value;
+        }
+    }
+
+    return data;
+}
+
+function savePage() {
+    const data = getFormData();
+
+    if (!data.title) {
+        showStatus('Title is required', true);
+        return;
+    }
+
+    const url = isNew ? '/api/pages' : `/api/pages/${slug}`;
+
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success || result.slug) {
+            showStatus('Page saved successfully!');
+            if (isNew && result.slug) {
+                window.location.href = `/pages/${result.slug}`;
+            }
+        } else {
+            showStatus('Error: ' + (result.error || 'Unknown error'), true);
+        }
+    })
+    .catch(error => {
+        showStatus('Error saving page: ' + error.message, true);
+    });
+}
+
+function commitToGithub() {
+    const data = getFormData();
+
+    fetch(`/api/pages/${slug}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (!result.success) {
+            throw new Error(result.error || 'Failed to save');
+        }
+
+        return fetch('/api/git/commit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                file_path: `src/content/pages/${slug}.md`,
+                commit_message: `Update page: ${data.title}`
+            })
+        });
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showStatus(result.message || 'Committed to GitHub!');
+        } else {
+            showStatus('Error: ' + (result.error || 'Unknown error'), true);
+        }
+    })
+    .catch(error => {
+        showStatus('Error: ' + error.message, true);
+    });
+}
+</script>
+{% endblock %}

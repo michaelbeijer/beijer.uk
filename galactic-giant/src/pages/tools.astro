@@ -1,20 +1,14 @@
 ---
 import Page from '../layouts/Page.astro';
-import { BEIJERTERM_URL, SITE_SEO_TITLE, SUPERVERTALER_URL } from '../consts';
+import { getEntry, render } from 'astro:content';
+import { SITE_SEO_TITLE } from '../consts';
+
+const page = await getEntry('pages', 'tools');
+if (!page) throw new Error('tools.md not found');
+const { Content } = await render(page);
 ---
 
-<Page title={`Tools | ${SITE_SEO_TITLE}`}>
-	<h1>Tools</h1>
-	<p>
-		I build and maintain small tools that support real-world translation workflows.
-	</p>
-	<ul>
-		<li>
-			<a href={SUPERVERTALER_URL} target="_blank" rel="noopener">Supervertaler</a> — a desktop translation companion
-			built around CAT-tool workflows.
-		</li>
-		<li>
-			<a href={BEIJERTERM_URL} target="_blank" rel="noopener">Beijerterm</a> — an open multilingual terminology database.
-		</li>
-	</ul>
+<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
+	<h1>{page.data.title}</h1>
+	<Content />
 </Page>

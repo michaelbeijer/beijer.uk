@@ -1,25 +1,16 @@
 ---
 import Page from '../layouts/Page.astro';
+import { getEntry, render } from 'astro:content';
 import { CONTACT_EMAIL, SITE_SEO_TITLE } from '../consts';
+
+const page = await getEntry('pages', 'patents');
+if (!page) throw new Error('patents.md not found');
+const { Content } = await render(page);
 ---
 
-<Page title={`Patents | ${SITE_SEO_TITLE}`}>
-	<h1>Patents</h1>
-	<p>
-		Dutch↔English patent translation and editing, with a focus on clarity, consistency, and terminological control.
-	</p>
-	<h2>How I work</h2>
-	<ul>
-		<li>Confidentiality-first workflow (NDAs welcome).</li>
-		<li>Terminology alignment and consistency checks.</li>
-		<li>CAT-tool compatible delivery and revision-friendly formats.</li>
-	</ul>
-	<h2>What to send</h2>
-	<ul>
-		<li>Source files (Word/PDF), reference material, and any termbase or style guide.</li>
-		<li>Target jurisdiction/filing context if relevant.</li>
-		<li>Deadline and preferred delivery format.</li>
-	</ul>
+<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
+	<h1>{page.data.title}</h1>
+	<Content />
 	<hr />
 	<p>
 		For quotes and availability: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.

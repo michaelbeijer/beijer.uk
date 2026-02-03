@@ -1,21 +1,16 @@
 ---
 import Page from '../layouts/Page.astro';
+import { getEntry, render } from 'astro:content';
 import { CONTACT_EMAIL, CONTACT_PHONE, LINKEDIN_URL, SITE_DESCRIPTION, SITE_SEO_TITLE } from '../consts';
+
+const page = await getEntry('pages', 'about');
+if (!page) throw new Error('about.md not found');
+const { Content } = await render(page);
 ---
 
-<Page title={`About | ${SITE_SEO_TITLE}`} description={SITE_DESCRIPTION}>
-	<h1>About</h1>
-	<p>
-		I’m Michael Beijer, a Dutch↔English patent and technical translator and terminologist based in Hastings, UK.
-		I work with translators, agencies, and direct clients on translation, editing, terminology, and workflow.
-	</p>
-	<p>		With <strong>30 years of experience</strong> and approximately <strong>25 million words</strong> translated,
-		I bring deep expertise to every project. Fully bilingual in Dutch and English—having grown up with a Dutch
-		father and an American mother—I deliver thoroughly researched, fluent translations in both directions.
-	</p>
-	<p>		I’m particularly focused on clear, consistent technical language: controlled terminology, style alignment,
-		and quality checks that reduce rework downstream.
-	</p>
+<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description || SITE_DESCRIPTION}>
+	<h1>{page.data.title}</h1>
+	<Content />
 	<hr />
 	<p>
 		Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>

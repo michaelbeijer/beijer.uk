@@ -22,3 +22,12 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# Python
+admin/venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Claude Code session files
+.claude/

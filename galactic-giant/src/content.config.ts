@@ -17,4 +17,23 @@ const blog = defineCollection({
 		}),
 });
 
-export const collections = { blog };
+const pages = defineCollection({
+	// Static pages content (services, patents, work, tools, about, contact, testimonials)
+	loader: glob({ base: './src/content/pages', pattern: '**/*.md' }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string().optional(),
+	}),
+});
+
+const home = defineCollection({
+	// Homepage content
+	loader: glob({ base: './src/content/home', pattern: '**/*.md' }),
+	schema: z.object({
+		title: z.string(),
+		tagline: z.string(),
+		intro: z.string(),
+	}),
+});
+
+export const collections = { blog, pages, home };

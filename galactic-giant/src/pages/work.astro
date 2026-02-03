@@ -1,25 +1,14 @@
 ---
 import Page from '../layouts/Page.astro';
+import { getEntry, render } from 'astro:content';
 import { SITE_SEO_TITLE } from '../consts';
+
+const page = await getEntry('pages', 'work');
+if (!page) throw new Error('work.md not found');
+const { Content } = await render(page);
 ---
 
-<Page title={`Work | ${SITE_SEO_TITLE}`}>
-	<h1>Work</h1>
-	<p>
-		Most patent work is covered by NDA, so case studies here are anonymised and focused on process and outcomes.
-	</p>
-	<h2>Example case studies (anonymised)</h2>
-	<ul>
-		<li>
-			<strong>Patent family consistency</strong> — aligned terminology and phrasing across related filings;
-			reduced reviewer corrections and improved reuse.
-		</li>
-		<li>
-			<strong>Technical documentation cleanup</strong> — improved clarity and consistency across a doc set;
-			introduced a small minimal termbase to stabilise key terms.
-		</li>
-	</ul>
-	<p>
-		If you’d like sector-specific examples, I can share representative details where confidentiality permits.
-	</p>
+<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
+	<h1>{page.data.title}</h1>
+	<Content />
 </Page>

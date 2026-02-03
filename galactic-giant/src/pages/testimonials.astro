@@ -1,123 +1,16 @@
 ---
 import Page from '../layouts/Page.astro';
+import { getEntry, render } from 'astro:content';
 import { PROZ_FEEDBACK_URL, SITE_SEO_TITLE } from '../consts';
+
+const page = await getEntry('pages', 'testimonials');
+if (!page) throw new Error('testimonials.md not found');
+const { Content } = await render(page);
 ---
 
-<Page title={`Testimonials | ${SITE_SEO_TITLE}`}>
-	<h1>Testimonials</h1>
-	<p>
-		These testimonials are taken from my <a href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">ProZ.com feedback page</a>,
-		where I currently have <strong>41 positive reviews</strong> (one of the highest in my language pair).
-	</p>
-
-	<h2>2025</h2>
-	<blockquote>
-		<p>"Michael is an outstanding translator. His precision, deep understanding of complex terminology, and ability to convey (technical/legal) content seamlessly make him a true asset. His translations are not only accurate but also reflect a natural flow, demonstrating his extensive experience in the field. Moreover, he is exceptionally reliable and always meets deadlines with remarkable punctuality. We highly recommend Michael for any translation project."</p>
-		<cite>— Hilde Deneve, <a href="http://www.multilex.be/" target="_blank" rel="noopener">MultiLex</a></cite>
-	</blockquote>
-
-	<h2>2024</h2>
-	<blockquote>
-		<p>"Clearly a consummate pro and a pair of safe hands. We found working with Michael a breeze. Translations were accurate and supplied on time. We can recommend his work unreservedly."</p>
-		<cite>— Jean-Louis Eveque, <a href="https://babelon-line.com/" target="_blank" rel="noopener">BabelOn-line</a></cite>
-	</blockquote>
-
-	<h2>2023</h2>
-	<blockquote>
-		<p>"Fast, accurate and reliable!"</p>
-		<cite>— Martine Kuijs, <a href="https://www.mkvertalingen.nl/en/" target="_blank" rel="noopener">MKvertalingen</a></cite>
-	</blockquote>
-
-	<h2>2017</h2>
-	<blockquote>
-		<p>"Although I've only had the chance to work with Michael on a few occasions, the work that he has provided was excellent. Can't wait to work with him again."</p>
-		<cite>— Marjan Borger, <a href="https://www.easytranslation.nl/" target="_blank" rel="noopener">Easy Translation</a></cite>
-	</blockquote>
-	<blockquote>
-		<p>"Professional accurate translator, friendly and trustworthy!"</p>
-		<cite>— Metamorfose</cite>
-	</blockquote>
-	<blockquote>
-		<p>"I highly recommend Michael's translation service."</p>
-		<cite>— Toon Theuwis</cite>
-	</blockquote>
-
-	<h2>2016</h2>
-	<blockquote>
-		<p>"Excellent and knowledgeable translator you can always count on, a pleasure to work with."</p>
-		<cite>— An Ballekens, Royal Translations</cite>
-	</blockquote>
-
-	<h2>2015</h2>
-	<blockquote>
-		<p>"Very reliable and fast translator. Delivers high-quality translations on time. It was a pleasure to work with you."</p>
-		<cite>— Ballacchino VM, A.C.T. Fachübersetzungen GmbH</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Very good work, delivered on time - I would definitely use again."</p>
-		<cite>— Streetwise Translations</cite>
-	</blockquote>
-
-	<h2>2013</h2>
-	<blockquote>
-		<p>"Michael translated a large manual for me. My client was very content with the translation. I'd work with him again any time!"</p>
-		<cite>— Hans Lenting, 2nl</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Great translator! reliable and delivers high quality."</p>
-		<cite>— Katrien Germonprez, Wilkens C.S.</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Good technical knowledge, nice writing style, respects deadlines."</p>
-		<cite>— Wilkens c.s.</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Professional, timely and reliable services. Certainly recommended."</p>
-		<cite>— Translavic</cite>
-	</blockquote>
-
-	<h2>2012</h2>
-	<blockquote>
-		<p>"Michael is very professional and reliable. He always meets deadlines and his work is excellent."</p>
-		<cite>— Net-Translators</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Michael did a great job on a contract translation for us, and I would definitely work with him again."</p>
-		<cite>— Veritas LS</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Fast and reliable, very good work. Will be happy to work with Michael again."</p>
-		<cite>— Legato Services</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Thanks for the nice cooperation, I hope that we can intensify it during 2012."</p>
-		<cite>— LanguageWire</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Michael is a very good and reliable professional. Michael has an extremely good command and knowledge of English. We warmly recommend him."</p>
-		<cite>— Philippe Carino, docnroll</cite>
-	</blockquote>
-
-	<h2>2011</h2>
-	<blockquote>
-		<p>"Reliable translator to work with."</p>
-		<cite>— Production SA</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Committed - Reliable - Professional - a pleasure to work with."</p>
-		<cite>— Atlantic Languages</cite>
-	</blockquote>
-	<blockquote>
-		<p>"Easy to contact and to keep in touch with. Keeps deadlines and is not afraid to ask questions if necessary."</p>
-		<cite>— Frits Ens, TransAction vof</cite>
-	</blockquote>
-
-	<h2>2010</h2>
-	<blockquote>
-		<p>"Great knowledge of the Dutch language, we'll definitely work with him again."</p>
-		<cite>— Trador Vertaalbureau</cite>
-	</blockquote>
-
+<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
+	<h1>{page.data.title}</h1>
+	<Content />
 	<hr />
 	<p>
 		<a href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">View all feedback on ProZ.com →</a>

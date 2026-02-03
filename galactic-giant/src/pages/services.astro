@@ -1,26 +1,16 @@
 ---
 import Page from '../layouts/Page.astro';
+import { getEntry, render } from 'astro:content';
 import { CONTACT_EMAIL, SITE_SEO_TITLE } from '../consts';
+
+const page = await getEntry('pages', 'services');
+if (!page) throw new Error('services.md not found');
+const { Content } = await render(page);
 ---
 
-<Page title={`Services | ${SITE_SEO_TITLE}`}>
-	<h1>Services</h1>
-	<h2>Translation</h2>
-	<ul>
-		<li>Technical translation (documentation, manuals, UI strings, specifications).</li>
-		<li>Patent translation and related technical/legal materials.</li>
-	</ul>
-	<h2>Editing &amp; proofreading</h2>
-	<ul>
-		<li>Monolingual or bilingual review with consistency checks.</li>
-		<li>Style alignment and clarity improvements for technical content.</li>
-	</ul>
-	<h2>Terminology &amp; workflow</h2>
-	<ul>
-		<li>Termbase cleanup and consolidation.</li>
-		<li>Extraction and terminology governance support.</li>
-		<li>CAT tooling and workflow consulting.</li>
-	</ul>
+<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
+	<h1>{page.data.title}</h1>
+	<Content />
 	<hr />
 	<p>
 		Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.

@@ -1,0 +1,7 @@
+Flask==3.0.0
+gunicorn==21.2.0
+PyGithub==2.1.1
+requests==2.31.0
+PyYAML==6.0.1
+Werkzeug==3.0.1
+markdown==3.5.1

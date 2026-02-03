@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Dashboard</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.posts }}</div>
+            <div class="stat-label">Blog Posts</div>
+            <a href="{{ url_for('posts') }}" class="stat-link">View all</a>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.pages }}</div>
+            <div class="stat-label">Static Pages</div>
+            <a href="{{ url_for('pages') }}" class="stat-link">View all</a>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">1</div>
+            <div class="stat-label">Homepage</div>
+            <a href="{{ url_for('home') }}" class="stat-link">Edit</a>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="action-buttons">
+            <a href="{{ url_for('new_post') }}" class="btn btn-primary">New Blog Post</a>
+            <a href="{{ url_for('new_page') }}" class="btn btn-secondary">New Page</a>
+        </div>
+    </div>
+
+    {% if recent_posts %}
+    <div class="recent-posts">
+        <h2>Recent Posts</h2>
+        <ul class="post-list">
+            {% for post in recent_posts %}
+            <li>
+                <a href="{{ url_for('edit_post', slug=post.slug) }}">{{ post.title }}</a>
+                <span class="post-date">{{ post.pubDate }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

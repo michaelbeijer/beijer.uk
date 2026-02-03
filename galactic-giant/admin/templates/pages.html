@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Static Pages{% endblock %}
+
+{% block content %}
+<div class="content-list">
+    <div class="list-header">
+        <h1>Static Pages</h1>
+        <a href="{{ url_for('new_page') }}" class="btn btn-primary">New Page</a>
+    </div>
+
+    {% if pages %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Slug</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for page in pages %}
+            <tr>
+                <td><a href="{{ url_for('edit_page', slug=page.slug) }}">{{ page.title }}</a></td>
+                <td><code>{{ page.slug }}</code></td>
+                <td class="description-cell">{{ page.description }}</td>
+                <td class="actions-cell">
+                    <a href="{{ url_for('edit_page', slug=page.slug) }}" class="btn btn-small">Edit</a>
+                    <button class="btn btn-small btn-danger" onclick="deletePage('{{ page.slug }}', '{{ page.title }}')">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>No static pages yet.</p>
+        <a href="{{ url_for('new_page') }}" class="btn btn-primary">Create your first page</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function deletePage(slug, title) {
+    if (!confirm(`Are you sure you want to delete "${title}"? This will only delete the content file, not the .astro page template.`)) {
+        return;
+    }
+
+    fetch(`/api/pages/${slug}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error deleting page: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        alert('Error deleting page: ' + error.message);
+    });
+}
+</script>
+{% endblock %}
