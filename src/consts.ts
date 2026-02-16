@@ -14,3 +14,4 @@ export const PROZ_FEEDBACK_URL = 'https://www.proz.com/feedback-card/652138';
 
 export const SUPERVERTALER_URL = 'https://supervertaler.com';
 export const BEIJERTERM_URL = 'https://beijerterm.com';
+export const ADMIN_PANEL_URL = 'https://michaelbeijercouk-production.up.railway.app';
