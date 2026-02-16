@@ -208,6 +208,12 @@ def markdown_to_html(text: str) -> str:
 # Routes
 # =============================================================================
 
+@app.route('/health')
+def health():
+    """Unauthenticated health endpoint for Railway deploy checks."""
+    return jsonify({'status': 'ok'}), 200
+
+
 @app.route('/')
 @require_auth
 def index():
