@@ -215,9 +215,18 @@ def health():
 
 
 @app.route('/')
-@require_auth
 def index():
     """Admin dashboard"""
+    # In production, show login page directly for anonymous users.
+    # This keeps "/" healthy (HTTP 200) for platform health checks.
+    if not IS_DEV and 'github_token' not in session:
+        return render_template(
+            'login.html',
+            github_client_id=GITHUB_CLIENT_ID,
+            callback_url=CALLBACK_URL,
+            dev_mode=IS_DEV
+        )
+
     stats = {
         'posts': len(list(BLOG_DIR.glob('*.md'))),
         'pages': len(list(PAGES_DIR.glob('*.md'))),
