@@ -6,6 +6,7 @@ Uses Jodit Editor for rich text editing with image drag-resize handles
 import os
 import sys
 import re
+import base64
 import yaml
 import markdown
 from pathlib import Path
@@ -36,15 +37,22 @@ ALLOWED_USERS = os.environ.get('ALLOWED_GITHUB_USERS', 'michaelbeijer').split(',
 CALLBACK_URL = os.environ.get('CALLBACK_URL', 'http://localhost:5000/auth/github/callback')
 
 # Content paths
-BASE_DIR = Path(__file__).parent.parent
+APP_DIR = Path(__file__).parent.resolve()
+DEFAULT_BASE_DIR = APP_DIR.parent if (APP_DIR.parent / 'src' / 'content').exists() else APP_DIR
+BASE_DIR = Path(os.environ.get('BASE_DIR', str(DEFAULT_BASE_DIR))).resolve()
 CONTENT_DIR = BASE_DIR / 'src' / 'content'
 BLOG_DIR = CONTENT_DIR / 'blog'
 PAGES_DIR = CONTENT_DIR / 'pages'
 HOME_DIR = CONTENT_DIR / 'home'
 IMAGES_DIR = BLOG_DIR / 'images'
+USE_GITHUB_CONTENT = (
+    os.environ.get('USE_GITHUB_CONTENT', '').lower() == 'true' or
+    (PRODUCTION_MODE and not (HOME_DIR / 'index.md').exists())
+)
 
 # Ensure directories exist
-IMAGES_DIR.mkdir(parents=True, exist_ok=True)
+if not USE_GITHUB_CONTENT:
+    IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def get_github_token() -> Optional[str]:
@@ -65,6 +73,126 @@ def require_auth(f):
         return f(*args, **kwargs)
     wrapper.__name__ = f.__name__
     return wrapper
+
+
+def get_github_repo():
+    """Get authenticated GitHub repo object from session token."""
+    github_token = get_github_token()
+    if not github_token:
+        return None, "GitHub authentication required"
+
+    try:
+        g = Github(github_token)
+        repo = g.get_repo(f"{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}")
+        return repo, None
+    except GithubException as e:
+        return None, f"GitHub API error: {e.data.get('message', str(e))}"
+    except Exception as e:
+        return None, f"Error: {str(e)}"
+
+
+def gh_list_markdown(dir_path: str, reverse: bool = False):
+    """List markdown files in a GitHub directory and return decoded content."""
+    repo, error = get_github_repo()
+    if error:
+        return None, error
+
+    try:
+        contents = repo.get_contents(dir_path, ref="main")
+        if not isinstance(contents, list):
+            contents = [contents]
+
+        md_files = [c for c in contents if c.type == 'file' and c.name.endswith('.md')]
+        md_files.sort(key=lambda x: x.name, reverse=reverse)
+
+        items = []
+        for item in md_files:
+            items.append({
+                'name': item.name,
+                'path': item.path,
+                'sha': item.sha,
+                'content': item.decoded_content.decode('utf-8')
+            })
+        return items, None
+    except GithubException as e:
+        if e.status == 404:
+            return [], None
+        return None, f"GitHub API error: {e.data.get('message', str(e))}"
+    except Exception as e:
+        return None, f"Error: {str(e)}"
+
+
+def gh_read_text(path: str):
+    """Read a UTF-8 text file from GitHub."""
+    repo, error = get_github_repo()
+    if error:
+        return None, None, error
+
+    try:
+        file_obj = repo.get_contents(path, ref="main")
+        return file_obj.decoded_content.decode('utf-8'), file_obj.sha, None
+    except GithubException as e:
+        if e.status == 404:
+            return None, None, 'not_found'
+        return None, None, f"GitHub API error: {e.data.get('message', str(e))}"
+    except Exception as e:
+        return None, None, f"Error: {str(e)}"
+
+
+def gh_upsert_text(path: str, content: str, commit_message: str):
+    """Create or update a UTF-8 text file in GitHub."""
+    repo, error = get_github_repo()
+    if error:
+        return False, error
+
+    try:
+        try:
+            existing = repo.get_contents(path, ref="main")
+            repo.update_file(
+                path=path,
+                message=commit_message,
+                content=content,
+                sha=existing.sha,
+                branch="main"
+            )
+            return True, f"Updated {path} on GitHub"
+        except GithubException as e:
+            if e.status != 404:
+                raise
+            repo.create_file(
+                path=path,
+                message=commit_message,
+                content=content,
+                branch="main"
+            )
+            return True, f"Created {path} on GitHub"
+    except GithubException as e:
+        return False, f"GitHub API error: {e.data.get('message', str(e))}"
+    except Exception as e:
+        return False, f"Error: {str(e)}"
+
+
+def gh_delete_path(path: str, commit_message: str):
+    """Delete a file from GitHub."""
+    repo, error = get_github_repo()
+    if error:
+        return False, error
+
+    try:
+        file_obj = repo.get_contents(path, ref="main")
+        repo.delete_file(
+            path=path,
+            message=commit_message,
+            sha=file_obj.sha,
+            branch="main"
+        )
+        return True, f"Deleted {path} from GitHub"
+    except GithubException as e:
+        if e.status == 404:
+            return False, "not_found"
+        return False, f"GitHub API error: {e.data.get('message', str(e))}"
+    except Exception as e:
+        return False, f"Error: {str(e)}"
 
 
 def git_commit_and_push(file_path: str, commit_message: str) -> Tuple[bool, str]:
@@ -227,21 +355,43 @@ def index():
             dev_mode=IS_DEV
         )
 
-    stats = {
-        'posts': len(list(BLOG_DIR.glob('*.md'))),
-        'pages': len(list(PAGES_DIR.glob('*.md'))),
-    }
-
-    # Recent posts
     posts = []
-    for file in sorted(BLOG_DIR.glob('*.md'), reverse=True)[:5]:
-        with open(file, 'r', encoding='utf-8') as f:
-            fm, _ = parse_frontmatter(f.read())
+    page_count = 0
+
+    if USE_GITHUB_CONTENT:
+        blog_items, blog_err = gh_list_markdown('src/content/blog', reverse=True)
+        page_items, page_err = gh_list_markdown('src/content/pages', reverse=False)
+
+        if blog_err:
+            return f'Error loading blog posts from GitHub: {blog_err}', 500
+        if page_err:
+            return f'Error loading pages from GitHub: {page_err}', 500
+
+        for item in (blog_items or [])[:5]:
+            fm, _ = parse_frontmatter(item['content'])
             posts.append({
-                'slug': file.stem,
-                'title': fm.get('title', file.stem),
+                'slug': Path(item['name']).stem,
+                'title': fm.get('title', Path(item['name']).stem),
                 'pubDate': fm.get('pubDate', '')
             })
+        post_count = len(blog_items or [])
+        page_count = len(page_items or [])
+    else:
+        for file in sorted(BLOG_DIR.glob('*.md'), reverse=True)[:5]:
+            with open(file, 'r', encoding='utf-8') as f:
+                fm, _ = parse_frontmatter(f.read())
+                posts.append({
+                    'slug': file.stem,
+                    'title': fm.get('title', file.stem),
+                    'pubDate': fm.get('pubDate', '')
+                })
+        post_count = len(list(BLOG_DIR.glob('*.md')))
+        page_count = len(list(PAGES_DIR.glob('*.md')))
+
+    stats = {
+        'posts': post_count,
+        'pages': page_count,
+    }
 
     return render_template('index.html', stats=stats, recent_posts=posts)
 
@@ -327,15 +477,30 @@ def posts():
     """List all blog posts"""
     posts_data = []
 
-    for file in sorted(BLOG_DIR.glob('*.md'), reverse=True):
-        with open(file, 'r', encoding='utf-8') as f:
-            fm, _ = parse_frontmatter(f.read())
+    if USE_GITHUB_CONTENT:
+        items, error = gh_list_markdown('src/content/blog', reverse=True)
+        if error:
+            return f'Error loading posts: {error}', 500
+
+        for item in items or []:
+            fm, _ = parse_frontmatter(item['content'])
+            slug = Path(item['name']).stem
             posts_data.append({
-                'slug': file.stem,
-                'title': fm.get('title', file.stem),
+                'slug': slug,
+                'title': fm.get('title', slug),
                 'pubDate': fm.get('pubDate', ''),
                 'description': fm.get('description', '')[:100] + '...' if fm.get('description', '') else ''
             })
+    else:
+        for file in sorted(BLOG_DIR.glob('*.md'), reverse=True):
+            with open(file, 'r', encoding='utf-8') as f:
+                fm, _ = parse_frontmatter(f.read())
+                posts_data.append({
+                    'slug': file.stem,
+                    'title': fm.get('title', file.stem),
+                    'pubDate': fm.get('pubDate', ''),
+                    'description': fm.get('description', '')[:100] + '...' if fm.get('description', '') else ''
+                })
 
     return render_template('posts.html', posts=posts_data)
 
@@ -353,13 +518,19 @@ def new_post():
 @require_auth
 def edit_post(slug):
     """Edit a blog post"""
-    file_path = BLOG_DIR / f'{slug}.md'
+    if USE_GITHUB_CONTENT:
+        content, _, error = gh_read_text(f'src/content/blog/{slug}.md')
+        if error == 'not_found':
+            return 'Post not found', 404
+        if error:
+            return f'Error loading post: {error}', 500
+    else:
+        file_path = BLOG_DIR / f'{slug}.md'
+        if not file_path.exists():
+            return 'Post not found', 404
 
-    if not file_path.exists():
-        return 'Post not found', 404
-
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
 
     fm, body = parse_frontmatter(content)
 
@@ -389,10 +560,6 @@ def api_create_post():
         return jsonify({'error': 'Title is required'}), 400
 
     slug = slugify(title)
-    file_path = BLOG_DIR / f'{slug}.md'
-
-    if file_path.exists():
-        return jsonify({'error': 'A post with this title already exists'}), 400
 
     frontmatter = {
         'title': title,
@@ -406,8 +573,27 @@ def api_create_post():
     body = data.get('body', '')
     content = generate_markdown(frontmatter, body)
 
-    with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(content)
+    if USE_GITHUB_CONTENT:
+        existing, _, read_error = gh_read_text(f'src/content/blog/{slug}.md')
+        if read_error is None and existing is not None:
+            return jsonify({'error': 'A post with this title already exists'}), 400
+        if read_error not in ('not_found', None):
+            return jsonify({'error': read_error}), 500
+
+        success, message = gh_upsert_text(
+            f'src/content/blog/{slug}.md',
+            content,
+            f'Create blog post: {title}'
+        )
+        if not success:
+            return jsonify({'error': message}), 500
+    else:
+        file_path = BLOG_DIR / f'{slug}.md'
+        if file_path.exists():
+            return jsonify({'error': 'A post with this title already exists'}), 400
+
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
 
     return jsonify({'success': True, 'slug': slug})
 
@@ -417,13 +603,21 @@ def api_create_post():
 def api_post(slug):
     """Get, update, or delete a blog post"""
     file_path = BLOG_DIR / f'{slug}.md'
+    gh_path = f'src/content/blog/{slug}.md'
 
     if request.method == 'GET':
-        if not file_path.exists():
-            return jsonify({'error': 'Post not found'}), 404
+        if USE_GITHUB_CONTENT:
+            content, _, error = gh_read_text(gh_path)
+            if error == 'not_found':
+                return jsonify({'error': 'Post not found'}), 404
+            if error:
+                return jsonify({'error': error}), 500
+        else:
+            if not file_path.exists():
+                return jsonify({'error': 'Post not found'}), 404
 
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
 
         fm, body = parse_frontmatter(content)
         return jsonify({
@@ -450,16 +644,32 @@ def api_post(slug):
         body = data.get('body', '')
         content = generate_markdown(frontmatter, body)
 
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(content)
+        if USE_GITHUB_CONTENT:
+            success, message = gh_upsert_text(
+                gh_path,
+                content,
+                f"Update blog post: {data.get('title', slug)}"
+            )
+            if not success:
+                return jsonify({'error': message}), 500
+        else:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
 
         return jsonify({'success': True})
 
     elif request.method == 'DELETE':
-        if not file_path.exists():
-            return jsonify({'error': 'Post not found'}), 404
+        if USE_GITHUB_CONTENT:
+            success, message = gh_delete_path(gh_path, f'Delete blog post: {slug}')
+            if not success and message == 'not_found':
+                return jsonify({'error': 'Post not found'}), 404
+            if not success:
+                return jsonify({'error': message}), 500
+        else:
+            if not file_path.exists():
+                return jsonify({'error': 'Post not found'}), 404
 
-        file_path.unlink()
+            file_path.unlink()
         return jsonify({'success': True})
 
 
@@ -473,14 +683,28 @@ def pages():
     """List all static pages"""
     pages_data = []
 
-    for file in sorted(PAGES_DIR.glob('*.md')):
-        with open(file, 'r', encoding='utf-8') as f:
-            fm, _ = parse_frontmatter(f.read())
+    if USE_GITHUB_CONTENT:
+        items, error = gh_list_markdown('src/content/pages', reverse=False)
+        if error:
+            return f'Error loading pages: {error}', 500
+
+        for item in items or []:
+            fm, _ = parse_frontmatter(item['content'])
+            slug = Path(item['name']).stem
             pages_data.append({
-                'slug': file.stem,
-                'title': fm.get('title', file.stem),
+                'slug': slug,
+                'title': fm.get('title', slug),
                 'description': fm.get('description', '')
             })
+    else:
+        for file in sorted(PAGES_DIR.glob('*.md')):
+            with open(file, 'r', encoding='utf-8') as f:
+                fm, _ = parse_frontmatter(f.read())
+                pages_data.append({
+                    'slug': file.stem,
+                    'title': fm.get('title', file.stem),
+                    'description': fm.get('description', '')
+                })
 
     return render_template('pages.html', pages=pages_data)
 
@@ -496,13 +720,19 @@ def new_page():
 @require_auth
 def edit_page(slug):
     """Edit a static page"""
-    file_path = PAGES_DIR / f'{slug}.md'
+    if USE_GITHUB_CONTENT:
+        content, _, error = gh_read_text(f'src/content/pages/{slug}.md')
+        if error == 'not_found':
+            return 'Page not found', 404
+        if error:
+            return f'Error loading page: {error}', 500
+    else:
+        file_path = PAGES_DIR / f'{slug}.md'
+        if not file_path.exists():
+            return 'Page not found', 404
 
-    if not file_path.exists():
-        return 'Page not found', 404
-
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
 
     fm, body = parse_frontmatter(content)
 
@@ -533,11 +763,6 @@ def api_create_page():
     if not slug:
         slug = slugify(title)
 
-    file_path = PAGES_DIR / f'{slug}.md'
-
-    if file_path.exists():
-        return jsonify({'error': 'A page with this slug already exists'}), 400
-
     frontmatter = {
         'title': title,
         'description': data.get('description', ''),
@@ -546,8 +771,27 @@ def api_create_page():
     body = data.get('body', '')
     content = generate_markdown(frontmatter, body)
 
-    with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(content)
+    if USE_GITHUB_CONTENT:
+        existing, _, read_error = gh_read_text(f'src/content/pages/{slug}.md')
+        if read_error is None and existing is not None:
+            return jsonify({'error': 'A page with this slug already exists'}), 400
+        if read_error not in ('not_found', None):
+            return jsonify({'error': read_error}), 500
+
+        success, message = gh_upsert_text(
+            f'src/content/pages/{slug}.md',
+            content,
+            f'Create page: {title}'
+        )
+        if not success:
+            return jsonify({'error': message}), 500
+    else:
+        file_path = PAGES_DIR / f'{slug}.md'
+        if file_path.exists():
+            return jsonify({'error': 'A page with this slug already exists'}), 400
+
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
 
     return jsonify({'success': True, 'slug': slug})
 
@@ -557,13 +801,21 @@ def api_create_page():
 def api_page(slug):
     """Get, update, or delete a static page"""
     file_path = PAGES_DIR / f'{slug}.md'
+    gh_path = f'src/content/pages/{slug}.md'
 
     if request.method == 'GET':
-        if not file_path.exists():
-            return jsonify({'error': 'Page not found'}), 404
+        if USE_GITHUB_CONTENT:
+            content, _, error = gh_read_text(gh_path)
+            if error == 'not_found':
+                return jsonify({'error': 'Page not found'}), 404
+            if error:
+                return jsonify({'error': error}), 500
+        else:
+            if not file_path.exists():
+                return jsonify({'error': 'Page not found'}), 404
 
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
 
         fm, body = parse_frontmatter(content)
         return jsonify({
@@ -584,16 +836,32 @@ def api_page(slug):
         body = data.get('body', '')
         content = generate_markdown(frontmatter, body)
 
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(content)
+        if USE_GITHUB_CONTENT:
+            success, message = gh_upsert_text(
+                gh_path,
+                content,
+                f"Update page: {data.get('title', slug)}"
+            )
+            if not success:
+                return jsonify({'error': message}), 500
+        else:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
 
         return jsonify({'success': True})
 
     elif request.method == 'DELETE':
-        if not file_path.exists():
-            return jsonify({'error': 'Page not found'}), 404
+        if USE_GITHUB_CONTENT:
+            success, message = gh_delete_path(gh_path, f'Delete page: {slug}')
+            if not success and message == 'not_found':
+                return jsonify({'error': 'Page not found'}), 404
+            if not success:
+                return jsonify({'error': message}), 500
+        else:
+            if not file_path.exists():
+                return jsonify({'error': 'Page not found'}), 404
 
-        file_path.unlink()
+            file_path.unlink()
         return jsonify({'success': True})
 
 
@@ -605,13 +873,19 @@ def api_page(slug):
 @require_auth
 def home():
     """Edit homepage content"""
-    file_path = HOME_DIR / 'index.md'
+    if USE_GITHUB_CONTENT:
+        content, _, error = gh_read_text('src/content/home/index.md')
+        if error == 'not_found':
+            return 'Homepage content not found', 404
+        if error:
+            return f'Error loading homepage: {error}', 500
+    else:
+        file_path = HOME_DIR / 'index.md'
+        if not file_path.exists():
+            return 'Homepage content not found', 404
 
-    if not file_path.exists():
-        return 'Homepage content not found', 404
-
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
 
     fm, body = parse_frontmatter(content)
 
@@ -633,13 +907,21 @@ def home():
 def api_home():
     """Get or update homepage content"""
     file_path = HOME_DIR / 'index.md'
+    gh_path = 'src/content/home/index.md'
 
     if request.method == 'GET':
-        if not file_path.exists():
-            return jsonify({'error': 'Homepage not found'}), 404
+        if USE_GITHUB_CONTENT:
+            content, _, error = gh_read_text(gh_path)
+            if error == 'not_found':
+                return jsonify({'error': 'Homepage not found'}), 404
+            if error:
+                return jsonify({'error': error}), 500
+        else:
+            if not file_path.exists():
+                return jsonify({'error': 'Homepage not found'}), 404
 
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
 
         fm, body = parse_frontmatter(content)
         return jsonify({
@@ -661,8 +943,17 @@ def api_home():
         body = data.get('body', '')
         content = generate_markdown(frontmatter, body)
 
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(content)
+        if USE_GITHUB_CONTENT:
+            success, message = gh_upsert_text(
+                gh_path,
+                content,
+                'Update homepage content'
+            )
+            if not success:
+                return jsonify({'error': message}), 500
+        else:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
 
         return jsonify({'success': True})
 
@@ -694,9 +985,40 @@ def upload_image():
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     filename = secure_filename(f"{timestamp}_{file.filename}")
 
-    # Save file
-    file_path = IMAGES_DIR / filename
-    file.save(str(file_path))
+    if USE_GITHUB_CONTENT:
+        github_token = get_github_token()
+        if not github_token:
+            return jsonify({'error': {'message': 'GitHub authentication required'}}), 401
+
+        github_path = f"src/content/blog/images/{filename}"
+        github_api_url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/contents/{github_path}"
+        headers = {
+            'Authorization': f'token {github_token}',
+            'Accept': 'application/vnd.github+json'
+        }
+
+        file_bytes = file.read()
+        encoded_content = base64.b64encode(file_bytes).decode('ascii')
+        payload = {
+            'message': f'Upload image: {filename}',
+            'content': encoded_content,
+            'branch': 'main'
+        }
+
+        # If file exists, update it; otherwise create it.
+        get_resp = requests.get(github_api_url, headers=headers, params={'ref': 'main'})
+        if get_resp.status_code == 200:
+            payload['sha'] = get_resp.json().get('sha')
+        elif get_resp.status_code != 404:
+            return jsonify({'error': {'message': f'GitHub API error: {get_resp.text}'}}), 500
+
+        put_resp = requests.put(github_api_url, headers=headers, json=payload, timeout=30)
+        if put_resp.status_code not in (200, 201):
+            return jsonify({'error': {'message': f'GitHub upload failed: {put_resp.text}'}}), 500
+    else:
+        # Save file locally in development mode.
+        file_path = IMAGES_DIR / filename
+        file.save(str(file_path))
 
     # Return URL for CKEditor (relative path for markdown)
     return jsonify({
@@ -721,6 +1043,10 @@ def git_commit():
 
     if not commit_message:
         return jsonify({'error': 'Commit message is required'}), 400
+
+    if USE_GITHUB_CONTENT:
+        # In GitHub-content mode, save/update endpoints already commit directly.
+        return jsonify({'success': True, 'message': 'Already committed directly to GitHub'})
 
     abs_path = BASE_DIR / file_path
     if not abs_path.exists():
@@ -747,6 +1073,9 @@ def git_delete():
 
     if not commit_message:
         return jsonify({'error': 'Commit message is required'}), 400
+
+    if USE_GITHUB_CONTENT:
+        return jsonify({'success': True, 'message': 'Delete is handled directly in GitHub mode'})
 
     abs_path = BASE_DIR / file_path
 
