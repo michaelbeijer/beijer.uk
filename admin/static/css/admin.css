@@ -411,6 +411,14 @@ body {
 }
 
 /* Content styling inside Jodit */
+.jodit-wysiwyg a {
+    color: #3366cc;
+}
+
+.jodit-wysiwyg a:visited {
+    color: #795cb2;
+}
+
 .jodit-wysiwyg p {
     margin: 0 0 1em 0;
 }
