@@ -1,5 +1,5 @@
 ---
-title: Work
+title: Links
 description: Links page of Michael Beijer
 ---
 
