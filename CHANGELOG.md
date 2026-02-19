@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-02-19
+
+### Added
+- Heading format button in admin editor toolbar (H1–H6 dropdown via Jodit paragraph plugin)
+
 ## [1.1.0] - 2026-01-21
 
 ### Added
