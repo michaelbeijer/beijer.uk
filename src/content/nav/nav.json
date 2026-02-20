@@ -26,5 +26,9 @@
   {
     "label": "Contact",
     "href": "/contact"
+  },
+  {
+    "label": "Links",
+    "href": "/links"
   }
 ]
