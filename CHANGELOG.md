@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-02-20
+
+### Added
+- Navigation management in admin panel: reorder, rename, add, and delete nav tabs
+- `src/content/nav/nav.json` as the data-driven source of truth for site navigation
+- Drag-and-drop row reordering on the Navigation admin page
+- Inline label editing for existing nav tabs
+- "Add New Tab" form that automatically creates the `.astro` page template and `.md` content file
+- Home and Blog tabs protected from deletion
+- New `/nav` admin route and API endpoints (`GET/POST /api/nav`, `POST /api/nav/add`, `DELETE /api/nav/<slug>`)
+
+### Changed
+- `Header.astro` now renders navigation dynamically from `nav.json` instead of hardcoded links
+
 ## [1.1.0] - 2026-01-21
 
 ### Added

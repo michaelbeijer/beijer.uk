@@ -7,6 +7,7 @@ A custom Flask-based CMS for managing the michaelbeijer.co.uk website content.
 - **Blog Posts**: Create, edit, and delete blog posts with rich text editing
 - **Static Pages**: Manage services, patents, work, tools, about, contact, testimonials pages
 - **Homepage**: Edit homepage content (title, tagline, intro, additional content)
+- **Navigation**: Add, remove, rename, and reorder site nav tabs with drag-and-drop
 - **Rich Text Editor**: Jodit Editor with drag-to-resize image handles
 - **Image Upload**: Direct upload to content directory
 - **GitHub Integration**: Commit changes directly to GitHub from the admin panel
@@ -22,8 +23,10 @@ src/content/
 │   └── *.md
 ├── pages/          # Static page content
 │   └── *.md
-└── home/           # Homepage content
-    └── index.md
+├── home/           # Homepage content
+│   └── index.md
+└── nav/            # Navigation configuration
+    └── nav.json    # Ordered list of {label, href} nav items
 ```
 
 ### Admin Panel Structure
@@ -43,7 +46,8 @@ admin/
 │   ├── post_editor.html    # Blog post editor (Jodit)
 │   ├── pages.html          # Static pages list
 │   ├── page_editor.html    # Page editor (Jodit)
-│   └── home_editor.html    # Homepage editor (Jodit)
+│   ├── home_editor.html    # Homepage editor (Jodit)
+│   └── nav.html            # Navigation management (drag-and-drop)
 └── static/
     └── css/
         └── admin.css       # Admin panel styles
@@ -151,6 +155,10 @@ const editor = Jodit.make('#editor', {
 | `/api/pages/<slug>` | POST | Update page |
 | `/api/pages/<slug>` | DELETE | Delete page |
 | `/api/home` | POST | Update homepage content |
+| `/api/nav` | GET | Get current nav items |
+| `/api/nav` | POST | Save full nav list (reorder + rename) |
+| `/api/nav/add` | POST | Add nav tab (creates `.astro` + `.md` files) |
+| `/api/nav/<slug>` | DELETE | Remove nav tab (deletes `.astro` + `.md` files) |
 | `/api/upload` | POST | Upload image |
 | `/api/git/commit` | POST | Commit file to GitHub |
 
