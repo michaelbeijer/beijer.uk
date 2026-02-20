@@ -24,11 +24,11 @@
     "href": "/blog"
   },
   {
-    "label": "Contact",
-    "href": "/contact"
-  },
-  {
     "label": "Links",
     "href": "/links"
+  },
+  {
+    "label": "Contact",
+    "href": "/contact"
   }
 ]
