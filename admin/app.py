@@ -6,6 +6,7 @@ Uses Jodit Editor for rich text editing with image drag-resize handles
 import os
 import sys
 import re
+import json
 import base64
 import yaml
 import markdown
@@ -45,6 +46,9 @@ BLOG_DIR = CONTENT_DIR / 'blog'
 PAGES_DIR = CONTENT_DIR / 'pages'
 HOME_DIR = CONTENT_DIR / 'home'
 IMAGES_DIR = BLOG_DIR / 'images'
+NAV_DIR = CONTENT_DIR / 'nav'
+NAV_FILE = NAV_DIR / 'nav.json'
+PAGES_ASTRO_DIR = BASE_DIR / 'src' / 'pages'
 USE_GITHUB_CONTENT = (
     os.environ.get('USE_GITHUB_CONTENT', '').lower() == 'true' or
     (PRODUCTION_MODE and not (HOME_DIR / 'index.md').exists())
@@ -1024,6 +1028,207 @@ def upload_image():
     return jsonify({
         'url': f'./images/{filename}'
     })
+
+
+# =============================================================================
+# Navigation Management
+# =============================================================================
+
+NAV_GH_PATH = 'src/content/nav/nav.json'
+PROTECTED_HREFS = {'/', '/blog'}
+
+
+def read_nav():
+    """Read nav.json and return list of {label, href} dicts."""
+    if USE_GITHUB_CONTENT:
+        content, _, error = gh_read_text(NAV_GH_PATH)
+        if error == 'not_found':
+            return [], None
+        if error:
+            return None, error
+        try:
+            return json.loads(content), None
+        except json.JSONDecodeError as e:
+            return None, f"Invalid nav.json: {e}"
+    else:
+        if not NAV_FILE.exists():
+            return [], None
+        with open(NAV_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f), None
+
+
+def write_nav(items, commit_message='Update navigation'):
+    """Write nav.json with the given list of {label, href} dicts."""
+    content = json.dumps(items, indent=2, ensure_ascii=False) + '\n'
+    if USE_GITHUB_CONTENT:
+        return gh_upsert_text(NAV_GH_PATH, content, commit_message)
+    else:
+        NAV_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(NAV_FILE, 'w', encoding='utf-8') as f:
+            f.write(content)
+        return True, 'Saved nav.json locally'
+
+
+def generate_astro_page(slug):
+    """Return the content of a generic .astro page file for a given slug."""
+    return f"""---
+import Page from '../layouts/Page.astro';
+import {{ getEntry, render }} from 'astro:content';
+import {{ SITE_SEO_TITLE }} from '../consts';
+
+const page = await getEntry('pages', '{slug}');
+if (!page) throw new Error('{slug}.md not found');
+const {{ Content }} = await render(page);
+---
+
+<Page title={{`${{page.data.title}} | ${{SITE_SEO_TITLE}}`}} description={{page.data.description}}>
+\t<h1>{{page.data.title}}</h1>
+\t<Content />
+</Page>
+"""
+
+
+@app.route('/nav')
+@require_auth
+def nav():
+    """Manage site navigation"""
+    items, error = read_nav()
+    if error:
+        return f'Error loading navigation: {error}', 500
+    return render_template('nav.html', nav_items=items, protected_hrefs=list(PROTECTED_HREFS))
+
+
+@app.route('/api/nav', methods=['GET', 'POST'])
+@require_auth
+def api_nav():
+    """Get or update the full nav list (reorder + rename)."""
+    if request.method == 'GET':
+        items, error = read_nav()
+        if error:
+            return jsonify({'error': error}), 500
+        return jsonify(items)
+
+    elif request.method == 'POST':
+        data = request.json
+        if not isinstance(data, list):
+            return jsonify({'error': 'Expected a list of nav items'}), 400
+        for item in data:
+            if 'label' not in item or 'href' not in item:
+                return jsonify({'error': 'Each item must have label and href'}), 400
+
+        success, message = write_nav(data, 'Update navigation order/labels')
+        if not success:
+            return jsonify({'error': message}), 500
+        return jsonify({'success': True})
+
+
+@app.route('/api/nav/add', methods=['POST'])
+@require_auth
+def api_nav_add():
+    """Add a new nav item, creating the .md and .astro files."""
+    data = request.json
+    label = data.get('label', '').strip()
+    slug = data.get('slug', '').strip()
+
+    if not label:
+        return jsonify({'error': 'Label is required'}), 400
+    if not slug:
+        slug = slugify(label)
+    if not slug:
+        return jsonify({'error': 'Could not generate a valid slug'}), 400
+
+    href = f'/{slug}'
+
+    # Check slug not already in nav
+    items, error = read_nav()
+    if error:
+        return jsonify({'error': error}), 500
+    if any(item['href'] == href for item in items):
+        return jsonify({'error': f'A nav item with href "{href}" already exists'}), 400
+
+    # Create the .md content file
+    frontmatter = {'title': label, 'description': ''}
+    body = 'Edit this page content in the admin panel.'
+    md_content = generate_markdown(frontmatter, body)
+    md_path = f'src/content/pages/{slug}.md'
+
+    if USE_GITHUB_CONTENT:
+        existing, _, read_error = gh_read_text(md_path)
+        if read_error is None and existing is not None:
+            return jsonify({'error': f'A page with slug "{slug}" already exists'}), 400
+        success, message = gh_upsert_text(md_path, md_content, f'Create page: {label}')
+        if not success:
+            return jsonify({'error': message}), 500
+    else:
+        file_path = PAGES_DIR / f'{slug}.md'
+        if file_path.exists():
+            return jsonify({'error': f'A page with slug "{slug}" already exists'}), 400
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(md_content)
+
+    # Create the .astro page file
+    astro_content = generate_astro_page(slug)
+    astro_path = f'src/pages/{slug}.astro'
+
+    if USE_GITHUB_CONTENT:
+        success, message = gh_upsert_text(astro_path, astro_content, f'Create page template: {slug}.astro')
+        if not success:
+            return jsonify({'error': message}), 500
+    else:
+        astro_file = PAGES_ASTRO_DIR / f'{slug}.astro'
+        with open(astro_file, 'w', encoding='utf-8') as f:
+            f.write(astro_content)
+
+    # Add to nav list
+    items.append({'label': label, 'href': href})
+    success, message = write_nav(items, f'Add nav item: {label}')
+    if not success:
+        return jsonify({'error': message}), 500
+
+    return jsonify({'success': True, 'slug': slug})
+
+
+@app.route('/api/nav/<slug>', methods=['DELETE'])
+@require_auth
+def api_nav_delete(slug):
+    """Remove a nav item and delete its .md and .astro files."""
+    href = f'/{slug}'
+
+    if href in PROTECTED_HREFS:
+        return jsonify({'error': 'This nav item cannot be deleted'}), 400
+
+    items, error = read_nav()
+    if error:
+        return jsonify({'error': error}), 500
+
+    if not any(item['href'] == href for item in items):
+        return jsonify({'error': 'Nav item not found'}), 404
+
+    # Remove from nav list
+    new_items = [item for item in items if item['href'] != href]
+    success, message = write_nav(new_items, f'Remove nav item: {slug}')
+    if not success:
+        return jsonify({'error': message}), 500
+
+    # Delete .md content file
+    md_path = f'src/content/pages/{slug}.md'
+    if USE_GITHUB_CONTENT:
+        gh_delete_path(md_path, f'Delete page: {slug}')
+    else:
+        md_file = PAGES_DIR / f'{slug}.md'
+        if md_file.exists():
+            md_file.unlink()
+
+    # Delete .astro page file
+    astro_path = f'src/pages/{slug}.astro'
+    if USE_GITHUB_CONTENT:
+        gh_delete_path(astro_path, f'Delete page template: {slug}.astro')
+    else:
+        astro_file = PAGES_ASTRO_DIR / f'{slug}.astro'
+        if astro_file.exists():
+            astro_file.unlink()
+
+    return jsonify({'success': True})
 
 
 # =============================================================================

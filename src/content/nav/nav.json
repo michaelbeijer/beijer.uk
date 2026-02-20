@@ -1,0 +1,10 @@
+[
+  { "label": "Home",         "href": "/" },
+  { "label": "Patents",      "href": "/patents" },
+  { "label": "Services",     "href": "/services" },
+  { "label": "Work",         "href": "/work" },
+  { "label": "Testimonials", "href": "/testimonials" },
+  { "label": "Tools",        "href": "/tools" },
+  { "label": "Beijerblog",   "href": "/blog" },
+  { "label": "Contact",      "href": "/contact" }
+]

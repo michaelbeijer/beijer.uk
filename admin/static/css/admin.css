@@ -550,6 +550,52 @@ body {
     background: #1a1e22;
 }
 
+/* Navigation Management */
+.drag-handle {
+    cursor: grab;
+    color: var(--text-muted);
+    padding: 0 0.5rem;
+    font-size: 1.1rem;
+    user-select: none;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+tr.dragging {
+    opacity: 0.4;
+}
+
+tr.drag-over td {
+    border-top: 2px solid var(--primary);
+}
+
+.nav-label-input {
+    border: none;
+    background: transparent;
+    font: inherit;
+    width: 100%;
+    color: var(--text);
+}
+
+.nav-label-input:focus {
+    outline: 1px solid var(--primary);
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+.nav-add-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.nav-add-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .admin-nav {

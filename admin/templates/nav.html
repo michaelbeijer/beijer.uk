@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Navigation{% endblock %}
+
+{% block content %}
+<div class="content-list">
+    <div class="list-header">
+        <h1>Navigation</h1>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveNav()">Save Order &amp; Labels</button>
+    </div>
+
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+        Drag rows to reorder tabs. Edit labels inline. Home and Blog cannot be deleted.
+    </p>
+
+    {% if nav_items %}
+    <table class="data-table" id="navTable">
+        <thead>
+            <tr>
+                <th style="width:2rem;"></th>
+                <th>Label</th>
+                <th>Path</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="navBody">
+            {% for item in nav_items %}
+            <tr draggable="true" data-href="{{ item.href }}">
+                <td class="drag-handle" title="Drag to reorder">&#8942;&#8942;</td>
+                <td>
+                    <input
+                        type="text"
+                        class="nav-label-input"
+                        value="{{ item.label }}"
+                        aria-label="Nav label for {{ item.href }}"
+                    >
+                </td>
+                <td><code>{{ item.href }}</code></td>
+                <td class="actions-cell">
+                    {% if item.href not in protected_hrefs %}
+                    <button
+                        class="btn btn-small btn-danger"
+                        onclick="deleteNavItem('{{ item.href[1:] }}', '{{ item.label }}')"
+                    >Delete</button>
+                    {% else %}
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">Protected</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <p>No navigation items yet.</p>
+    </div>
+    {% endif %}
+
+    <div class="nav-add-section">
+        <h2>Add New Tab</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="newLabel">Label</label>
+                <input type="text" id="newLabel" placeholder="e.g. Portfolio" oninput="autoSlug()">
+            </div>
+            <div class="form-group">
+                <label for="newSlug">Slug (URL path)</label>
+                <input type="text" id="newSlug" placeholder="e.g. portfolio">
+                <small>Will be accessible at /slug — a page and content file are created automatically.</small>
+            </div>
+        </div>
+        <button class="btn btn-success" onclick="addNavItem()">Add Tab</button>
+    </div>
+</div>
+
+<script>
+// ---- Drag and Drop ----
+const tbody = document.getElementById('navBody');
+let dragSrc = null;
+
+if (tbody) {
+    tbody.addEventListener('dragstart', e => {
+        dragSrc = e.target.closest('tr');
+        dragSrc.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+
+    tbody.addEventListener('dragend', e => {
+        document.querySelectorAll('#navBody tr').forEach(r => {
+            r.classList.remove('dragging', 'drag-over');
+        });
+        dragSrc = null;
+    });
+
+    tbody.addEventListener('dragover', e => {
+        e.preventDefault();
+        const target = e.target.closest('tr');
+        if (!target || target === dragSrc) return;
+        document.querySelectorAll('#navBody tr').forEach(r => r.classList.remove('drag-over'));
+        target.classList.add('drag-over');
+        e.dataTransfer.dropEffect = 'move';
+    });
+
+    tbody.addEventListener('drop', e => {
+        e.preventDefault();
+        const target = e.target.closest('tr');
+        if (!target || target === dragSrc) return;
+        target.classList.remove('drag-over');
+        // Insert dragSrc before or after target based on mouse position
+        const rect = target.getBoundingClientRect();
+        const mid = rect.top + rect.height / 2;
+        if (e.clientY < mid) {
+            tbody.insertBefore(dragSrc, target);
+        } else {
+            tbody.insertBefore(dragSrc, target.nextSibling);
+        }
+    });
+}
+
+// ---- Save ----
+function collectNavItems() {
+    const rows = document.querySelectorAll('#navBody tr');
+    return Array.from(rows).map(row => ({
+        label: row.querySelector('.nav-label-input').value.trim(),
+        href: row.dataset.href
+    }));
+}
+
+function saveNav() {
+    const items = collectNavItems();
+    const emptyLabel = items.find(i => !i.label);
+    if (emptyLabel) {
+        showToast('All labels must be non-empty.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    fetch('/api/nav', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(items)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Navigation saved.');
+        } else {
+            showToast('Error: ' + (data.error || 'Unknown error'), 'error');
+        }
+    })
+    .catch(err => showToast('Error: ' + err.message, 'error'))
+    .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Save Order & Labels';
+    });
+}
+
+// ---- Delete ----
+function deleteNavItem(slug, label) {
+    if (!confirm(`Delete the "${label}" tab? This will also delete the page content and template files.\n\nThis cannot be undone.`)) return;
+
+    fetch(`/api/nav/${slug}`, {method: 'DELETE'})
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            showToast('Error: ' + (data.error || 'Unknown error'), 'error');
+        }
+    })
+    .catch(err => showToast('Error: ' + err.message, 'error'));
+}
+
+// ---- Add ----
+function autoSlug() {
+    const label = document.getElementById('newLabel').value;
+    const slugInput = document.getElementById('newSlug');
+    if (!slugInput.dataset.manuallyEdited) {
+        slugInput.value = label
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[-\s]+/g, '_')
+            .replace(/^_+|_+$/g, '');
+    }
+}
+
+document.getElementById('newSlug')?.addEventListener('input', function() {
+    this.dataset.manuallyEdited = 'true';
+});
+
+function addNavItem() {
+    const label = document.getElementById('newLabel').value.trim();
+    const slug = document.getElementById('newSlug').value.trim();
+
+    if (!label) { showToast('Label is required.', 'error'); return; }
+    if (!slug)  { showToast('Slug is required.', 'error');  return; }
+
+    fetch('/api/nav/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({label, slug})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Tab added.');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showToast('Error: ' + (data.error || 'Unknown error'), 'error');
+        }
+    })
+    .catch(err => showToast('Error: ' + err.message, 'error'));
+}
+
+// ---- Toast (inline copy from admin.js pattern) ----
+function showToast(message, type = 'success') {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed; bottom: 20px; right: 20px;
+        padding: 12px 24px; border-radius: 6px; color: white;
+        font-size: 14px; z-index: 9999; animation: slideIn 0.3s ease;
+        background: ${type === 'error' ? '#dc2626' : '#16a34a'};
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

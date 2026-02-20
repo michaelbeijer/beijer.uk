@@ -1,6 +1,7 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import navItems from '../content/nav/nav.json';
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -13,14 +14,11 @@ const base = import.meta.env.BASE_URL;
 <span class="hamburger-line"></span>
 </button>
 <div class="internal-links">
-<HeaderLink href={base}>Home</HeaderLink>
-<HeaderLink href={base + 'patents'}>Patents</HeaderLink>
-<HeaderLink href={base + 'services'}>Services</HeaderLink>
-<HeaderLink href={base + 'work'}>Work</HeaderLink>
-<HeaderLink href={base + 'testimonials'}>Testimonials</HeaderLink>
-<HeaderLink href={base + 'tools'}>Tools</HeaderLink>
-<HeaderLink href={base + 'blog'}>Beijerblog</HeaderLink>
-<HeaderLink href={base + 'contact'}>Contact</HeaderLink>
+{navItems.map(item => (
+  <HeaderLink href={item.href === '/' ? base : base + item.href.slice(1)}>
+    {item.label}
+  </HeaderLink>
+))}
 </div>
 </nav>
 </header>
