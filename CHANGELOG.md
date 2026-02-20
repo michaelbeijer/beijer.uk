@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-02-20
+
+### Added
+- Per-tab visibility toggle in Navigation admin: uncheck "Visible" to hide a tab from the site without deleting it
+- Hidden tabs remain accessible by direct URL; only the nav link is suppressed
+- Hidden rows appear dimmed in the admin UI for clarity
+- `hidden: true` field supported in `nav.json` items (omitted when visible, keeping the file clean)
+
 ## [1.2.0] - 2026-02-20
 
 ### Added

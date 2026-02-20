@@ -7,7 +7,7 @@ A custom Flask-based CMS for managing the michaelbeijer.co.uk website content.
 - **Blog Posts**: Create, edit, and delete blog posts with rich text editing
 - **Static Pages**: Manage services, patents, work, tools, about, contact, testimonials pages
 - **Homepage**: Edit homepage content (title, tagline, intro, additional content)
-- **Navigation**: Add, remove, rename, and reorder site nav tabs with drag-and-drop
+- **Navigation**: Add, remove, rename, reorder, and hide/show site nav tabs with drag-and-drop
 - **Rich Text Editor**: Jodit Editor with drag-to-resize image handles
 - **Image Upload**: Direct upload to content directory
 - **GitHub Integration**: Commit changes directly to GitHub from the admin panel
