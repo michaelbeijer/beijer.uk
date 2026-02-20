@@ -10,7 +10,7 @@
     </div>
 
     <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
-        Drag rows to reorder tabs. Edit labels inline. Home and Blog cannot be deleted.
+        Drag rows to reorder tabs. Edit labels inline. Uncheck "Visible" to hide a tab from the site without deleting it. Home and Blog cannot be deleted.
     </p>
 
     {% if nav_items %}
@@ -20,12 +20,13 @@
                 <th style="width:2rem;"></th>
                 <th>Label</th>
                 <th>Path</th>
+                <th style="width:5rem; text-align:center;">Visible</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody id="navBody">
             {% for item in nav_items %}
-            <tr draggable="true" data-href="{{ item.href }}">
+            <tr draggable="true" data-href="{{ item.href }}" class="{% if item.hidden %}nav-row-hidden{% endif %}">
                 <td class="drag-handle" title="Drag to reorder">&#8942;&#8942;</td>
                 <td>
                     <input
@@ -36,6 +37,15 @@
                     >
                 </td>
                 <td><code>{{ item.href }}</code></td>
+                <td style="text-align:center;">
+                    <input
+                        type="checkbox"
+                        class="nav-visible-checkbox"
+                        {% if not item.hidden %}checked{% endif %}
+                        title="Show this tab on the site"
+                        onchange="this.closest('tr').classList.toggle('nav-row-hidden', !this.checked)"
+                    >
+                </td>
                 <td class="actions-cell">
                     {% if item.href not in protected_hrefs %}
                     <button
@@ -120,10 +130,15 @@ if (tbody) {
 // ---- Save ----
 function collectNavItems() {
     const rows = document.querySelectorAll('#navBody tr');
-    return Array.from(rows).map(row => ({
-        label: row.querySelector('.nav-label-input').value.trim(),
-        href: row.dataset.href
-    }));
+    return Array.from(rows).map(row => {
+        const item = {
+            label: row.querySelector('.nav-label-input').value.trim(),
+            href: row.dataset.href
+        };
+        const checkbox = row.querySelector('.nav-visible-checkbox');
+        if (checkbox && !checkbox.checked) item.hidden = true;
+        return item;
+    });
 }
 
 function saveNav() {

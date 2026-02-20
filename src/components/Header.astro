@@ -14,7 +14,7 @@ const base = import.meta.env.BASE_URL;
 <span class="hamburger-line"></span>
 </button>
 <div class="internal-links">
-{navItems.map(item => (
+{navItems.filter(item => !item.hidden).map(item => (
   <HeaderLink href={item.href === '/' ? base : base + item.href.slice(1)}>
     {item.label}
   </HeaderLink>

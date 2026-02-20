@@ -585,6 +585,11 @@ tr.drag-over td {
     padding: 2px 4px;
 }
 
+tr.nav-row-hidden .nav-label-input,
+tr.nav-row-hidden code {
+    opacity: 0.45;
+}
+
 .nav-add-section {
     margin-top: 2rem;
     padding-top: 1.5rem;

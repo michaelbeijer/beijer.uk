@@ -1112,11 +1112,16 @@ def api_nav():
         data = request.json
         if not isinstance(data, list):
             return jsonify({'error': 'Expected a list of nav items'}), 400
+        cleaned = []
         for item in data:
             if 'label' not in item or 'href' not in item:
                 return jsonify({'error': 'Each item must have label and href'}), 400
+            entry = {'label': item['label'], 'href': item['href']}
+            if item.get('hidden'):
+                entry['hidden'] = True
+            cleaned.append(entry)
 
-        success, message = write_nav(data, 'Update navigation order/labels')
+        success, message = write_nav(cleaned, 'Update navigation order/labels')
         if not success:
             return jsonify({'error': message}), 500
         return jsonify({'success': True})
