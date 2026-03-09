@@ -27,7 +27,7 @@ const { Content } = await render(home);
 		<main>
 			<h1>{home.data.title}</h1>
 			<p class="lead">{home.data.tagline}</p>
-			<p>{home.data.intro}</p>
+			<p class="intro">{home.data.intro}</p>
 			<div class="cta">
 				<a class="button" href={base + 'contact'}>Email me</a>
 				<a class="button secondary" href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">ProZ feedback</a>
@@ -51,6 +51,10 @@ const { Content } = await render(home);
 	.lead {
 		font-size: 1.1em;
 		color: rgb(var(--muted));
+		line-height: 1.85;
+	}
+	.intro {
+		line-height: 1.85;
 	}
 	.cta {
 		display: flex;
