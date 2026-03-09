@@ -6,6 +6,7 @@ intro: 'I''ve spent over 30 years translating patents, technical manuals, and sp
   confidentiality, and focus on precise terminology and clear technical language.
 
 
+
   Trusted by patent attorneys, engineers, and technical companies across Europe.'
 ---
 
