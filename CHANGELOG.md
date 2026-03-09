@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2026-03-09
+
+### Added
+- Font theme picker in admin panel (new "Appearance" tab)
+- Five font themes: Clean & Modern (Inter), Classic Editorial (Playfair Display + Source Sans 3), Tech / Developer (Space Grotesk + IBM Plex Sans), Minimal & Refined (DM Sans), and Atkinson Hyperlegible (original)
+- `src/content/settings/appearance.json` stores the selected font theme
+- Google Fonts loaded conditionally based on selected theme for optimal performance
+- CSS custom properties `--font-heading` and `--font-body` for flexible typography
+- New `/appearance` admin route and `/api/appearance` API endpoint
+- Live font previews in the admin theme picker
+
+### Changed
+- Body and heading fonts now use CSS variables instead of hardcoded Atkinson font
+- Default font changed from Atkinson Hyperlegible to Inter
+
 ## [1.2.1] - 2026-02-20
 
 ### Added

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Appearance{% endblock %}
+
+{% block head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="content-list">
+    <div class="list-header">
+        <h1>Appearance</h1>
+        <button class="btn btn-primary" id="saveBtn" onclick="saveAppearance()">Save Changes</button>
+    </div>
+
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+        Choose a font theme for your site. The change takes effect after the site rebuilds.
+    </p>
+
+    <div class="font-themes" id="fontThemes">
+        <label class="font-theme-card" data-theme="inter">
+            <input type="radio" name="fontTheme" value="inter" {% if settings.fontTheme == 'inter' %}checked{% endif %}>
+            <div class="font-theme-content">
+                <div class="font-theme-header">
+                    <span class="font-theme-name">Clean &amp; Modern</span>
+                    <span class="font-theme-fonts">Inter</span>
+                </div>
+                <div class="font-theme-preview" style="font-family: 'Inter', sans-serif;">
+                    <span class="preview-heading" style="font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.4rem;">The Quick Brown Fox</span>
+                    <span class="preview-body">Jumps over the lazy dog. Clean, geometric, and highly legible at any size.</span>
+                </div>
+            </div>
+        </label>
+
+        <label class="font-theme-card" data-theme="editorial">
+            <input type="radio" name="fontTheme" value="editorial" {% if settings.fontTheme == 'editorial' %}checked{% endif %}>
+            <div class="font-theme-content">
+                <div class="font-theme-header">
+                    <span class="font-theme-name">Classic Editorial</span>
+                    <span class="font-theme-fonts">Playfair Display + Source Sans 3</span>
+                </div>
+                <div class="font-theme-preview" style="font-family: 'Source Sans 3', sans-serif;">
+                    <span class="preview-heading" style="font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.4rem;">The Quick Brown Fox</span>
+                    <span class="preview-body">Jumps over the lazy dog. Elegant serif headings with a clean sans-serif body.</span>
+                </div>
+            </div>
+        </label>
+
+        <label class="font-theme-card" data-theme="tech">
+            <input type="radio" name="fontTheme" value="tech" {% if settings.fontTheme == 'tech' %}checked{% endif %}>
+            <div class="font-theme-content">
+                <div class="font-theme-header">
+                    <span class="font-theme-name">Tech / Developer</span>
+                    <span class="font-theme-fonts">Space Grotesk + IBM Plex Sans</span>
+                </div>
+                <div class="font-theme-preview" style="font-family: 'IBM Plex Sans', sans-serif;">
+                    <span class="preview-heading" style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.4rem;">The Quick Brown Fox</span>
+                    <span class="preview-body">Jumps over the lazy dog. Modern geometric headings with a professional body font.</span>
+                </div>
+            </div>
+        </label>
+
+        <label class="font-theme-card" data-theme="minimal">
+            <input type="radio" name="fontTheme" value="minimal" {% if settings.fontTheme == 'minimal' %}checked{% endif %}>
+            <div class="font-theme-content">
+                <div class="font-theme-header">
+                    <span class="font-theme-name">Minimal &amp; Refined</span>
+                    <span class="font-theme-fonts">DM Sans</span>
+                </div>
+                <div class="font-theme-preview" style="font-family: 'DM Sans', sans-serif;">
+                    <span class="preview-heading" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.4rem;">The Quick Brown Fox</span>
+                    <span class="preview-body">Jumps over the lazy dog. Geometric and warm, works beautifully as a single font.</span>
+                </div>
+            </div>
+        </label>
+
+        <label class="font-theme-card" data-theme="atkinson">
+            <input type="radio" name="fontTheme" value="atkinson" {% if settings.fontTheme == 'atkinson' %}checked{% endif %}>
+            <div class="font-theme-content">
+                <div class="font-theme-header">
+                    <span class="font-theme-name">Atkinson Hyperlegible</span>
+                    <span class="font-theme-fonts">Atkinson (current)</span>
+                </div>
+                <div class="font-theme-preview">
+                    <span class="preview-heading" style="font-weight: 700; font-size: 1.4rem;">The Quick Brown Fox</span>
+                    <span class="preview-body">Jumps over the lazy dog. Designed for maximum readability and accessibility.</span>
+                </div>
+            </div>
+        </label>
+    </div>
+</div>
+
+<script>
+function saveAppearance() {
+    const selected = document.querySelector('input[name="fontTheme"]:checked');
+    if (!selected) {
+        showToast('Please select a font theme.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    fetch('/api/appearance', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ fontTheme: selected.value })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Font theme saved. The site will update on next rebuild.');
+        } else {
+            showToast('Error: ' + (data.error || 'Unknown error'), 'error');
+        }
+    })
+    .catch(err => showToast('Error: ' + err.message, 'error'))
+    .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+    });
+}
+
+function showToast(message, type = 'success') {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed; bottom: 20px; right: 20px;
+        padding: 12px 24px; border-radius: 6px; color: white;
+        font-size: 14px; z-index: 9999; animation: slideIn 0.3s ease;
+        background: ${type === 'error' ? '#dc2626' : '#16a34a'};
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+</script>
+{% endblock %}

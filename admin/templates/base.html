@@ -18,6 +18,7 @@
             <a href="{{ url_for('pages') }}" class="{% if request.endpoint in ['pages', 'edit_page', 'new_page'] %}active{% endif %}">Pages</a>
             <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a>
             <a href="{{ url_for('nav') }}" class="{% if request.endpoint == 'nav' %}active{% endif %}">Navigation</a>
+            <a href="{{ url_for('appearance') }}" class="{% if request.endpoint == 'appearance' %}active{% endif %}">Appearance</a>
         </div>
         <div class="nav-user">
             <span>{{ session.get('github_user', 'dev-user') }}</span>

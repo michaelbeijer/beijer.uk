@@ -48,6 +48,8 @@ HOME_DIR = CONTENT_DIR / 'home'
 IMAGES_DIR = BLOG_DIR / 'images'
 NAV_DIR = CONTENT_DIR / 'nav'
 NAV_FILE = NAV_DIR / 'nav.json'
+SETTINGS_DIR = CONTENT_DIR / 'settings'
+APPEARANCE_FILE = SETTINGS_DIR / 'appearance.json'
 PAGES_ASTRO_DIR = BASE_DIR / 'src' / 'pages'
 USE_GITHUB_CONTENT = (
     os.environ.get('USE_GITHUB_CONTENT', '').lower() == 'true' or
@@ -1234,6 +1236,79 @@ def api_nav_delete(slug):
             astro_file.unlink()
 
     return jsonify({'success': True})
+
+
+# =============================================================================
+# Appearance Settings
+# =============================================================================
+
+APPEARANCE_GH_PATH = 'src/content/settings/appearance.json'
+VALID_FONT_THEMES = {'atkinson', 'inter', 'editorial', 'tech', 'minimal'}
+
+
+def read_appearance():
+    """Read appearance.json and return settings dict."""
+    if USE_GITHUB_CONTENT:
+        content, _, error = gh_read_text(APPEARANCE_GH_PATH)
+        if error == 'not_found':
+            return {'fontTheme': 'inter'}, None
+        if error:
+            return None, error
+        try:
+            return json.loads(content), None
+        except json.JSONDecodeError as e:
+            return None, f"Invalid appearance.json: {e}"
+    else:
+        if not APPEARANCE_FILE.exists():
+            return {'fontTheme': 'inter'}, None
+        with open(APPEARANCE_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f), None
+
+
+def write_appearance(settings, commit_message='Update appearance settings'):
+    """Write appearance.json with the given settings dict."""
+    content = json.dumps(settings, indent=2, ensure_ascii=False) + '\n'
+    if USE_GITHUB_CONTENT:
+        return gh_upsert_text(APPEARANCE_GH_PATH, content, commit_message)
+    else:
+        SETTINGS_DIR.mkdir(parents=True, exist_ok=True)
+        with open(APPEARANCE_FILE, 'w', encoding='utf-8') as f:
+            f.write(content)
+        return True, 'Saved appearance.json locally'
+
+
+@app.route('/appearance')
+@require_auth
+def appearance():
+    """Manage site appearance"""
+    settings, error = read_appearance()
+    if error:
+        return f'Error loading appearance settings: {error}', 500
+    return render_template('appearance.html', settings=settings)
+
+
+@app.route('/api/appearance', methods=['GET', 'POST'])
+@require_auth
+def api_appearance():
+    """Get or update appearance settings."""
+    if request.method == 'GET':
+        settings, error = read_appearance()
+        if error:
+            return jsonify({'error': error}), 500
+        return jsonify(settings)
+
+    elif request.method == 'POST':
+        data = request.json
+        font_theme = data.get('fontTheme', '').strip()
+
+        if font_theme not in VALID_FONT_THEMES:
+            return jsonify({'error': f'Invalid font theme: {font_theme}'}), 400
+
+        settings = {'fontTheme': font_theme}
+        success, message = write_appearance(settings, f'Update font theme to {font_theme}')
+        if not success:
+            return jsonify({'error': message}), 500
+        return jsonify({'success': True})
 
 
 # =============================================================================

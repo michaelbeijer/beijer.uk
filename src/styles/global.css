@@ -12,6 +12,8 @@
 	--accent: 51, 102, 204;
 	--accent-soft: 51, 102, 204;
 	--box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+	--font-heading: "Inter", sans-serif;
+	--font-body: "Inter", sans-serif;
 }
 @font-face {
 	font-family: "Atkinson";
@@ -28,7 +30,7 @@
 	font-display: swap;
 }
 body {
-	font-family: "Atkinson", sans-serif;
+	font-family: var(--font-body);
 	margin: 0;
 	padding: 0;
 	text-align: left;
@@ -54,6 +56,7 @@ h6 {
 	margin: 0 0 0.5rem 0;
 	color: rgb(var(--text));
 	line-height: 1.2;
+	font-family: var(--font-heading);
 }
 h1 {
 	font-size: 2.5em;
