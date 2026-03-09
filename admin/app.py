@@ -48,6 +48,7 @@ HOME_DIR = CONTENT_DIR / 'home'
 IMAGES_DIR = BLOG_DIR / 'images'
 NAV_DIR = CONTENT_DIR / 'nav'
 NAV_FILE = NAV_DIR / 'nav.json'
+BLOG_PAGE_DIR = CONTENT_DIR / 'blog-page'
 SETTINGS_DIR = CONTENT_DIR / 'settings'
 APPEARANCE_FILE = SETTINGS_DIR / 'appearance.json'
 PAGES_ASTRO_DIR = BASE_DIR / 'src' / 'pages'
@@ -958,6 +959,89 @@ def api_home():
             if not success:
                 return jsonify({'error': message}), 500
         else:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+
+        return jsonify({'success': True})
+
+
+# =============================================================================
+# Blog Page
+# =============================================================================
+
+@app.route('/blog-page')
+@require_auth
+def blog_page():
+    """Edit blog listing page settings"""
+    gh_path = 'src/content/blog-page/index.md'
+
+    if USE_GITHUB_CONTENT:
+        content, _, error = gh_read_text(gh_path)
+        if error == 'not_found':
+            fm, body = {'title': 'Blog', 'intro': ''}, ''
+        elif error:
+            return f'Error loading blog page settings: {error}', 500
+        else:
+            fm, body = parse_frontmatter(content)
+    else:
+        file_path = BLOG_PAGE_DIR / 'index.md'
+        if not file_path.exists():
+            fm, body = {'title': 'Blog', 'intro': ''}, ''
+        else:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                fm, body = parse_frontmatter(f.read())
+
+    blog_data = {
+        'title': fm.get('title', 'Blog'),
+        'intro': fm.get('intro', ''),
+    }
+    return render_template('blog_page_editor.html', blog=blog_data)
+
+
+@app.route('/api/blog-page', methods=['GET', 'POST'])
+@require_auth
+def api_blog_page():
+    """Get or update blog listing page settings"""
+    file_path = BLOG_PAGE_DIR / 'index.md'
+    gh_path = 'src/content/blog-page/index.md'
+
+    if request.method == 'GET':
+        if USE_GITHUB_CONTENT:
+            content, _, error = gh_read_text(gh_path)
+            if error == 'not_found':
+                return jsonify({'title': 'Blog', 'intro': ''})
+            if error:
+                return jsonify({'error': error}), 500
+            fm, _ = parse_frontmatter(content)
+        else:
+            if not file_path.exists():
+                return jsonify({'title': 'Blog', 'intro': ''})
+            with open(file_path, 'r', encoding='utf-8') as f:
+                fm, _ = parse_frontmatter(f.read())
+
+        return jsonify({
+            'title': fm.get('title', 'Blog'),
+            'intro': fm.get('intro', ''),
+        })
+
+    elif request.method == 'POST':
+        data = request.json
+
+        frontmatter = {
+            'title': data.get('title', 'Blog'),
+            'intro': data.get('intro', ''),
+        }
+
+        content = generate_markdown(frontmatter, '')
+
+        if USE_GITHUB_CONTENT:
+            success, message = gh_upsert_text(
+                gh_path, content, 'Update blog page settings'
+            )
+            if not success:
+                return jsonify({'error': message}), 500
+        else:
+            BLOG_PAGE_DIR.mkdir(parents=True, exist_ok=True)
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
 

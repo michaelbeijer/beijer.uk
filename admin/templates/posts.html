@@ -6,7 +6,10 @@
 <div class="content-list">
     <div class="list-header">
         <h1>Blog Posts</h1>
-        <a href="{{ url_for('new_post') }}" class="btn btn-primary">New Post</a>
+        <div style="display: flex; gap: 0.5rem;">
+            <a href="{{ url_for('blog_page') }}" class="btn btn-secondary">Edit Blog Page</a>
+            <a href="{{ url_for('new_post') }}" class="btn btn-primary">New Post</a>
+        </div>
     </div>
 
     {% if posts %}

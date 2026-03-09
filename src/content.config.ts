@@ -36,4 +36,13 @@ const home = defineCollection({
 	}),
 });
 
-export const collections = { blog, pages, home };
+const blogPage = defineCollection({
+	// Blog listing page settings
+	loader: glob({ base: './src/content/blog-page', pattern: '**/*.md' }),
+	schema: z.object({
+		title: z.string(),
+		intro: z.string().optional(),
+	}),
+});
+
+export const collections = { blog, pages, home, 'blog-page': blogPage };

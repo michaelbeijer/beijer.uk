@@ -1,11 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_SEO_TITLE } from '../../consts';
 
 const base = import.meta.env.BASE_URL;
+const blogPage = await getEntry('blog-page', 'index');
+const blogTitle = blogPage?.data.title || 'Blog';
+const blogIntro = blogPage?.data.intro || '';
 
 const posts = (await getCollection('blog')).sort(
 (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -25,7 +28,7 @@ const years = Object.keys(postsByYear).sort((a, b) => Number(b) - Number(a));
 <!doctype html>
 <html lang="en">
 <head>
-<BaseHead title={`Beijerblog | ${SITE_SEO_TITLE}`} description={SITE_DESCRIPTION} />
+<BaseHead title={`${blogTitle} | ${SITE_SEO_TITLE}`} description={SITE_DESCRIPTION} />
 <style>
 main {
 width: 760px;
@@ -58,13 +61,19 @@ text-decoration: underline;
 color: rgb(var(--muted));
 font-size: 0.9em;
 }
+.blog-intro {
+color: rgb(var(--muted));
+margin-bottom: 1.5rem;
+line-height: 1.85;
+}
 </style>
 </head>
 <body>
 <Header />
 <main>
 <section>
-<h1>Beijerblog</h1>
+<h1>{blogTitle}</h1>
+{blogIntro && <p class="blog-intro" set:html={blogIntro.replace(/\n/g, '<br>')} />}
 {years.map((year) => (
 <>
 <h2 class="year">{year}</h2>
