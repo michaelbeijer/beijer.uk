@@ -572,17 +572,23 @@ tr.drag-over td {
 }
 
 .nav-label-input {
-    border: none;
-    background: transparent;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
     font: inherit;
     width: 100%;
     color: var(--text);
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+.nav-label-input:hover {
+    border-color: #93c5fd;
 }
 
 .nav-label-input:focus {
-    outline: 1px solid var(--primary);
-    border-radius: 4px;
-    padding: 2px 4px;
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 tr.nav-row-hidden .nav-label-input,
