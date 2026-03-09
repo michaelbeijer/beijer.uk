@@ -27,17 +27,11 @@ const { Content } = await render(home);
 		<main>
 			<h1>{home.data.title}</h1>
 			<p class="lead">{home.data.tagline}</p>
-			<p class="intro">{home.data.intro}</p>
+			<p class="intro" set:html={home.data.intro.replace(/\n/g, '<br>')} />
 			<div class="cta">
 				<a class="button" href={base + 'contact'}>Email me</a>
 				<a class="button secondary" href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">ProZ feedback</a>
 			</div>
-			<p class="subtle-links">
-				<a href={base + 'about'}>About</a>
-				<span aria-hidden="true">·</span>
-				<a href={base + 'work'}>Work</a>
-			</p>
-			<hr />
 			<div class="home-content">
 				<Content />
 			</div>
@@ -78,23 +72,6 @@ const { Content } = await render(home);
 	.button.secondary {
 		background: rgb(var(--bg));
 		color: rgb(var(--text));
-	}
-	.subtle-links {
-		margin: -0.25em 0 1.25em 0;
-		color: rgb(var(--muted));
-		font-size: 0.95em;
-	}
-	.subtle-links a {
-		color: rgb(var(--muted));
-		text-decoration: underline;
-		text-decoration-thickness: 1px;
-		text-underline-offset: 3px;
-	}
-	.subtle-links a:hover {
-		color: rgb(var(--text));
-	}
-	.subtle-links span {
-		margin: 0 0.5em;
 	}
 	.home-content :global(ul) {
 		list-style: none;
