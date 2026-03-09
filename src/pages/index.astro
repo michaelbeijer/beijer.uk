@@ -11,6 +11,7 @@ import {
 	SITE_SEO_TITLE,
 } from '../consts';
 
+const base = import.meta.env.BASE_URL;
 const home = await getEntry('home', 'index');
 if (!home) throw new Error('home/index.md not found');
 const { Content } = await render(home);
@@ -28,13 +29,13 @@ const { Content } = await render(home);
 			<p class="lead">{home.data.tagline}</p>
 			<p>{home.data.intro}</p>
 			<div class="cta">
-				<a class="button" href="/contact">Email me</a>
+				<a class="button" href={base + 'contact'}>Email me</a>
 				<a class="button secondary" href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">ProZ feedback</a>
 			</div>
 			<p class="subtle-links">
-				<a href="/about">About</a>
+				<a href={base + 'about'}>About</a>
 				<span aria-hidden="true">·</span>
-				<a href="/work">Work</a>
+				<a href={base + 'work'}>Work</a>
 			</p>
 			<hr />
 			<div class="home-content">
