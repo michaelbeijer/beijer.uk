@@ -17,8 +17,8 @@ intro: 'I''ve spent over 30 years translating patents, technical manuals, and sp
 </ul>
 <h2>Side projects</h2>
 <ul>
-<li><a href="https://supervertaler.com">Supervertaler</a> –&nbsp;CAT-tool companion for AI-assisted translation workflows</li>
-<li><a href="https://beijerterm.com">Beijerterm</a> – open multilingual terminology database for technical translators</li>
+<li><a href="https://supervertaler.com" target="_blank">Supervertaler</a> –&nbsp;CAT-tool companion for AI-assisted translation workflows</li>
+<li><a href="https://beijerterm.com" target="_blank">Beijerterm</a> – open multilingual terminology database for technical translators</li><li><a href="https://github.com/michaelbeijer/Beijer.ink" target="_blank">Beijer.ink</a> –&nbsp;personal note-taking web app</li><li><a href="https://github.com/michaelbeijer/WordCounter" target="_blank">WordCounter</a> –&nbsp;free and open-source word counting software for translators</li>
 </ul>
 <h2>Get in touch</h2>
 <p>Drop me an email at info@michaelbeijer.co.uk – it helps if you can mention the word count, deadline, subject area, and source format.</p>
