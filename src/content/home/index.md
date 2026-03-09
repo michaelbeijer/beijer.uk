@@ -13,7 +13,7 @@ intro: 'I''ve spent over 30 years translating patents, technical manuals, and sp
 <ul>
 <li><strong>Patents</strong>&nbsp;–&nbsp;translation, editing, and terminology work. I make sure nothing gets lost between the legal and the technical.</li>
 <li><strong>Technical translation</strong>&nbsp;–&nbsp;manuals, software strings, specifications, documentation.</li>
-<li><strong>Terminology</strong> – building and maintaining termbases, extraction, and cleanup.</li>
+<li><strong>Terminology</strong> – building and maintaining termbases, extraction, and cleanup.<br><br></li>
 </ul>
 <h2>Side projects</h2>
 <ul>
