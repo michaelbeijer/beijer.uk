@@ -9,16 +9,16 @@ intro: 'I''ve spent over 30 years translating patents, technical manuals, and sp
   Trusted by patent attorneys, engineers, and technical companies across Europe.'
 ---
 
-<p><br></p><h2>What I do</h2>
+<h2>What I do</h2>
 <ul>
 <li><strong>Patents</strong>&nbsp;–&nbsp;translation, editing, and terminology work. I make sure nothing gets lost between the legal and the technical.</li>
 <li><strong>Technical translation</strong>&nbsp;–&nbsp;manuals, software strings, specifications, documentation.</li>
-<li><strong>Terminology</strong> – building and maintaining termbases, extraction, and cleanup.<br><br></li>
+<li><strong>Terminology</strong> – building and maintaining termbases, extraction, and cleanup.<br></li>
 </ul>
 <h2>Side projects</h2>
 <ul>
 <li><a href="https://supervertaler.com" target="_blank">Supervertaler</a> –&nbsp;CAT-tool companion for AI-assisted translation workflows</li>
 <li><a href="https://beijerterm.com" target="_blank">Beijerterm</a> – open multilingual terminology database for technical translators</li><li><a href="https://github.com/michaelbeijer/Beijer.ink" target="_blank">Beijer.ink</a> –&nbsp;personal note-taking web app</li><li><a href="https://github.com/michaelbeijer/WordCounter" target="_blank">WordCounter</a> –&nbsp;free and open-source word counting software for translators</li>
 </ul>
-<p><br></p><h2>Get in touch</h2>
+<h2>Get in touch</h2>
 <p>Drop me an email at info@michaelbeijer.co.uk – it helps if you can mention the word count, deadline, subject area, and source format.</p>
