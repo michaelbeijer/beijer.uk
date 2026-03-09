@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2026-03-09
+
+### Added
+- Blog page editor in admin panel: edit the blog listing page title and intro text
+- New `blog-page` content collection for blog listing page settings
+- "Edit Blog Page" button on the Posts admin page
+- Save & Commit to GitHub support for blog page settings
+
+### Changed
+- Navigation label inputs in admin now have visible borders and hover/focus styles
+- Homepage intro text now supports line breaks (entered via admin textarea)
+- Increased line spacing on homepage intro and tagline for better readability
+
+### Fixed
+- Homepage links (About, Work, Contact) now correctly use BASE_URL prefix for GitHub Pages
+- Admin link in footer now matches the font size of other footer links
+- Removed redundant About/Work links and horizontal rule from below CTA buttons on homepage
+
 ## [1.3.0] - 2026-03-09
 
 ### Added
