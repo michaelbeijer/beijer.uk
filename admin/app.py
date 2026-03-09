@@ -994,6 +994,7 @@ def blog_page():
     blog_data = {
         'title': fm.get('title', 'Blog'),
         'intro': fm.get('intro', ''),
+        'body': body.strip(),
     }
     return render_template('blog_page_editor.html', blog=blog_data)
 
@@ -1009,19 +1010,20 @@ def api_blog_page():
         if USE_GITHUB_CONTENT:
             content, _, error = gh_read_text(gh_path)
             if error == 'not_found':
-                return jsonify({'title': 'Blog', 'intro': ''})
+                return jsonify({'title': 'Blog', 'intro': '', 'body': ''})
             if error:
                 return jsonify({'error': error}), 500
-            fm, _ = parse_frontmatter(content)
+            fm, body = parse_frontmatter(content)
         else:
             if not file_path.exists():
-                return jsonify({'title': 'Blog', 'intro': ''})
+                return jsonify({'title': 'Blog', 'intro': '', 'body': ''})
             with open(file_path, 'r', encoding='utf-8') as f:
-                fm, _ = parse_frontmatter(f.read())
+                fm, body = parse_frontmatter(f.read())
 
         return jsonify({
             'title': fm.get('title', 'Blog'),
             'intro': fm.get('intro', ''),
+            'body': body.strip(),
         })
 
     elif request.method == 'POST':
@@ -1032,7 +1034,7 @@ def api_blog_page():
             'intro': data.get('intro', ''),
         }
 
-        content = generate_markdown(frontmatter, '')
+        content = generate_markdown(frontmatter, data.get('body', ''))
 
         if USE_GITHUB_CONTENT:
             success, message = gh_upsert_text(

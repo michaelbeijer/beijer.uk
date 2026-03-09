@@ -3,11 +3,15 @@ title: Contact
 description: Get in touch with Michael Beijer
 ---
 
-<h2>For a quick quote</h2>
-<ul>
-<li>Word count (or file(s) attached)</li>
-<li>Deadline</li>
-<li>Domain / subject matter</li>
-<li>Source format (Word, PDF, XLIFF, etc.)</li>
-<li>Any terminology or style guide</li>
-</ul>
+Email is the fastest way to reach me.
+
+- Email: [info@michaelbeijer.co.uk](mailto:info@michaelbeijer.co.uk)
+- Phone: [+44 7475 771720](tel:+447475771720)
+
+## For a quick quote
+
+- Word count (or file(s) attached)
+- Deadline
+- Domain / subject matter
+- Source format (Word, PDF, XLIFF, etc.)
+- Any terminology or style guide

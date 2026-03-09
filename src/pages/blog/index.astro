@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
@@ -9,6 +9,7 @@ const base = import.meta.env.BASE_URL;
 const blogPage = await getEntry('blog-page', 'index');
 const blogTitle = blogPage?.data.title || 'Blog';
 const blogIntro = blogPage?.data.intro || '';
+const BlogPageContent = blogPage ? (await render(blogPage)).Content : null;
 
 const posts = (await getCollection('blog')).sort(
 (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -66,6 +67,10 @@ color: rgb(var(--muted));
 margin-bottom: 1.5rem;
 line-height: 1.85;
 }
+.blog-content {
+margin-top: 2rem;
+line-height: 1.85;
+}
 </style>
 </head>
 <body>
@@ -89,6 +94,7 @@ line-height: 1.85;
 </ul>
 </>
 ))}
+{BlogPageContent && <div class="blog-content"><BlogPageContent /></div>}
 </section>
 </main>
 <Footer />
