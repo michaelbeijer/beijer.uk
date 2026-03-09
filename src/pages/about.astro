@@ -1,22 +1,14 @@
 ---
 import Page from '../layouts/Page.astro';
 import { getEntry, render } from 'astro:content';
-import { CONTACT_EMAIL, CONTACT_PHONE, LINKEDIN_URL, SITE_DESCRIPTION, SITE_SEO_TITLE } from '../consts';
+import { SITE_SEO_TITLE } from '../consts';
 
 const page = await getEntry('pages', 'about');
 if (!page) throw new Error('about.md not found');
 const { Content } = await render(page);
 ---
 
-<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description || SITE_DESCRIPTION}>
+<Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
 	<h1>{page.data.title}</h1>
 	<Content />
-	<hr />
-	<p>
-		Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-		<br />
-		Phone: <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`}>{CONTACT_PHONE}</a>
-		<br />
-		LinkedIn: <a href={LINKEDIN_URL} target="_blank" rel="noopener">{LINKEDIN_URL}</a>
-	</p>
 </Page>
