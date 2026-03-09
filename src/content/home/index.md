@@ -2,8 +2,8 @@
 title: Michael Beijer
 tagline: Dutch↔English patent & technical translator · Hastings, UK
 intro: I've spent over 30 years translating patents, technical manuals, and specialist
-  documentation between Dutch and English. I work with CAT tools, take confidentiality
-  seriously, and care about getting the details right.
+  documentation between Dutch and English. I work with CAT tools, maintain strict
+  confidentiality, and focus on precise terminology and clear technical language.
 ---
 
 <h2>What I do</h2>
@@ -14,8 +14,8 @@ intro: I've spent over 30 years translating patents, technical manuals, and spec
 </ul>
 <h2>Side projects</h2>
 <ul>
-<li><a href="https://supervertaler.com">Supervertaler</a> – desktop translation companion for CAT workflows.</li>
-<li><a href="https://beijerterm.com">Beijerterm</a> – open multilingual terminology database.</li>
+<li><a href="https://supervertaler.com">Supervertaler</a> –&nbsp;CAT-tool companion for AI-assisted translation workflows</li>
+<li><a href="https://beijerterm.com">Beijerterm</a> – open multilingual terminology database for technical translators</li>
 </ul>
 <h2>Get in touch</h2>
 <p>Drop me an email at info@michaelbeijer.co.uk – it helps if you can mention the word count, deadline, subject area, and source format.</p>
