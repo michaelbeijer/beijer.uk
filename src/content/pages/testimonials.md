@@ -7,20 +7,20 @@ description: Client testimonials and feedback
 <h2>2025</h2>
 <blockquote>
 <p>"Michael is an outstanding translator. His precision, deep understanding of complex terminology, and ability to convey (technical/legal) content seamlessly make him a true asset. His translations are not only accurate but also reflect a natural flow, demonstrating his extensive experience in the field. Moreover, he is exceptionally reliable and always meets deadlines with remarkable punctuality. We highly recommend Michael for any translation project."
-– <strong>Hilde Deneve</strong>, <a href="http://www.multilex.be/">MultiLex</a></p>
+– <strong>Hilde Deneve</strong>, MultiLex</p>
 </blockquote>
 <h2>2024</h2>
 <blockquote>
 <p>"Clearly a consummate pro and a pair of safe hands. We found working with Michael a breeze. Translations were accurate and supplied on time. We can recommend his work unreservedly."
-– <strong>Jean-Louis Eveque</strong>, <a href="https://babelon-line.com/">BabelOn-line</a></p>
+– <strong>Jean-Louis Eveque</strong>, BabelOn-line</p>
 </blockquote>
 <h2>2023</h2>
 <blockquote>
-<p>"Fast, accurate and reliable!" – <strong>Martine Kuijs</strong>, <a href="https://www.mkvertalingen.nl/en/">MKvertalingen</a></p>
+<p>"Fast, accurate and reliable!" – Martine Kuijs, <strong>MKvertalingen</strong></p>
 </blockquote>
 <h2>2017</h2>
 <blockquote>
-<p>"Although I've only had the chance to work with Michael on a few occasions, the work that he has provided was excellent. Can't wait to work with him again." – <strong>Marjan Borger</strong>, <a href="https://www.easytranslation.nl/">Easy Translation</a></p>
+<p>"Although I've only had the chance to work with Michael on a few occasions, the work that he has provided was excellent. Can't wait to work with him again." – Marjan Borger, <strong>Easy Translation</strong></p>
 <p>"Professional accurate translator, friendly and trustworthy!"
 – <strong>Metamorfose</strong></p>
 <p>"I highly recommend Michael's translation service."
@@ -29,18 +29,18 @@ description: Client testimonials and feedback
 <h2>2016</h2>
 <blockquote>
 <p>"Excellent and knowledgeable translator you can always count on, a pleasure to work with."
-– <strong>An Ballekens</strong>, Royal Translations</p>
+– An Ballekens, <strong>Royal Translations</strong></p>
 </blockquote>
 <h2>2015</h2>
 <blockquote>
-<p>"Very reliable and fast translator. Delivers high-quality translations on time. It was a pleasure to work with you." – <strong>Ballacchino VM</strong>, <a href="https://www.act-translations.com/" target="_blank">A.C.T. Fachübersetzungen GmbH</a></p>
-<p>"Very good work, delivered on time - I would definitely use again." – <strong>Eddie Street</strong>,&nbsp;<a href="https://streetwisetranslations.co.uk/" target="_blank">Streetwise Translations</a></p>
+<p>"Very reliable and fast translator. Delivers high-quality translations on time. It was a pleasure to work with you." – Ballacchino VM, <strong>A.C.T. Fachübersetzungen GmbH</strong></p>
+<p>"Very good work, delivered on time - I would definitely use again." – Eddie Street,&nbsp;<strong>Streetwise Translation</strong>s</p>
 </blockquote>
 <h2>2013</h2>
 <blockquote>
-<p>"Michael translated a large manual for me. My client was very content with the translation. I'd work with him again any time!" – <strong>Hans Lenting</strong>, 2nl</p>
+<p>"Michael translated a large manual for me. My client was very content with the translation. I'd work with him again any time!" – Hans Lenting, <strong>2nl</strong></p>
 <p>"Great translator! reliable and delivers high quality."
-– <strong>Katrien Germonpre</strong><strong>z, </strong>Wilkens c.s.</p>
+– Katrien Germonprez, <strong>Wilkens c.s.</strong></p>
 <p>"Good technical knowledge, nice writing style, respects deadlines."
 – <strong>Wilkens c.s.</strong></p>
 <p>"Professional, timely and reliable services. Certainly recommended."
@@ -55,7 +55,7 @@ description: Client testimonials and feedback
 – <strong>Legato Services</strong></p>
 <p>"Thanks for the nice cooperation, I hope that we can intensify it during 2012."
 – <strong>LanguageWire</strong></p>
-<p>"Michael is a very good and reliable professional. Michael has an extremely good command and knowledge of English. We warmly recommend him." – <strong>Philippe Carino, docnroll</strong></p>
+<p>"Michael is a very good and reliable professional. Michael has an extremely good command and knowledge of English. We warmly recommend him." – Philippe Carino,<strong> docnroll</strong></p>
 </blockquote>
 <h2>2011</h2>
 <blockquote>
@@ -64,7 +64,7 @@ description: Client testimonials and feedback
 <p>"Committed - Reliable - Professional - a pleasure to work with."
 – <strong>Atlantic Languages</strong></p>
 <p>"Easy to contact and to keep in touch with. Keeps deadlines and is not afraid to ask questions if necessary."
-– <strong>Frits Ens, TransAction vof</strong></p>
+– Frits Ens,<strong> TransAction vof</strong></p>
 </blockquote>
 <h2>2010</h2>
 <blockquote>
