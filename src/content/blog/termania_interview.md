@@ -1,7 +1,10 @@
 ---
-title: "Termania: Interview with Michael Beijer in 'Why is terminology your passion?'"
-description: "In 2013, I was one of 26 terminologists interviewed by trainees from the European Parliament's Terminology Coordination Unit (TermCoord) for their publication on terminology passion."
-pubDate: 2013-06-15
+title: 'Termania: Interview with Michael Beijer in ''Why is terminology your passion?'''
+description: In 2013, I was one of 26 terminologists interviewed by trainees from
+  the European Parliament's Terminology Coordination Unit (TermCoord) for their publication
+  on terminology passion.
+pubDate: Sat, 15 Jun 2013 00:00:00 GMT
+hidden: true
 ---
 
 In 2013, I was one of 26 terminologists to be interviewed by trainees from the European Parliament's Terminology Coordination Unit (TermCoord) for a post/section on their new blog @ termcoord.eu titled '[Termania](http://termcoord.eu/termania/)'.
