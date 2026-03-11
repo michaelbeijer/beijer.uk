@@ -496,7 +496,8 @@ def posts():
                 'slug': slug,
                 'title': fm.get('title', slug),
                 'pubDate': fm.get('pubDate', ''),
-                'description': fm.get('description', '')[:100] + '...' if fm.get('description', '') else ''
+                'description': fm.get('description', '')[:100] + '...' if fm.get('description', '') else '',
+                'hidden': fm.get('hidden', False)
             })
     else:
         for file in sorted(BLOG_DIR.glob('*.md'), reverse=True):
@@ -506,7 +507,8 @@ def posts():
                     'slug': file.stem,
                     'title': fm.get('title', file.stem),
                     'pubDate': fm.get('pubDate', ''),
-                    'description': fm.get('description', '')[:100] + '...' if fm.get('description', '') else ''
+                    'description': fm.get('description', '')[:100] + '...' if fm.get('description', '') else '',
+                    'hidden': fm.get('hidden', False)
                 })
 
     return render_template('posts.html', posts=posts_data)
@@ -550,6 +552,7 @@ def edit_post(slug):
         'description': fm.get('description', ''),
         'pubDate': fm.get('pubDate', ''),
         'heroImage': fm.get('heroImage', ''),
+        'hidden': fm.get('hidden', False),
         'body': body_html
     }
 
@@ -576,6 +579,9 @@ def api_create_post():
 
     if data.get('heroImage'):
         frontmatter['heroImage'] = data['heroImage']
+
+    if data.get('hidden'):
+        frontmatter['hidden'] = True
 
     body = data.get('body', '')
     content = generate_markdown(frontmatter, body)
@@ -633,6 +639,7 @@ def api_post(slug):
             'description': fm.get('description', ''),
             'pubDate': fm.get('pubDate', ''),
             'heroImage': fm.get('heroImage', ''),
+            'hidden': fm.get('hidden', False),
             'body': body
         })
 
@@ -647,6 +654,9 @@ def api_post(slug):
 
         if data.get('heroImage'):
             frontmatter['heroImage'] = data['heroImage']
+
+        if data.get('hidden'):
+            frontmatter['hidden'] = True
 
         body = data.get('body', '')
         content = generate_markdown(frontmatter, body)

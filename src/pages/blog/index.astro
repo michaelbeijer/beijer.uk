@@ -11,9 +11,9 @@ const blogTitle = blogPage?.data.title || 'Blog';
 const blogIntro = blogPage?.data.intro || '';
 const BlogPageContent = blogPage ? (await render(blogPage)).Content : null;
 
-const posts = (await getCollection('blog')).sort(
-(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = (await getCollection('blog'))
+.filter((post) => !post.data.hidden)
+.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 // Group posts by year
 const postsByYear = posts.reduce((acc, post) => {

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0] - 2026-03-11
+
+### Added
+- Hidden/draft blog posts: mark posts as hidden to keep them off the public site while editing
+- `hidden` boolean field in blog content schema (optional, defaults to visible)
+- "Hidden" checkbox in the blog post editor
+- Status column in admin posts list showing "Hidden" or "Visible" badges
+- Quick "Hide/Unhide" toggle button on the posts list for one-click visibility changes
+- Hidden posts are filtered from the public blog listing and individual post page generation
+
+### Changed
+- Hidden post rows appear dimmed in the admin posts list for visual clarity
+
 ## [1.4.0] - 2026-03-09
 
 ### Added

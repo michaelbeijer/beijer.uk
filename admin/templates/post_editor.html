@@ -30,6 +30,12 @@
                 <label for="pubDate">Publication Date</label>
                 <input type="date" id="pubDate" name="pubDate" value="{{ post.pubDate if post else '' }}">
             </div>
+            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 0.35rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; white-space: nowrap;">
+                    <input type="checkbox" id="hidden" name="hidden" {% if post and post.hidden %}checked{% endif %}>
+                    Hidden
+                </label>
+            </div>
         </div>
 
         <div class="form-group">
@@ -114,6 +120,7 @@ function getFormData() {
         description: document.getElementById('description').value,
         pubDate: document.getElementById('pubDate').value || new Date().toISOString().split('T')[0],
         heroImage: document.getElementById('heroImage').value,
+        hidden: document.getElementById('hidden').checked,
         body: editor.value
     };
 }
