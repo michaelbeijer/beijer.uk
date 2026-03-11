@@ -22,6 +22,7 @@
             <a href="{{ url_for('appearance') }}" class="{% if request.endpoint == 'appearance' %}active{% endif %}">Appearance</a>
         </div>
         <div class="nav-user">
+            <a href="https://github.com/michaelbeijer/michaelbeijer.co.uk" target="_blank" rel="noopener" style="opacity: 0.7; text-decoration: none;" title="GitHub Repository">GitHub</a>
             <span>{{ session.get('github_user', 'dev-user') }}</span>
             <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
         </div>
