@@ -7,12 +7,12 @@ description: Client testimonials and feedback
 <h2>2025</h2>
 <blockquote>
 <p>"Michael is an outstanding translator. His precision, deep understanding of complex terminology, and ability to convey (technical/legal) content seamlessly make him a true asset. His translations are not only accurate but also reflect a natural flow, demonstrating his extensive experience in the field. Moreover, he is exceptionally reliable and always meets deadlines with remarkable punctuality. We highly recommend Michael for any translation project."
-– <strong>Hilde Deneve</strong>, MultiLex</p>
+– Hilde Deneve, <strong>MultiLex</strong></p>
 </blockquote>
 <h2>2024</h2>
 <blockquote>
 <p>"Clearly a consummate pro and a pair of safe hands. We found working with Michael a breeze. Translations were accurate and supplied on time. We can recommend his work unreservedly."
-– <strong>Jean-Louis Eveque</strong>, BabelOn-line</p>
+– Jean-Louis Eveque, <strong>BabelOn-line</strong></p>
 </blockquote>
 <h2>2023</h2>
 <blockquote>
@@ -33,7 +33,7 @@ description: Client testimonials and feedback
 </blockquote>
 <h2>2015</h2>
 <blockquote>
-<p>"Very reliable and fast translator. Delivers high-quality translations on time. It was a pleasure to work with you." – Ballacchino VM, <strong>A.C.T. Fachübersetzungen GmbH</strong></p>
+<p>"Very reliable and fast translator. Delivers high-quality translations on time. It was a pleasure to work with you." – <strong>A.C.T. Fachübersetzungen GmbH</strong></p>
 <p>"Very good work, delivered on time - I would definitely use again." – Eddie Street,&nbsp;<strong>Streetwise Translation</strong>s</p>
 </blockquote>
 <h2>2013</h2>
