@@ -13,7 +13,7 @@ import markdown
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, send_from_directory, Response
 import requests
 from github import Github, GithubException
 from werkzeug.utils import secure_filename
@@ -545,6 +545,8 @@ def edit_post(slug):
 
     # Convert markdown to HTML for CKEditor
     body_html = markdown_to_html(body)
+    # Rewrite image paths so they display in the admin editor
+    body_html = body_html.replace('./images/', '/blog-images/')
 
     post = {
         'slug': slug,
@@ -583,7 +585,8 @@ def api_create_post():
     if data.get('hidden'):
         frontmatter['hidden'] = True
 
-    body = data.get('body', '')
+    # Convert editor image paths back to relative paths for markdown
+    body = data.get('body', '').replace('/blog-images/', './images/')
     content = generate_markdown(frontmatter, body)
 
     if USE_GITHUB_CONTENT:
@@ -658,7 +661,8 @@ def api_post(slug):
         if data.get('hidden'):
             frontmatter['hidden'] = True
 
-        body = data.get('body', '')
+        # Convert editor image paths back to relative paths for markdown
+        body = data.get('body', '').replace('/blog-images/', './images/')
         content = generate_markdown(frontmatter, body)
 
         if USE_GITHUB_CONTENT:
@@ -1122,10 +1126,39 @@ def upload_image():
         file_path = IMAGES_DIR / filename
         file.save(str(file_path))
 
-    # Return URL for CKEditor (relative path for markdown)
+    # Return URL that works in the editor (served by Flask)
     return jsonify({
-        'url': f'./images/{filename}'
+        'url': f'/blog-images/{filename}'
     })
+
+
+@app.route('/blog-images/<filename>')
+@require_auth
+def serve_blog_image(filename):
+    """Serve blog images so they display in the admin editor"""
+    filename = secure_filename(filename)
+    if USE_GITHUB_CONTENT:
+        github_token = get_github_token()
+        if not github_token:
+            return 'Unauthorized', 401
+        gh_path = f"src/content/blog/images/{filename}"
+        api_url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/contents/{gh_path}"
+        headers = {
+            'Authorization': f'token {github_token}',
+            'Accept': 'application/vnd.github+json'
+        }
+        resp = requests.get(api_url, headers=headers, params={'ref': 'main'})
+        if resp.status_code != 200:
+            return 'Image not found', 404
+        data = resp.json()
+        content = base64.b64decode(data['content'])
+        # Determine content type from extension
+        ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+        content_types = {'jpg': 'image/jpeg', 'jpeg': 'image/jpeg', 'png': 'image/png', 'gif': 'image/gif', 'webp': 'image/webp'}
+        ct = content_types.get(ext, 'application/octet-stream')
+        return Response(content, mimetype=ct)
+    else:
+        return send_from_directory(str(IMAGES_DIR), filename)
 
 
 # =============================================================================
