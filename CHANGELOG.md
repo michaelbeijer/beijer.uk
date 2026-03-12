@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.0] - 2026-03-12
+
+### Fixed
+- Blog post images now stored locally and served correctly (migrated from broken external MediaWiki URLs)
+- Fixed double-encoded UTF-8 (mojibake) in blog post content (smart quotes, pound sign)
+- Images now display correctly in the admin editor (added `/blog-images/` serving route)
+- Image paths automatically converted between editor format and markdown format on load/save
+- Removed duplicate email from services page
+
+### Added
+- `/blog-images/<filename>` Flask route to serve blog images in the admin editor
+- 7 blog images downloaded and stored locally in `src/content/blog/images/`
+- GitHub repo link in admin navigation
+
+### Changed
+- Custom domain set to michaelbeijer.co.uk (migrated from GitHub Pages subdirectory)
+- Favicon updated to MB.ico
+
 ## [1.5.0] - 2026-03-11
 
 ### Added
