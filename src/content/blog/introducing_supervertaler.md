@@ -47,7 +47,7 @@ Supervertaler bridges that gap.
 
 The tool automatically chunks large documents into manageable pieces that fit within AI context windows — but each chunk still has awareness of the full document context.
 
-![Supervertaler screenshot (v2.3.0)](./images/supervertaler-screenshot-v2.3.0.jpg)
+![Supervertaler screenshot (v2.3.0)](/blog-images/supervertaler-screenshot-v2.3.0.jpg)
 
 ### Get started
 

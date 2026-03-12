@@ -45,7 +45,7 @@ CONTENT_DIR = BASE_DIR / 'src' / 'content'
 BLOG_DIR = CONTENT_DIR / 'blog'
 PAGES_DIR = CONTENT_DIR / 'pages'
 HOME_DIR = CONTENT_DIR / 'home'
-IMAGES_DIR = BLOG_DIR / 'images'
+IMAGES_DIR = BASE_DIR / 'public' / 'blog-images'
 NAV_DIR = CONTENT_DIR / 'nav'
 NAV_FILE = NAV_DIR / 'nav.json'
 BLOG_PAGE_DIR = CONTENT_DIR / 'blog-page'
@@ -545,8 +545,6 @@ def edit_post(slug):
 
     # Convert markdown to HTML for CKEditor
     body_html = markdown_to_html(body)
-    # Rewrite image paths so they display in the admin editor
-    body_html = body_html.replace('./images/', '/blog-images/')
 
     post = {
         'slug': slug,
@@ -585,8 +583,7 @@ def api_create_post():
     if data.get('hidden'):
         frontmatter['hidden'] = True
 
-    # Convert editor image paths back to relative paths for markdown
-    body = data.get('body', '').replace('/blog-images/', './images/')
+    body = data.get('body', '')
     content = generate_markdown(frontmatter, body)
 
     if USE_GITHUB_CONTENT:
@@ -661,8 +658,7 @@ def api_post(slug):
         if data.get('hidden'):
             frontmatter['hidden'] = True
 
-        # Convert editor image paths back to relative paths for markdown
-        body = data.get('body', '').replace('/blog-images/', './images/')
+        body = data.get('body', '')
         content = generate_markdown(frontmatter, body)
 
         if USE_GITHUB_CONTENT:
@@ -1096,7 +1092,7 @@ def upload_image():
         if not github_token:
             return jsonify({'error': {'message': 'GitHub authentication required'}}), 401
 
-        github_path = f"src/content/blog/images/{filename}"
+        github_path = f"public/blog-images/{filename}"
         github_api_url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/contents/{github_path}"
         headers = {
             'Authorization': f'token {github_token}',
@@ -1141,7 +1137,7 @@ def serve_blog_image(filename):
         github_token = get_github_token()
         if not github_token:
             return 'Unauthorized', 401
-        gh_path = f"src/content/blog/images/{filename}"
+        gh_path = f"public/blog-images/{filename}"
         api_url = f"https://api.github.com/repos/{GITHUB_REPO_OWNER}/{GITHUB_REPO_NAME}/contents/{gh_path}"
         headers = {
             'Authorization': f'token {github_token}',

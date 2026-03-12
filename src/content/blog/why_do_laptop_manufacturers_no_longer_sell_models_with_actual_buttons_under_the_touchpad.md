@@ -12,7 +12,7 @@ pubDate: '2024-08-12'
 <ul>
 <li>a touchpad with <strong>buttons under it</strong></li>
 <li>properly sized up/down keys in a T-shaped navigation cluster (preferably separated from the rest of the keys, not squished in between them)</li></ul>
-<p><img alt="The devolution of the laptop keyboard" src="./images/the-devolution-of-the-laptop-keyboard.jpg" width="794" height="380"></p>
+<p><img alt="The devolution of the laptop keyboard" src="/blog-images/the-devolution-of-the-laptop-keyboard.jpg" width="794" height="380"></p>
 <p>Why can't they keep at least one model for us professionals?</p>
 <p>I'm currently stuck on my old-ish Dell Precision 7740 because all Dell's newer, so-called "workstation" models now have suboptimal keyboards with messed-up arrow keys and no buttons below the touchpad.</p>
 <p>I've used Dell workstations for around 15 years, but the 7740 will be my last Dell. It looks like I'm going to have to get a ThinkPad since Lenovo is one of the few companies left that still offers semi-decent keyboards.</p>

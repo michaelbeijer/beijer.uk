@@ -6,16 +6,15 @@ const blog = defineCollection({
 	// Note: keeping this Markdown-only for now avoids occasional duplicate-id warnings on Windows.
 	loader: glob({ base: './src/content/blog', pattern: '**/*.md' }),
 	// Type-check frontmatter using a schema
-	schema: ({ image }) =>
-		z.object({
-			title: z.string(),
-			description: z.string(),
-			// Transform string to Date object
-			pubDate: z.coerce.date(),
-			updatedDate: z.coerce.date().optional(),
-			heroImage: image().optional(),
-			hidden: z.boolean().optional(),
-		}),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		// Transform string to Date object
+		pubDate: z.coerce.date(),
+		updatedDate: z.coerce.date().optional(),
+		heroImage: z.string().optional(),
+		hidden: z.boolean().optional(),
+	}),
 });
 
 const pages = defineCollection({
