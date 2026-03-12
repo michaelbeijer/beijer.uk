@@ -25,4 +25,4 @@ pubDate: '2024-08-12'
 <li>https://www.quora.com/Why-have-laptop-designers-moved-away-from-touchpad-buttons</li>
 </ul>
 <hr>
-<p>Originally posted at: <a href="https://www.linkedin.com/feed/update/urn:li:activity:7204962417225687040/">https://michaelbeijer.co.uk/Why_do_laptop_manufacturers_no_longer_sell_models_with_actual_buttons_under_the_touchpad%3F</a></p>
+<p>Originally posted at:&nbsp;<a href="https://www.linkedin.com/feed/update/urn:li:activity:7204962417225687040/">https://www.linkedin.com/feed/update/urn:li:activity:7204962417225687040/</a></p>
