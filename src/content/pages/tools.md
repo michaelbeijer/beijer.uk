@@ -1,6 +1,6 @@
 ---
 title: Tools
-description: Open-source software tools built and maintained by Michael Beijer
+description: Translation tools built by Michael Beijer — including Supervertaler (free CAT tool and Trados plugin), Beijerterm terminology database, and WordCounter.
 ---
 
 <p>I build and maintain tools that support real-world translation workflows. Everything here is either open-source or source-available and built with working translators in mind.</p>
