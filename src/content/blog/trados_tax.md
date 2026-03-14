@@ -10,7 +10,7 @@ pubDate: '2026-03-14'
     <li>termbases that won't accept new entries</li>
     <li>general instability over long sessions</li>
 </ul>
-<p>The community forum history is extensive, and it's hard not to see this as a persistent "tax" on translators' time.</p>
+<p>The community forum history is extensive (see below), and it's hard not to see this as a persistent "tax" on translators' time.</p><p>RWS promised that some actual changes have been made to the underlying code in recent updates (as of March 2026), but I will believe it when I see it.</p>
 <h3>References and links</h3>
 <ul>
     <li>'<a href="https://community.rws.com/product-groups/trados-portfolio/trados-studio/f/multiterm/56115/trados-2022-term-recogntion-is-not-working-with-selected-term-bases">Trados 2022 term recognition is not working with selected term bases</a>' (Philippe Galinier)</li>
@@ -33,5 +33,4 @@ pubDate: '2026-03-14'
     <li>'<a href="https://community.rws.com/product-groups/trados-portfolio/trados-studio/f/multiterm/33443/term-recognition-not-working/">Term Recognition not working</a>' (Patrice Philippi)</li>
     <li>'<a href="https://community.rws.com/product-groups/trados-portfolio/trados-studio/f/multiterm/42898/term-recognition-not-working-in-trados-studio-2022/">Term recognition not working in Trados Studio 2022</a>' (Charlotte Kauczor)</li>
     <li>'<a href="https://community.rws.com/product-groups/trados-portfolio/trados-studio/f/studio/39294/trados-2021-no-results-available-for-more-than-half-of-the-segments-though-they-have-terms-from-my-term-base">TRADOS 2021 "no results available" for more than half of the segments (though they have terms from my Term Base)</a>' (Kathryn Arsenault)</li>
-    <li>'<a href="https://community.rws.com/product-groups/trados-portfolio/trados-studio/f/studio/54662/term-adding-not-working-from-inside-trados-studio-2024---18-0-0-1013">Term adding not working from inside Trados Studio 2024 - 18.0.0.1013</a>' (Pavel Tsvetkov)</li>
-</ul>
+    <li>'<a href="https://community.rws.com/product-groups/trados-portfolio/trados-studio/f/studio/54662/term-adding-not-working-from-inside-trados-studio-2024---18-0-0-1013">Term adding not working from inside Trados Studio 2024 - 18.0.0.1013</a>' (Pavel Tsvetkov)</li></ul><p><br></p>
