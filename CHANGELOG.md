@@ -10,6 +10,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Merged "Save" and "Save & Commit to GitHub" into a single "Save" button that automatically commits to GitHub for existing posts
 
+### Fixed
+- Reduced oversized blockquote text from 1.333em to 1em so quoted text matches body size
+
 ## [1.6.0] - 2026-03-12
 
 ### Fixed
