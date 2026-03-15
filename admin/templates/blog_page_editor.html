@@ -14,7 +14,6 @@
         <div class="editor-actions">
             <button class="btn btn-secondary" onclick="history.back()">Cancel</button>
             <button class="btn btn-primary" id="saveBtn" onclick="saveBlogPage()">Save</button>
-            <button class="btn btn-success" id="commitBtn" onclick="commitToGithub()">Save & Commit to GitHub</button>
         </div>
     </div>
 
@@ -113,37 +112,23 @@ function saveBlogPage() {
     })
     .then(r => r.json())
     .then(result => {
-        if (result.success) showStatus('Blog page saved!');
-        else showStatus('Error: ' + (result.error || 'Unknown error'), true);
-    })
-    .catch(err => showStatus('Error: ' + err.message, true));
-}
-
-function commitToGithub() {
-    const data = getFormData();
-    if (!data.title) { showStatus('Title is required', true); return; }
-
-    fetch('/api/blog-page', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(r => r.json())
-    .then(result => {
-        if (!result.success) throw new Error(result.error || 'Failed to save');
-        return fetch('/api/git/commit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                file_path: 'src/content/blog-page/index.md',
-                commit_message: 'Update blog page settings'
+        if (result.success) {
+            return fetch('/api/git/commit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    file_path: 'src/content/blog-page/index.md',
+                    commit_message: 'Update blog page settings'
+                })
             })
-        });
-    })
-    .then(r => r.json())
-    .then(result => {
-        if (result.success) showStatus(result.message || 'Committed to GitHub!');
-        else showStatus('Error: ' + (result.error || 'Unknown error'), true);
+            .then(r => r.json())
+            .then(commitResult => {
+                if (commitResult.success) showStatus('Saved and committed to GitHub!');
+                else showStatus('Saved, but commit failed: ' + (commitResult.error || 'Unknown error'), true);
+            });
+        } else {
+            showStatus('Error: ' + (result.error || 'Unknown error'), true);
+        }
     })
     .catch(err => showStatus('Error: ' + err.message, true));
 }

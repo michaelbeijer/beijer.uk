@@ -14,7 +14,6 @@
         <div class="editor-actions">
             <button class="btn btn-secondary" onclick="history.back()">Cancel</button>
             <button class="btn btn-primary" id="saveBtn" onclick="saveHome()">Save</button>
-            <button class="btn btn-success" id="commitBtn" onclick="commitToGithub()">Save & Commit to GitHub</button>
         </div>
     </div>
 
@@ -125,49 +124,28 @@ function saveHome() {
     .then(response => response.json())
     .then(result => {
         if (result.success) {
-            showStatus('Homepage saved successfully!');
+            return fetch('/api/git/commit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    file_path: 'src/content/home/index.md',
+                    commit_message: 'Update homepage content'
+                })
+            })
+            .then(response => response.json())
+            .then(commitResult => {
+                if (commitResult.success) {
+                    showStatus('Saved and committed to GitHub!');
+                } else {
+                    showStatus('Saved, but commit failed: ' + (commitResult.error || 'Unknown error'), true);
+                }
+            });
         } else {
             showStatus('Error: ' + (result.error || 'Unknown error'), true);
         }
     })
     .catch(error => {
         showStatus('Error saving homepage: ' + error.message, true);
-    });
-}
-
-function commitToGithub() {
-    const data = getFormData();
-
-    fetch('/api/home', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (!result.success) {
-            throw new Error(result.error || 'Failed to save');
-        }
-
-        return fetch('/api/git/commit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                file_path: 'src/content/home/index.md',
-                commit_message: 'Update homepage content'
-            })
-        });
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            showStatus(result.message || 'Committed to GitHub!');
-        } else {
-            showStatus('Error: ' + (result.error || 'Unknown error'), true);
-        }
-    })
-    .catch(error => {
-        showStatus('Error: ' + error.message, true);
     });
 }
 </script>
