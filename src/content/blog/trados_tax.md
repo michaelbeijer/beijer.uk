@@ -1,5 +1,5 @@
 ---
-title: Trados termbase woes (finally being fixed?)tax
+title: tax
 description: Trados Studio's termbase system has been unreliable for years due to
   fragile MultiTerm interop and the old JET/Access database engine. RWS finally decoupled
   terminology handling in Studio 2024 SR1 – but has it actually fixed things?
