@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file.
 - HTML source code button in blog post editor toolbar (Jodit `source` toggle)
 
 ### Changed
-- Merged "Save" and "Save & Commit to GitHub" into a single "Save" button that automatically commits to GitHub for existing posts
+- Merged "Save" and "Save & Commit to GitHub" into a single "Save" button across all editors (posts, pages, homepage, blog page)
 
 ### Fixed
 - Reduced oversized blockquote text from 1.333em to 1em so quoted text matches body size
