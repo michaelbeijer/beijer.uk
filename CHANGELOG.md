@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.0] - 2026-03-15
+
+### Added
+- HTML source code button in blog post editor toolbar (Jodit `source` toggle)
+
+### Changed
+- Merged "Save" and "Save & Commit to GitHub" into a single "Save" button that automatically commits to GitHub for existing posts
+
 ## [1.6.0] - 2026-03-12
 
 ### Fixed
