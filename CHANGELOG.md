@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.8.0] - 2026-03-16
+
+### Added
+- `robots.txt` — allows all crawlers with a 5-second crawl delay; blocks aggressive SEO scrapers (MJ12bot, AhrefsBot, SemrushBot, DotBot, Barkrowler); removed stale MediaWiki path blocks and AI bot restrictions from the old site
+
+### Removed
+- Old `sitemap.xml` reference (stale file from the previous MediaWiki site)
+
 ## [1.7.0] - 2026-03-15
 
 ### Added

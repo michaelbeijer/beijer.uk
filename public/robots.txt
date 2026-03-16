@@ -1,0 +1,17 @@
+# Small personal site — open to all crawlers.
+# Block aggressive SEO scrapers only.
+
+User-agent: *
+Crawl-delay: 5
+
+# Block aggressive SEO scrapers
+User-agent: MJ12bot
+Disallow: /
+User-agent: AhrefsBot
+Disallow: /
+User-agent: SemrushBot
+Disallow: /
+User-agent: DotBot
+Disallow: /
+User-agent: Barkrowler
+Disallow: /
