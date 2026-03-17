@@ -5,7 +5,7 @@ description: Get in touch with Michael Beijer
 
 <p>Email is the fastest way to reach me.</p>
 <ul>
-<li>Translation:&nbsp;info@michaelbeijer.co.uk</li><li>Supervertaler:&nbsp;support@supervertaler.com&nbsp;</li>
+<li>Translation:&nbsp;info@michaelbeijer.co.uk</li><li>Supervertaler:°support@supervertaler.com&nbsp;</li>
 <li>Phone: <a href="tel:+447475771720">+44 7475 771720</a></li>
 </ul>
 <h2>For a quick quote</h2>
