@@ -65,6 +65,22 @@ The script checks 20 times per second whether `Ctrl` and `Win` are being held do
 
 ![Wispr Flow hotkey settings showing Ctrl+Win as push-to-talk](/blog-images/wispr-flow-hotkeys.png)
 
+## Update: single-key push-to-talk with AutoHotkey
+
+After using `Ctrl+Win` for a couple of hours, I noticed it was already causing RSI in my left hand — holding down two modifier keys repeatedly is not great ergonomically. I wanted to go back to using a single key: the media next key in the top right of my keyboard, which I can press comfortably with my right hand.
+
+The problem is that Wispr Flow won't accept a single key as a push-to-talk shortcut. It insists: "Shortcut must include a modifier key or a valid mouse button."
+
+The workaround is a tiny [AutoHotkey](https://www.autohotkey.com/) v2 script that remaps the media next key to send `Ctrl+Win`:
+
+```ahk
+#Requires AutoHotkey v2.0
+*Media_Next::Send "{LWin down}{LCtrl down}"
+*Media_Next up::Send "{LWin up}{LCtrl up}"
+```
+
+A bit convoluted, but now pressing a single key with my right hand triggers Wispr Flow dictation while simultaneously putting Talon to sleep — and both wake back up when I let go.
+
 ## Why not just use Talon's built-in dictation?
 
 Talon does have a dictation mode, but dedicated dictation tools like Wispr Flow tend to be better at producing natural prose. Wispr Flow uses a large language model to clean up your speech in real time, which makes it particularly good for longer stretches of text. For translation work — where you're dictating in one language while your interface is in another — having a specialised dictation tool is a real advantage.
