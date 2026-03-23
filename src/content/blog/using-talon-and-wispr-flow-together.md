@@ -1,7 +1,9 @@
 ---
-title: "Using Talon Voice and Wispr Flow at the same time"
-description: "How to use Talon voice commands alongside Wispr Flow dictation without them fighting over your microphone."
-pubDate: 2026-03-22
+title: Using Talon Voice and Wispr Flow at the same time
+description: How to use Talon voice commands alongside Wispr Flow dictation without
+  them fighting over your microphone.
+pubDate: Sun, 22 Mar 2026 00:00:00 GMT
+hidden: true
 ---
 
 If you use [Talon Voice](https://talonvoice.com/) for hands-free computer control, you may have wondered whether you can dictate text with another tool at the same time. The answer is yes — with a small trick.
