@@ -33,9 +33,16 @@ function createEditor(elementId, options = {}) {
             'preview', 'side-by-side', 'fullscreen', '|',
             'undo', 'redo'
         ],
-        // Render images in preview
+        // Render Markdown + allow HTML tags (for <img width="...">) in preview
         previewRender: function(plainText) {
-            return this.parent.markdown(plainText);
+            var html = this.parent.markdown(plainText);
+            // EasyMDE's markdown() escapes HTML — restore <img> tags
+            html = html.replace(/&lt;img\s(.*?)&gt;/gi, function(match, attrs) {
+                // Decode the attributes
+                attrs = attrs.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+                return '<img ' + attrs + '>';
+            });
+            return html;
         },
     });
 
