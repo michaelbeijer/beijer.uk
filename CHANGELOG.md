@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.9.0] - 2026-03-23
+
+### Changed
+- **Replaced Jodit editor with EasyMDE** — the admin panel now uses a Markdown editor instead of a WYSIWYG HTML editor. Content is saved as clean Markdown, preventing the HTML corruption issues that broke page rendering.
+- **Converted all content to Markdown** — all pages (about, contact, links, services, testimonials, tools) and blog posts converted from HTML to clean Markdown. Removed Wikipedia inline styles from the links page.
+
+### Added
+- **Image paste and drag-and-drop** in the editor — paste from clipboard (Ctrl+V) or drag an image into the editor; automatically uploaded and inserted
+- **Image width prompt** — after uploading an image, optionally set the width in pixels
+- **Table insertion button** — inserts a Markdown table template
+- **Rehype plugin** — safety net to strip stray `<p>` tags from inside code blocks
+- **Blog post: Using Talon Voice and Wispr Flow at the same time**
+
+### Fixed
+- **Code block formatting** — fenced code blocks now render with proper Shiki syntax highlighting instead of being broken by `<p>` tags
+- **Links page rendering** — removed garbled Wikipedia CSS attributes that broke the page layout
+
+---
+
 ## [1.8.0] - 2026-03-16
 
 ### Added
