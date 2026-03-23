@@ -3,8 +3,9 @@
 {% block title %}Edit Blog Page{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="https://unpkg.com/jodit@4.2.27/es2021/jodit.min.css">
-<script src="https://unpkg.com/jodit@4.2.27/es2021/jodit.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/easymde/dist/easymde.min.css">
+<script src="https://unpkg.com/easymde/dist/easymde.min.js"></script>
+<script src="/static/js/easymde-setup.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -40,50 +41,7 @@
 </div>
 
 <script>
-const editor = Jodit.make('#editor', {
-    height: 500,
-    toolbarButtonSize: 'middle',
-    buttons: [
-        'bold', 'italic', 'underline', '|',
-        'ul', 'ol', '|',
-        'outdent', 'indent', '|',
-        'paragraph', 'font', 'fontsize', '|',
-        'image', 'link', 'table', '|',
-        'align', '|',
-        'undo', 'redo', '|',
-        'hr', 'eraser', 'fullsize', '|', 'source'
-    ],
-    uploader: {
-        url: '/api/upload',
-        format: 'json',
-        filesVariableName: function() { return 'upload'; },
-        isSuccess: function(resp) {
-            return !resp.error;
-        },
-        getMsg: function(resp) {
-            return resp.error ? resp.error.message : 'Upload successful';
-        },
-        process: function(resp) {
-            return {
-                files: [resp.url],
-                path: '',
-                baseurl: '',
-                error: resp.error ? 1 : 0,
-                msg: resp.error ? resp.error.message : ''
-            };
-        },
-        defaultHandlerSuccess: function(data) {
-            if (data.files && data.files.length) {
-                this.s.insertImage(data.files[0]);
-            }
-        }
-    },
-    imageDefaultWidth: 400,
-    resizer: {
-        showSize: true,
-        useAspectRatio: true
-    }
-});
+const editor = createEditor('editor');
 
 function showStatus(message, isError = false) {
     const status = document.getElementById('status');
@@ -97,7 +55,7 @@ function getFormData() {
     return {
         title: document.getElementById('title').value,
         intro: document.getElementById('intro').value,
-        body: editor.value,
+        body: editor.value(),
     };
 }
 
