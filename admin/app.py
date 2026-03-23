@@ -543,9 +543,6 @@ def edit_post(slug):
 
     fm, body = parse_frontmatter(content)
 
-    # Convert markdown to HTML for CKEditor
-    body_html = markdown_to_html(body)
-
     post = {
         'slug': slug,
         'title': fm.get('title', ''),
@@ -553,7 +550,7 @@ def edit_post(slug):
         'pubDate': fm.get('pubDate', ''),
         'heroImage': fm.get('heroImage', ''),
         'hidden': fm.get('hidden', False),
-        'body': body_html
+        'body': body
     }
 
     return render_template('post_editor.html', post=post, is_new=False)
@@ -753,14 +750,11 @@ def edit_page(slug):
 
     fm, body = parse_frontmatter(content)
 
-    # Convert markdown to HTML for CKEditor
-    body_html = markdown_to_html(body)
-
     page = {
         'slug': slug,
         'title': fm.get('title', ''),
         'description': fm.get('description', ''),
-        'body': body_html
+        'body': body
     }
 
     return render_template('page_editor.html', page=page, is_new=False)
@@ -906,14 +900,11 @@ def home():
 
     fm, body = parse_frontmatter(content)
 
-    # Convert markdown to HTML for CKEditor
-    body_html = markdown_to_html(body)
-
     home_data = {
         'title': fm.get('title', ''),
         'tagline': fm.get('tagline', ''),
         'intro': fm.get('intro', ''),
-        'body': body_html
+        'body': body
     }
 
     return render_template('home_editor.html', home=home_data)
