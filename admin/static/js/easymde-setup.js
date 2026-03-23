@@ -15,11 +15,11 @@ function createEditor(elementId, options = {}) {
         toolbar: [
             'bold', 'italic', 'heading', '|',
             'unordered-list', 'ordered-list', '|',
-            'link', 'image',
+            'link',
             {
-                name: 'upload-image',
+                name: 'image',
                 action: function(editor) { triggerImageUpload(editor); },
-                className: 'fa fa-upload',
+                className: 'fa fa-image',
                 title: 'Upload Image',
             },
             {
