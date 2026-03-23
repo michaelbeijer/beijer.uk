@@ -80,10 +80,16 @@ function uploadAndInsertImage(editor, file) {
     .then(r => r.json())
     .then(result => {
         if (result.url) {
-            // Replace the placeholder with the actual image
+            const width = prompt('Image width in pixels (leave empty for full size):', '');
             const doc = cm.getDoc();
             const content = doc.getValue();
-            const newContent = content.replace('![Uploading...]()', `![image](${result.url})`);
+            let imageMarkup;
+            if (width && width.trim()) {
+                imageMarkup = `<img src="${result.url}" alt="image" width="${width.trim()}">`;
+            } else {
+                imageMarkup = `![image](${result.url})`;
+            }
+            const newContent = content.replace('![Uploading...]()', imageMarkup);
             doc.setValue(newContent);
         } else {
             alert('Image upload failed: ' + (result.error || 'Unknown error'));
