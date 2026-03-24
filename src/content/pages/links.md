@@ -35,6 +35,9 @@ A curated list of resources for translators, including payment information, mail
 - [memoQ@groups.io](https://groups.io/g/memoQ) – discussion forum for users of the memoQ CAT software
 - [WPPF@groups.io / World Payment Practices Free](https://groups.io/g/WPPF) – "WPPF is a payment practices list for translators to learn about agencies'/employers'/customers' payment routines. WPPF is only for reports, questions and answers about agencies."
 
+### RWS Community
+- [Post-editing with AI](https://community.rws.com/product-groups/trados-portfolio/trados-studio/f/9-ai-enabled/51443/post-editing-with-ai/)
+
 ### Translator hangouts
 
 - [TheOriginalVertalers@groups.io](https://groups.io/g/TheOriginalVertalers) – "Sinds september 1998 staat een voortdurend groeiende groep vertalers Nederlands in de hele wereld met elkaar in verbinding via de vertalerslijst, opgericht door Laura Blijleven-Bergmans, en sinds 2001 beheerd door Marga Blankestijn en Willem Witteveen. Vertalers van en naar alle talen zijn welkom."
