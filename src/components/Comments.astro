@@ -96,31 +96,47 @@ const host = 'https://cusdis.com';
     }
     styleCusdisIframe();
 
-    // Force iframe height — Cusdis dynamically sets a small height via JS,
-    // so we override it repeatedly until it sticks
-    function forceIframeHeight() {
+    // Auto-resize iframe to fit content — eliminates scrollbar entirely.
+    // Cusdis sends postMessage with the content height; we listen for it
+    // and also poll as a fallback, enforcing a minimum height for the empty form.
+    const MIN_HEIGHT = 500;
+
+    function autoResizeIframe() {
       const iframe = document.querySelector('#cusdis_thread iframe');
-      if (iframe) {
-        iframe.style.setProperty('height', '600px', 'important');
-        iframe.removeAttribute('height');
+      if (!iframe) return;
+      try {
+        const body = iframe.contentDocument?.body;
+        if (body) {
+          const contentHeight = Math.max(body.scrollHeight, MIN_HEIGHT);
+          iframe.style.setProperty('height', contentHeight + 'px', 'important');
+        }
+      } catch(e) {
+        // Cross-origin — fall back to min-height only
+        iframe.style.setProperty('min-height', MIN_HEIGHT + 'px', 'important');
       }
     }
-    // Run on an interval briefly to catch Cusdis's dynamic resizing
-    const heightInterval = setInterval(() => {
-      forceIframeHeight();
-    }, 200);
-    // Stop after 5 seconds
-    setTimeout(() => clearInterval(heightInterval), 5000);
-    // Also watch for attribute changes on the iframe
-    const iframeObserver = new MutationObserver(() => forceIframeHeight());
+
+    // Listen for Cusdis resize messages
+    window.addEventListener('message', (e) => {
+      if (e.data?.from === 'cusdis') {
+        const iframe = document.querySelector('#cusdis_thread iframe');
+        if (iframe) {
+          const height = Math.max(parseInt(e.data.height) || MIN_HEIGHT, MIN_HEIGHT);
+          iframe.style.setProperty('height', height + 'px', 'important');
+        }
+      }
+    });
+
+    // Poll to catch content changes (new comments, replies expanding, etc.)
     const checkIframe = setInterval(() => {
       const iframe = document.querySelector('#cusdis_thread iframe');
       if (iframe) {
-        iframeObserver.observe(iframe, { attributes: true, attributeFilter: ['style', 'height'] });
-        forceIframeHeight();
-        clearInterval(checkIframe);
+        autoResizeIframe();
+        // Keep polling slowly to catch new comments/replies
       }
-    }, 100);
+    }, 500);
+    // Stop polling after 30s, by then Cusdis messages handle it
+    setTimeout(() => clearInterval(checkIframe), 30000);
   })();
 </script>
 
@@ -136,8 +152,9 @@ const host = 'https://cusdis.com';
     color: rgb(var(--text));
   }
   #cusdis_thread iframe {
-    height: 600px !important;
+    min-height: 500px;
     max-height: none !important;
-    overflow: visible !important;
+    overflow: hidden !important;
+    border: none !important;
   }
 </style>
