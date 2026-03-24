@@ -95,6 +95,32 @@ const host = 'https://cusdis.com';
       });
     }
     styleCusdisIframe();
+
+    // Force iframe height — Cusdis dynamically sets a small height via JS,
+    // so we override it repeatedly until it sticks
+    function forceIframeHeight() {
+      const iframe = document.querySelector('#cusdis_thread iframe');
+      if (iframe) {
+        iframe.style.setProperty('height', '600px', 'important');
+        iframe.removeAttribute('height');
+      }
+    }
+    // Run on an interval briefly to catch Cusdis's dynamic resizing
+    const heightInterval = setInterval(() => {
+      forceIframeHeight();
+    }, 200);
+    // Stop after 5 seconds
+    setTimeout(() => clearInterval(heightInterval), 5000);
+    // Also watch for attribute changes on the iframe
+    const iframeObserver = new MutationObserver(() => forceIframeHeight());
+    const checkIframe = setInterval(() => {
+      const iframe = document.querySelector('#cusdis_thread iframe');
+      if (iframe) {
+        iframeObserver.observe(iframe, { attributes: true, attributeFilter: ['style', 'height'] });
+        forceIframeHeight();
+        clearInterval(checkIframe);
+      }
+    }, 100);
   })();
 </script>
 
@@ -110,6 +136,8 @@ const host = 'https://cusdis.com';
     color: rgb(var(--text));
   }
   #cusdis_thread iframe {
-    min-height: 500px;
+    height: 600px !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
 </style>
