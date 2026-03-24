@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import BackToTop from '../components/BackToTop.astro';
 import BaseHead from '../components/BaseHead.astro';
+import Comments from '../components/Comments.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
@@ -9,6 +10,8 @@ import Header from '../components/Header.astro';
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const pageUrl = Astro.url.href;
+const pageId = Astro.url.pathname;
 ---
 
 <html lang="en">
@@ -78,6 +81,11 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 						<hr />
 					</div>
 					<slot />
+					<Comments
+						pageId={pageId}
+						pageUrl={pageUrl}
+						pageTitle={title}
+					/>
 				</div>
 			</article>
 		</main>

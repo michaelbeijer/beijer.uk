@@ -1,0 +1,112 @@
+---
+interface Props {
+  pageId: string;
+  pageUrl: string;
+  pageTitle: string;
+}
+
+const { pageId, pageUrl, pageTitle } = Astro.props;
+
+const appId = '05dfffb2-372d-4ce8-a045-8d286fe42a9f';
+const host = 'https://cusdis.com';
+---
+
+<section class="comments-section">
+  <h2>Comments</h2>
+  <div
+    id="cusdis_thread"
+    data-host={host}
+    data-app-id={appId}
+    data-page-id={pageId}
+    data-page-url={pageUrl}
+    data-page-title={pageTitle}
+    data-theme="light"
+  ></div>
+</section>
+
+<script is:inline>
+  // Load Cusdis widget
+  (function() {
+    const script = document.createElement('script');
+    script.src = 'https://cusdis.com/js/cusdis.es.js';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    // Inject custom styles into the Cusdis iframe to match site design
+    function styleCusdisIframe() {
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (node.tagName === 'IFRAME' && node.id === 'cusdis_iframe') {
+              node.addEventListener('load', () => {
+                try {
+                  const iframeDoc = node.contentDocument || node.contentWindow.document;
+                  const style = iframeDoc.createElement('style');
+                  style.textContent = `
+                    * {
+                      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+                    }
+                    button[type="submit"] {
+                      background-color: rgb(17, 17, 17) !important;
+                      color: white !important;
+                      border: none !important;
+                      border-radius: 6px !important;
+                      padding: 0.6em 1.4em !important;
+                      font-size: 14px !important;
+                      cursor: pointer !important;
+                      transition: opacity 0.2s !important;
+                    }
+                    button[type="submit"]:hover {
+                      opacity: 0.8 !important;
+                    }
+                    input, textarea {
+                      border: 1px solid rgb(225, 225, 225) !important;
+                      border-radius: 6px !important;
+                      padding: 0.5em 0.75em !important;
+                      font-size: 15px !important;
+                      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+                      background: white !important;
+                      transition: border-color 0.2s !important;
+                    }
+                    input:focus, textarea:focus {
+                      outline: none !important;
+                      border-color: rgb(51, 102, 204) !important;
+                    }
+                    textarea {
+                      min-height: 100px !important;
+                      resize: vertical !important;
+                    }
+                  `;
+                  iframeDoc.head.appendChild(style);
+                } catch(e) {
+                  // Cross-origin restriction - styling won't apply
+                }
+              });
+              observer.disconnect();
+              return;
+            }
+          }
+        }
+      });
+      observer.observe(document.getElementById('cusdis_thread'), {
+        childList: true,
+        subtree: true
+      });
+    }
+    styleCusdisIframe();
+  })();
+</script>
+
+<style>
+  .comments-section {
+    margin-top: 3em;
+    padding-top: 2em;
+    border-top: 1px solid rgb(var(--border));
+  }
+  .comments-section h2 {
+    font-size: 1.4em;
+    margin-bottom: 1em;
+    color: rgb(var(--text));
+  }
+</style>

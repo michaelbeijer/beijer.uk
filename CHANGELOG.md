@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.10.0] - 2026-03-24
+
+### Added
+- **Comments section on blog posts** — integrated Cusdis, a lightweight, privacy-friendly commenting system. Visitors can leave comments with a nickname and optional email; all comments require manual approval before appearing on the site.
+- New `Comments.astro` component with custom CSS injection to match site styling
+- Comments moderation via Cusdis dashboard (cusdis.com/dashboard) with email quick-approve
+
+---
+
 ## [1.9.0] - 2026-03-23
 
 ### Changed
