@@ -15,7 +15,6 @@ I build and maintain tools that support real-world translation workflows. Everyt
 ![Supervertaler Workbench – translation grid with TermLens, TM matches, and AI translation](/blog-images/supervertaler-workbench.png)
 
 [Supervertaler Workbench](https://supervertaler.com/workbench/) is a free, open-source, cross-platform CAT tool (Windows, Mac, Linux) with multi-LLM translation, translation memory, glossary management, quality benchmarking, and concordance search. Includes two system-wide utilities: **QuickLauncher** (right-click AI prompt launcher) and **QuickTrans** (instant multi-engine translation popup). Supports import from memoQ, Trados (SDLXLIFF/SDLPPX), CafeTran, Phrase, and Déjà Vu.
-
 - [Product page](https://supervertaler.com/workbench/)
 - [Source on GitHub](https://github.com/Supervertaler/Supervertaler-Workbench)
 - [PyPI](https://pypi.org/project/Supervertaler/)
@@ -25,7 +24,6 @@ I build and maintain tools that support real-world translation workflows. Everyt
 ![Supervertaler for Trados – TermLens inline terminology, Term Picker, and Supervertaler Assistant in Trados Studio](/blog-images/supervertaler-for-trados.png)
 
 [Supervertaler for Trados](https://supervertaler.com/trados/) is a Trados Studio plugin bringing inline contextual terminology display (TermLens), an AI chat assistant, batch translation, and a prompt library directly into Trados Studio. Two paid tiers: TermLens (€10/month) for terminology features, and TermLens + Supervertaler Assistant (€15/month) adding AI chat, batch translate, and prompt library. 14-day free trial, no credit card required.
-
 - [Product page](https://supervertaler.com/trados/)
 - [RWS App Store](https://appstore.rws.com/plugin/432)
 - [Help documentation](https://supervertaler.gitbook.io/trados)
