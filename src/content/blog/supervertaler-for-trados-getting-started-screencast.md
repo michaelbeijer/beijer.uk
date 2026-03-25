@@ -21,6 +21,6 @@ If you've been curious about Supervertaler or just want to see it in action befo
 
 ## Links
 
-- [Supervertaler for Trados](https://supervertaler.com/trados) — product page
-- [RWS App Store](https://appstore.rws.com/plugin/432) — install directly from the App Store
-- [Help documentation](https://supervertaler.gitbook.io/trados) — full user guide
+- [Supervertaler for Trados](https://supervertaler.com/trados) – product page
+- [RWS App Store](https://appstore.rws.com/plugin/432) – install directly from the App Store
+- [Help documentation](https://supervertaler.gitbook.io/trados) – full user guide
