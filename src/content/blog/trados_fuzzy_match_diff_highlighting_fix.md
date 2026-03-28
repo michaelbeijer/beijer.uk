@@ -6,14 +6,16 @@ pubDate: 2026-03-28
 
 If you use Trados Studio 2024 and have noticed that the coloured diff highlighting in the Translation Results pane has stopped working for fuzzy matches – or worse, that text from the TM source and your active segment is being garbled and concatenated together (think "ThisThe decision" instead of showing the two versions cleanly) – you're not alone. This is a recurring bug that has been reported by multiple users on the RWS Community forum, and it has a reliable fix.
 
-<!-- SCREENSHOT PLACEHOLDER 1: Screenshot showing the broken Translation Results pane – garbled or missing diff highlighting -->
+Here's what the Translation Results pane looks like when it's working correctly – additions are shown in green, deletions in red with strikethrough:
+
+![Trados Studio Translation Results pane with correct fuzzy match diff highlighting – additions in green, deletions in red strikethrough](/blog-images/trados-fuzzy-match-diff-highlighting-working.png)
 
 ## What the bug looks like
 
-When the bug is present, the Translation Results pane either:
+When the bug is active, all of that diff highlighting disappears. The Translation Results pane either:
 
-- Shows no coloured highlighting at all for differences between the TM match and your active segment, or
-- Concatenates/overlays the TM source text with your current segment text, producing garbled output like "ThisThe decision"
+- Shows no coloured highlighting at all – the differences between the TM match and your active segment are simply not marked, or
+- Concatenates/overlays the TM source text with your current segment text, producing garbled output where the old and new text run together (think "ThisThe decision" instead of showing the two versions cleanly)
 
 The underlying TM data is fine – if you double-click a match to open the Edit Translation Unit dialog, the correct text is shown. It's purely a rendering glitch in the preview pane.
 
@@ -37,8 +39,6 @@ You can get there quickly by pressing `Win + R` and typing `%appdata%\Trados\Tra
 **Step 3 – Start Trados Studio.**
 
 It will prompt you to select a user profile. Choose the default profile for now and let it finish loading. The diff highlighting should be working again at this point.
-
-<!-- SCREENSHOT PLACEHOLDER 2: Screenshot showing the Translation Results pane working correctly again, with clean diff highlighting -->
 
 **Step 4 – Restore your user profile.**
 
