@@ -50,6 +50,16 @@ Go to **File > Setup > Manage User Profiles > Change user profile**, then:
 
 Your plugins and customisations will be restored.
 
+## You may need to reinstall some plugins
+
+Trados Studio stores plugins in three locations, and only one of them is affected by this fix:
+
+- **`%AppData%\Trados\Trados Studio\18\Plugins\`** – this folder sits inside the `18\` directory you just deleted, so any plugins installed here **will need to be reinstalled**. (The `Unpacked\` subfolder regenerates automatically from the packages, so you only need to worry about the `.sdlplugin` files in the `Plugins\Packages\` folder.)
+- **`%LocalAppData%\Trados\Trados Studio\18\Plugins\`** – not affected. Plugins installed here (including Supervertaler for Trados) will still be there.
+- **`%ProgramData%\Trados\Trados Studio\18\Plugins\`** – not affected. System-wide plugins installed here will still be there.
+
+If a plugin you rely on has disappeared after the fix, check which location it was originally installed to – if it was the Roaming folder, you'll need to reinstall it from the `.sdlplugin` file or the RWS AppStore.
+
 ## A word of warning
 
 This fix works, but it's not permanent – at least not for me. The bug has come back on multiple occasions, which suggests it's a deeper issue with how Trados Studio manages its settings state rather than a simple one-off corruption. Each time it has reappeared, the same steps above have resolved it. I now keep my `.sdlprofile` backup in a known location and the fix takes about two minutes once you know the drill.
