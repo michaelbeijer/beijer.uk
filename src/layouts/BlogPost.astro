@@ -11,7 +11,6 @@ type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 const pageUrl = Astro.url.href;
-const pageId = Astro.url.pathname;
 ---
 
 <html lang="en">
@@ -82,7 +81,6 @@ const pageId = Astro.url.pathname;
 					</div>
 					<slot />
 					<Comments
-						pageId={pageId}
 						pageUrl={pageUrl}
 						pageTitle={title}
 					/>

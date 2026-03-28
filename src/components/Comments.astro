@@ -1,142 +1,37 @@
 ---
 interface Props {
-  pageId: string;
   pageUrl: string;
   pageTitle: string;
 }
 
-const { pageId, pageUrl, pageTitle } = Astro.props;
+const { pageUrl, pageTitle } = Astro.props;
 
-const appId = '05dfffb2-372d-4ce8-a045-8d286fe42a9f';
-const host = 'https://cusdis.com';
+const remark42Host = 'https://comments.michaelbeijer.co.uk';
+const siteId = 'michaelbeijer';
 ---
 
 <section class="comments-section">
   <h2>Comments</h2>
-  <div
-    id="cusdis_thread"
-    data-host={host}
-    data-app-id={appId}
-    data-page-id={pageId}
-    data-page-url={pageUrl}
-    data-page-title={pageTitle}
-    data-theme="light"
-  ></div>
+  <div id="remark42"></div>
 </section>
 
-<script is:inline>
-  // Load Cusdis widget
+<script is:inline define:vars={{ remark42Host, siteId, pageUrl, pageTitle }}>
+  var remark_config = {
+    host: remark42Host,
+    site_id: siteId,
+    url: pageUrl,
+    theme: 'light',
+    page_title: pageTitle,
+    show_email_subscription: true,
+    simple_view: false,
+    no_footer: false
+  };
+
   (function() {
-    const script = document.createElement('script');
-    script.src = 'https://cusdis.com/js/cusdis.es.js';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-
-    // Inject custom styles into the Cusdis iframe to match site design
-    function styleCusdisIframe() {
-      const observer = new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-          for (const node of mutation.addedNodes) {
-            if (node.tagName === 'IFRAME' && node.id === 'cusdis_iframe') {
-              node.addEventListener('load', () => {
-                try {
-                  const iframeDoc = node.contentDocument || node.contentWindow.document;
-                  const style = iframeDoc.createElement('style');
-                  style.textContent = `
-                    * {
-                      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-                    }
-                    button[type="submit"] {
-                      background-color: rgb(17, 17, 17) !important;
-                      color: white !important;
-                      border: none !important;
-                      border-radius: 6px !important;
-                      padding: 0.6em 1.4em !important;
-                      font-size: 14px !important;
-                      cursor: pointer !important;
-                      transition: opacity 0.2s !important;
-                    }
-                    button[type="submit"]:hover {
-                      opacity: 0.8 !important;
-                    }
-                    input, textarea {
-                      border: 1px solid rgb(225, 225, 225) !important;
-                      border-radius: 6px !important;
-                      padding: 0.5em 0.75em !important;
-                      font-size: 15px !important;
-                      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
-                      background: white !important;
-                      transition: border-color 0.2s !important;
-                    }
-                    input:focus, textarea:focus {
-                      outline: none !important;
-                      border-color: rgb(51, 102, 204) !important;
-                    }
-                    textarea {
-                      min-height: 180px !important;
-                      resize: vertical !important;
-                    }
-                  `;
-                  iframeDoc.head.appendChild(style);
-                } catch(e) {
-                  // Cross-origin restriction - styling won't apply
-                }
-              });
-              observer.disconnect();
-              return;
-            }
-          }
-        }
-      });
-      observer.observe(document.getElementById('cusdis_thread'), {
-        childList: true,
-        subtree: true
-      });
-    }
-    styleCusdisIframe();
-
-    // Auto-resize iframe to fit content — eliminates scrollbar entirely.
-    // Cusdis sends postMessage with the content height; we listen for it
-    // and also poll as a fallback, enforcing a minimum height for the empty form.
-    const MIN_HEIGHT = 500;
-
-    function autoResizeIframe() {
-      const iframe = document.querySelector('#cusdis_thread iframe');
-      if (!iframe) return;
-      try {
-        const body = iframe.contentDocument?.body;
-        if (body) {
-          const contentHeight = Math.max(body.scrollHeight, MIN_HEIGHT);
-          iframe.style.setProperty('height', contentHeight + 'px', 'important');
-        }
-      } catch(e) {
-        // Cross-origin — fall back to min-height only
-        iframe.style.setProperty('min-height', MIN_HEIGHT + 'px', 'important');
-      }
-    }
-
-    // Listen for Cusdis resize messages
-    window.addEventListener('message', (e) => {
-      if (e.data?.from === 'cusdis') {
-        const iframe = document.querySelector('#cusdis_thread iframe');
-        if (iframe) {
-          const height = Math.max(parseInt(e.data.height) || MIN_HEIGHT, MIN_HEIGHT);
-          iframe.style.setProperty('height', height + 'px', 'important');
-        }
-      }
-    });
-
-    // Poll to catch content changes (new comments, replies expanding, etc.)
-    const checkIframe = setInterval(() => {
-      const iframe = document.querySelector('#cusdis_thread iframe');
-      if (iframe) {
-        autoResizeIframe();
-        // Keep polling slowly to catch new comments/replies
-      }
-    }, 500);
-    // Stop polling after 30s, by then Cusdis messages handle it
-    setTimeout(() => clearInterval(checkIframe), 30000);
+    var d = document, s = d.createElement('script');
+    s.src = remark42Host + '/web/embed.js';
+    s.defer = true;
+    (d.head || d.body).appendChild(s);
   })();
 </script>
 
@@ -150,11 +45,5 @@ const host = 'https://cusdis.com';
     font-size: 1.4em;
     margin-bottom: 1em;
     color: rgb(var(--text));
-  }
-  #cusdis_thread iframe {
-    min-height: 500px;
-    max-height: none !important;
-    overflow: hidden !important;
-    border: none !important;
   }
 </style>
