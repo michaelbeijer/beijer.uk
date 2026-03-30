@@ -26,26 +26,26 @@ The symbols are different. The underlying data is not.
 If you open the exported SDLXLIFF file in a text editor, both the source and target segments contain identical literal newlines. Here's a simplified excerpt – notice how the line breaks in the source and target are in exactly the same positions:
 
 **Source:**
-```xml
-<source>For all relevant sites, the risk analysis comprises:
-- Identification of risks
-- Probability of occurrence and detection
-- Consequences/categorisation
-- evaluation on the basis of set and adequate criteria
+```
+<source>For all relevant sites, the risk analysis comprises:↵
+- Identification of risks↵
+- Probability of occurrence and detection↵
+- Consequences/categorisation↵
+- evaluation on the basis of set and adequate criteria↵
 - Prioritisation</source>
 ```
 
 **Target:**
-```xml
-<target>Voor alle relevante locaties omvat de risicoanalyse:
-- Identificatie van risico's
-- Kans op voorkomen en detectie
-- Gevolgen/categorisering
-- beoordeling op basis van vastgestelde en adequate criteria
+```
+<target>Voor alle relevante locaties omvat de risicoanalyse:↵
+- Identificatie van risico's↵
+- Kans op voorkomen en detectie↵
+- Gevolgen/categorisering↵
+- beoordeling op basis van vastgestelde en adequate criteria↵
 - Prioritering</target>
 ```
 
-Same structure, same newlines, same positions. The SDLXLIFF data is identical – only Trados's editor renders the symbols differently.
+The `↵` markers show where the literal newline characters are – and they're in exactly the same positions in both source and target. The SDLXLIFF data is identical; only Trados's editor renders the symbols differently.
 
 And if you generate the target Excel file (**Batch Tasks > Generate Target Translation**), the line breaks in the output are correct:
 
