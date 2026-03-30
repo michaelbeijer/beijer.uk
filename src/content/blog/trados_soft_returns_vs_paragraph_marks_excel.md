@@ -2,9 +2,14 @@
 title: "Trados Studio: soft returns (↵) vs paragraph marks (¶) in Excel segments – a display quirk, not a bug"
 description: "If Trados Studio shows paragraph marks (¶) instead of soft returns (↵) in the target of translated Excel segments, don't panic – the underlying data and the generated target file are correct. Here's what's actually happening."
 pubDate: 2026-03-30
+heroImage: "/blog-images/trados-soft-return-vs-paragraph-mark-excel.png"
 ---
 
 If you translate Excel files in Trados Studio and have noticed that the **source** segment shows soft return arrows (↵) at line breaks, but the **target** shows paragraph marks (¶) for the exact same line breaks – you might reasonably assume something has gone wrong with your translation. I certainly did.
+
+Here's what it looks like – the source on the left has ↵ symbols, the target on the right has ¶ symbols:
+
+![Trados Studio editor showing a translated Excel segment – source has soft return arrows (↵) while target has paragraph marks (¶) for the same line breaks](/blog-images/trados-soft-return-vs-paragraph-mark-excel.png)
 
 This happens when the target text is written programmatically – whether by a plugin, a batch task, or the Trados API – rather than being typed manually in the editor. I spent an embarrassing amount of time debugging this in [Supervertaler for Trados](https://supervertaler.com/trados.html) before realising it's not actually a problem.
 
@@ -18,22 +23,33 @@ The symbols are different. The underlying data is not.
 
 ## Proof: the SDLXLIFF and the exported file are identical
 
-If you open the SDLXLIFF file in a text editor, you can see that both the source and target contain identical literal newlines:
+If you open the exported SDLXLIFF file in a text editor, both the source and target segments contain identical literal newlines. Here's a simplified excerpt – notice how the line breaks in the source and target are in exactly the same positions:
 
+**Source:**
 ```xml
 <source>For all relevant sites, the risk analysis comprises:
 - Identification of risks
 - Probability of occurrence and detection
-- Consequences/categorisation</source>
+- Consequences/categorisation
+- evaluation on the basis of set and adequate criteria
+- Prioritisation</source>
+```
 
-<!-- Target has the exact same literal newlines: -->
+**Target:**
+```xml
 <target>Voor alle relevante locaties omvat de risicoanalyse:
 - Identificatie van risico's
 - Kans op voorkomen en detectie
-- Gevolgen/categorisering</target>
+- Gevolgen/categorisering
+- beoordeling op basis van vastgestelde en adequate criteria
+- Prioritering</target>
 ```
 
-And if you generate the target Excel file (**Batch Tasks > Generate Target Translation**), the line breaks in the output are correct – proper in-cell line breaks, exactly matching the source layout.
+Same structure, same newlines, same positions. The SDLXLIFF data is identical – only Trados's editor renders the symbols differently.
+
+And if you generate the target Excel file (**Batch Tasks > Generate Target Translation**), the line breaks in the output are correct:
+
+![Generated target Excel file showing correct in-cell line breaks](/blog-images/trados-excel-target-correct-line-breaks.png)
 
 You can also verify this by selecting the source and target text in Trados (right-click > Select All, then Copy) and pasting both into a text editor – they'll be identical.
 
