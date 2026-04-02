@@ -31,7 +31,7 @@ const issoHost = 'https://comments.michaelbeijer.co.uk';
   // so we dynamically create and insert the Isso embed script with the correct attributes.
   (function() {
     var d = document, s = d.createElement('script');
-    s.src = issoHost + '/js/embed.js';
+    s.src = issoHost + '/js/embed.min.js';
     s.defer = true;
     s.setAttribute('data-isso', issoHost + '/');
     s.setAttribute('data-isso-css', 'true');

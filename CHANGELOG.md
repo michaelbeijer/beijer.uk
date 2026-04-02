@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.12.0] - 2026-03-28
+
+### Changed
+- **Replaced Cusdis with self-hosted Remark42** – the comment system on blog posts now uses Remark42, hosted at comments.michaelbeijer.co.uk on the Hetzner VPS. Supports Google sign-in (with profile pictures) and anonymous commenting. Cusdis was removed because it stopped loading reliably.
+
+### Added
+- **Blog post: Trados fuzzy match diff highlighting fix** – with screenshot and plugin reinstallation note
+- **Blog post: Supervertaler for Trados Getting Started screencast**
+
+### Fixed
+- Remark42 `remark_config` scoping – made the config object global so the embed script can find it (Astro's `define:vars` wraps scripts in an IIFE)
+
+---
+
+## [1.11.0] - 2026-03-25
+
+### Changed
+- **Tools page refresh** – updated screenshots, renamed QuickMenu to QuickLauncher, added screencast link
+- Replaced em dashes with en dashes in blog post content
+- Updated Useful links page
+
+---
+
 ## [1.10.0] - 2026-03-24
 
 ### Added
