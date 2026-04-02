@@ -1,8 +1,10 @@
 ---
-title: "Trados Studio: soft returns (↵) vs paragraph marks (¶) in Excel segments – a display quirk, not a bug"
-description: "If Trados Studio shows paragraph marks (¶) instead of soft returns (↵) in the target of translated Excel segments, don't panic – the underlying data and the generated target file are correct. Here's what's actually happening."
-pubDate: 2026-03-30
-heroImage: "/blog-images/trados-soft-return-vs-paragraph-mark-excel.png"
+title: 'Trados Studio: soft returns (↵) vs paragraph marks (¶) in Excel segments –
+  a display quirk, not a bug'
+description: If Trados Studio shows paragraph marks (¶) instead of soft returns (↵)
+  in the target of translated Excel segments, don't panic – the underlying data and
+  the generated target file are correct. Here's what's actually happening.
+pubDate: '2026-03-30'
 ---
 
 If you translate Excel files in Trados Studio and have noticed that the **source** segment shows soft return arrows (↵) at line breaks, but the **target** shows paragraph marks (¶) for the exact same line breaks – you might reasonably assume something has gone wrong with your translation. I certainly did.
