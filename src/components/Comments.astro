@@ -41,6 +41,15 @@ const issoHost = 'https://comments.michaelbeijer.co.uk';
     s.setAttribute('data-isso-max-comments-top', 'inf');
     s.setAttribute('data-isso-max-comments-nested', '5');
     (d.head || d.body).appendChild(s);
+
+    // Fix "E-mail" → "Email" once Isso renders
+    var mo = new MutationObserver(function() {
+      d.querySelectorAll('#isso-thread label').forEach(function(l) {
+        if (l.textContent.trim() === 'E-mail (optional)') l.textContent = 'Email (optional)';
+      });
+    });
+    var target = d.getElementById('isso-thread');
+    if (target) mo.observe(target, { childList: true, subtree: true });
   })();
 </script>
 
