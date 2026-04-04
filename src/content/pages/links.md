@@ -90,7 +90,8 @@ This page contains a curated list of resources for translators, including paymen
 
 ### Translators
 
-#### Mostly working between Dutch and other languages
+
+##### Mostly working between Dutch and other languages
 
 * Els Hoefman (English to Dutch/Flemish translator, business world and IT) (https://www.indutch.com/)
 * Erwin van Wouw ([Black Kite Translations](https://www.blackkitetranslations.com/profile/): English to Dutch translations)
@@ -104,7 +105,7 @@ This page contains a curated list of resources for translators, including paymen
 * Hans van den Broek (†): https://cafetran4mac.blogspot.com/2015/04/the-big-mama-approach.html
 * Steven Segaert (Creative, legal and marketing translations, from Dutch/Flemish into English): https://www.confer.eu/
 
-#### Working in other languages
+##### Working in other languages
 
 * Charlie Bavington’s blog: [A pragmatic eye](https://cbavington.com/blog/)
 * Nikki Graham’s [Useful Links & Resources for Translators & Interpreters](https://nikkigrahamtranix.com/useful-links/) (Spanish to English translator/editor)
