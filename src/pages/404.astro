@@ -1,0 +1,64 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title="Page moved" description="This content has moved to beijerterm.com" />
+		<script is:inline>
+			// Known paths on this site — don't redirect these
+			const localPaths = ['/', '/about/', '/blog/', '/contact/', '/links/', '/patents/', '/services/', '/testimonials/', '/tools/'];
+			const path = window.location.pathname;
+			const isLocal = localPaths.some(p => path === p) || path.startsWith('/blog/');
+
+			if (!isLocal) {
+				window.location.replace('https://beijerterm.com' + path);
+			}
+		</script>
+		<style>
+			.prose {
+				width: 760px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto;
+				padding: 3.25em 1em;
+			}
+			.not-found {
+				text-align: center;
+				padding: 4em 0;
+			}
+			.not-found h1 {
+				font-size: 2em;
+				margin-bottom: 0.5em;
+			}
+			.redirect-notice {
+				background: #f0f4ff;
+				border: 1px solid #c0d0f0;
+				border-radius: 8px;
+				padding: 1.5em;
+				margin: 2em auto;
+				max-width: 500px;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main class="prose">
+			<div class="not-found">
+				<h1>Page not found</h1>
+				<div class="redirect-notice">
+					<p>Looking for terminology content? It has moved to
+						<a href="https://beijerterm.com">beijerterm.com</a>.</p>
+					<p>You should be redirected automatically. If not,
+						<a id="redirect-link" href="https://beijerterm.com">click here</a>.</p>
+				</div>
+			</div>
+		</main>
+		<Footer />
+		<script is:inline>
+			const link = document.getElementById('redirect-link');
+			if (link) link.href = 'https://beijerterm.com' + window.location.pathname;
+		</script>
+	</body>
+</html>
