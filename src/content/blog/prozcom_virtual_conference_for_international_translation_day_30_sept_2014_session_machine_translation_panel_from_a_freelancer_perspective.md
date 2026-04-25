@@ -1,6 +1,6 @@
 ---
-title: 'ProZ.com virtual conference for International Translation Day (30 Sept 2014),
-  session: ‘Machine translation panel from a freelancer perspective’.'
+title: 'ProZ.com virtual conference for International Translation Day, session: ‘Machine
+  translation panel from a freelancer perspective’.'
 description: ''
 pubDate: '2014-09-30'
 ---
