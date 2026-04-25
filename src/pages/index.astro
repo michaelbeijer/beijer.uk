@@ -25,13 +25,25 @@ const { Content } = await render(home);
 	<body>
 		<Header />
 		<main>
-			<h1>{home.data.title}</h1>
-			<p class="lead">{home.data.tagline}</p>
-			<p class="intro" set:html={home.data.intro.replace(/\n/g, '<br>')} />
-			<div class="cta">
-				<a class="button" href={base + 'contact'}>Email me</a>
-				<a class="button secondary" href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">ProZ feedback</a>
-			</div>
+			<section class="hero">
+				<div class="hero-text">
+					<h1>{home.data.title}</h1>
+					<p class="lead">{home.data.tagline}</p>
+					<p class="intro" set:html={home.data.intro.replace(/\n/g, '<br>')} />
+					<div class="cta">
+						<a class="button" href={base + 'contact'}>Email me</a>
+						<a class="button secondary" href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">ProZ feedback</a>
+					</div>
+				</div>
+				<img
+					class="hero-photo"
+					src={base + 'images/michael-beijer.jpg'}
+					alt="Michael Beijer"
+					width="600"
+					height="643"
+					loading="eager"
+				/>
+			</section>
 			<div class="home-content">
 				<Content />
 			</div>
@@ -42,6 +54,32 @@ const { Content } = await render(home);
 </html>
 
 <style>
+	.hero {
+		display: flex;
+		gap: 2rem;
+		align-items: flex-start;
+		margin-bottom: 1em;
+	}
+	.hero-text {
+		flex: 1;
+		min-width: 0;
+	}
+	.hero-photo {
+		width: 220px;
+		height: auto;
+		border-radius: 8px;
+		flex-shrink: 0;
+	}
+	@media (max-width: 600px) {
+		.hero {
+			flex-direction: column-reverse;
+			align-items: center;
+			gap: 1.5rem;
+		}
+		.hero-photo {
+			width: 180px;
+		}
+	}
 	.lead {
 		font-size: 1.1em;
 		color: rgb(var(--muted));

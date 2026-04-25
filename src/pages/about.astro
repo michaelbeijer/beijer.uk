@@ -12,3 +12,21 @@ const { Content } = await render(page);
 	<h1>{page.data.title}</h1>
 	<Content />
 </Page>
+
+<style is:global>
+	.about-photo {
+		float: right;
+		width: 260px;
+		height: auto;
+		margin: 0 0 1rem 1.5rem;
+		border-radius: 8px;
+	}
+	@media (max-width: 600px) {
+		.about-photo {
+			float: none;
+			display: block;
+			margin: 0 auto 1.5rem;
+			width: 200px;
+		}
+	}
+</style>
