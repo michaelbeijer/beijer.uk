@@ -3,7 +3,7 @@ title: About Michael Beijer
 description: About Michael Beijer - Dutch and English patent translator and creator of Supervertaler
 ---
 
-<img class="about-photo" src="/images/michael-beijer.jpg" alt="Michael Beijer" width="600" height="643" />
+<img class="about-photo" src="/blog-images/michael-beijer.jpg" alt="Michael Beijer" width="600" height="643" />
 
 I'm Michael Beijer, a Dutch and English patent translator and translation technology developer based in Hastings, UK. I work with translators, agencies, and direct clients on translation, editing, terminology, and workflow.
 
