@@ -10,13 +10,6 @@ const { Content } = await render(page);
 
 <Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
 	<h1>{page.data.title}</h1>
-	<img
-		src="/images/michael-beijer.jpg"
-		alt="Michael Beijer"
-		width="260"
-		height="279"
-		class="about-photo"
-	/>
 	<Content />
 </Page>
 
