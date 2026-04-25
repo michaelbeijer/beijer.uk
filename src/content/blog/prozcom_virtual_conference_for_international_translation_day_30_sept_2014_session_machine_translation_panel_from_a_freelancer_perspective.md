@@ -1,7 +1,6 @@
 ---
-title: 'ProZ.com virtual conference for International Translation Day, session: 'Machine
-  translation panel from a freelancer perspective'.'
-description: 'I was a panellist in the ProZ.com virtual conference for International Translation Day 2014, in the session ''Machine translation panel from a freelancer perspective''.'
+title: "ProZ.com virtual conference for International Translation Day, session: 'Machine translation panel from a freelancer perspective'."
+description: "I was a panellist in the ProZ.com virtual conference for International Translation Day 2014, in the session 'Machine translation panel from a freelancer perspective'."
 pubDate: '2014-09-30'
 ---
 
