@@ -53,7 +53,7 @@ The tool automatically chunks large documents into manageable pieces that fit wi
 
 Supervertaler is open source and available on GitHub. You’ll need Python and API keys for whichever AI provider(s) you want to use.
 
-If you’re tired of AI translations that miss obvious context clues, give Supervertaler a try. And feel free to reach out at info@beijer.uk with questions or suggestions.
+If you’re tired of AI translations that miss obvious context clues, give Supervertaler a try. And feel free to reach out at michael@beijer.uk with questions or suggestions.
 
 Note: I also published this article on LinkedIn: https://www.linkedin.com/pulse/introducing-supervertaler-my-new-multicontextual-ai-tool-beijer-i3npe
 

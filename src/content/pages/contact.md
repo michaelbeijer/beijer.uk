@@ -5,7 +5,7 @@ description: Get in touch with Michael Beijer
 
 Email is the fastest way to reach me.
 
-- Translation: info@beijer.uk
+- Translation: michael@beijer.uk
 - Supervertaler: support@supervertaler.com
 - Phone: [+44 7475 771720](tel:+447475771720)
 

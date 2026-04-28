@@ -6,7 +6,7 @@ export const SITE_SEO_TITLE = 'beijer.uk — Dutch↔English patent & technical 
 export const SITE_DESCRIPTION =
 'Dutch↔English patent & technical translator and terminologist based in Hastings, UK.';
 
-export const CONTACT_EMAIL = 'info@beijer.uk';
+export const CONTACT_EMAIL = 'michael@beijer.uk';
 export const CONTACT_PHONE = '+44 7475 771720';
 
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/michaelbeijer';

@@ -4,7 +4,7 @@ description: "The core features I consider non‑negotiable in a CAT tool: dual 
 pubDate: 2025-10-05
 ---
 
-*This post is a work in progress. If you think I missed any essential features a CAT tool should have, let me know at* [info@beijer.uk](mailto:info@beijer.uk)*.*
+*This post is a work in progress. If you think I missed any essential features a CAT tool should have, let me know at* [michael@beijer.uk](mailto:michael@beijer.uk)*.*
 
 I’m also trying to implement many of these features in my own context-aware, LLM-powered translation & proofreading tool: [Supervertaler](https://github.com/michaelbeijer/Supervertaler).
 

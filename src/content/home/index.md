@@ -24,4 +24,4 @@ intro: 'I’ve spent over 30 years translating patents, technical manuals and sp
 
 ## Get in touch
 
-Drop me an email at info@beijer.uk – it helps if you can mention the word count, deadline, subject area, and source format.
+Drop me an email at michael@beijer.uk – it helps if you can mention the word count, deadline, subject area, and source format.
