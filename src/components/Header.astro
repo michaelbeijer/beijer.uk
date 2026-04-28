@@ -1,5 +1,4 @@
 ---
-import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
 import navItems from '../content/nav/nav.json';
 const base = import.meta.env.BASE_URL;
@@ -7,7 +6,6 @@ const base = import.meta.env.BASE_URL;
 
 <header>
 <nav>
-<h2><a href={base}>{SITE_TITLE}</a></h2>
 <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
 <span class="hamburger-line"></span>
 <span class="hamburger-line"></span>
@@ -51,25 +49,16 @@ padding: 0 1em;
 background: rgb(var(--bg));
 border-bottom: 1px solid rgb(var(--border));
 }
-h2 {
-margin: 0;
-font-size: 1em;
-}
-
-h2 a,
-h2 a.active {
-text-decoration: none;
-}
 nav {
 display: flex;
 align-items: center;
-justify-content: space-between;
+justify-content: center;
 gap: 1em;
 }
 .internal-links {
 display: flex;
 flex-wrap: wrap;
-justify-content: flex-end;
+justify-content: center;
 gap: 0.25em 0.75em;
 padding: 0.25em 0;
 }
@@ -119,6 +108,7 @@ transform: translateY(-7px) rotate(-45deg);
 @media (max-width: 720px) {
 nav {
 position: relative;
+justify-content: flex-end;
 }
 .hamburger {
 display: flex;
