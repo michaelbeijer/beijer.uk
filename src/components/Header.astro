@@ -54,20 +54,18 @@ border-bottom: 1px solid rgb(var(--border));
 h2 {
 margin: 0;
 font-size: 1em;
-flex-shrink: 0;
+justify-self: start;
 }
 h2 a,
 h2 a.active {
 text-decoration: none;
 }
 nav {
-display: flex;
+display: grid;
+grid-template-columns: 1fr auto 1fr;
 align-items: center;
-justify-content: space-between;
-gap: 1em;
 }
 .internal-links {
-flex: 1;
 display: flex;
 flex-wrap: wrap;
 justify-content: center;
@@ -96,7 +94,7 @@ background: transparent;
 border: none;
 cursor: pointer;
 padding: 4px;
-flex-shrink: 0;
+justify-self: end;
 z-index: 1001;
 }
 .hamburger-line {
