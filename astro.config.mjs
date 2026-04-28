@@ -35,7 +35,7 @@ function rehypeUnwrapPreParagraphs() {
 
 // https://astro.build/config
 export default defineConfig({
-site: 'https://michaelbeijer.co.uk',
+site: 'https://beijer.uk',
 integrations: [mdx(), sitemap()],
 markdown: {
   rehypePlugins: [rehypeUnwrapPreParagraphs],

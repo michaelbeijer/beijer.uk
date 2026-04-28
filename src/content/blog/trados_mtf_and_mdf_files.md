@@ -40,9 +40,9 @@ As a precaution, back up any active project folders before removing files — es
 
 ## See also
 
-- The Trados Tax: Why working with Trados Studio sucks — https://michaelbeijer.co.uk/trados_tax
-- Update Main Translation Memories vs Update Project Translation Memory (Trados Studio) — https://michaelbeijer.co.uk/Update_Main_Translation_Memories_vs_Update_Project_Translation_Memory_(in_Trados_Studio)
+- The Trados Tax: Why working with Trados Studio sucks — https://beijer.uk/trados_tax
+- Update Main Translation Memories vs Update Project Translation Memory (Trados Studio) — https://beijer.uk/Update_Main_Translation_Memories_vs_Update_Project_Translation_Memory_(in_Trados_Studio)
 
 ---
 
-Source: https://michaelbeijer.co.uk/Trados_MTF_and_MDF_files
+Source: https://beijer.uk/Trados_MTF_and_MDF_files

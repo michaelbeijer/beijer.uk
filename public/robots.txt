@@ -20,4 +20,4 @@ Disallow: /
 User-agent: Barkrowler
 Disallow: /
 
-Sitemap: https://michaelbeijer.co.uk/sitemap-index.xml
+Sitemap: https://beijer.uk/sitemap-index.xml

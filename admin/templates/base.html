@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Admin{% endblock %} | michaelbeijer.co.uk</title>
+    <title>{% block title %}Admin{% endblock %} | beijer.uk</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
     {% block head %}{% endblock %}
 </head>
 <body>
     <nav class="admin-nav">
         <div class="nav-brand">
-            <a href="{{ url_for('index') }}">michaelbeijer.co.uk</a>
+            <a href="{{ url_for('index') }}">beijer.uk</a>
         </div>
         <div class="nav-links">
             <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">Dashboard</a>

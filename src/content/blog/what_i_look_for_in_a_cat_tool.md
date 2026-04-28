@@ -4,7 +4,7 @@ description: "The core features I consider non‑negotiable in a CAT tool: dual 
 pubDate: 2025-10-05
 ---
 
-*This post is a work in progress. If you think I missed any essential features a CAT tool should have, let me know at* [info@michaelbeijer.co.uk](mailto:info@michaelbeijer.co.uk)*.*
+*This post is a work in progress. If you think I missed any essential features a CAT tool should have, let me know at* [info@beijer.uk](mailto:info@beijer.uk)*.*
 
 I’m also trying to implement many of these features in my own context-aware, LLM-powered translation & proofreading tool: [Supervertaler](https://github.com/michaelbeijer/Supervertaler).
 
@@ -74,4 +74,4 @@ A good CAT tool must therefore allow you to seamlessly switch between sentence-b
 
 ---
 
-Source: https://michaelbeijer.co.uk/what_i_look_for_in_a_cat_tool
+Source: https://beijer.uk/what_i_look_for_in_a_cat_tool

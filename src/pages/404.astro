@@ -9,7 +9,7 @@ import Header from '../components/Header.astro';
 		<BaseHead title="Page moved" description="This content has moved to beijerterm.com" />
 		<script is:inline>
 			// Known paths on this site — don't redirect these
-			const localPaths = ['/', '/about/', '/blog/', '/contact/', '/links/', '/patents/', '/services/', '/testimonials/', '/tools/'];
+			const localPaths = ['/', '/about/', '/blog/', '/contact/', '/links/', '/patents/', '/services/', '/testimonials/', '/tools/', '/home', '/rss.xml'];
 			const path = window.location.pathname;
 			const isLocal = localPaths.some(p => path === p) || path.startsWith('/blog/');
 
