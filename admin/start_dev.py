@@ -18,7 +18,7 @@ admin_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(admin_dir)
 
 print("=" * 50)
-print("Starting michaelbeijer.co.uk Admin Panel")
+print("Starting beijer.uk Admin Panel")
 print("=" * 50)
 print(f"Dev mode: ON (authentication bypassed)")
 print(f"URL: http://localhost:5000")

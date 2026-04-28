@@ -1,5 +1,5 @@
 """
-michaelbeijer.co.uk Admin Panel
+beijer.uk Admin Panel
 Custom CMS for managing blog posts, pages, and homepage content
 Uses Jodit Editor for rich text editing with image drag-resize handles
 """
