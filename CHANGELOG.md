@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.14.0] - 2026-04-29
+
+### Changed
+- **Domain migrated to beijer.uk** — CNAME, `astro.config.mjs` site URL, `robots.txt` sitemap, `consts.ts` (SITE_TITLE, SITE_SEO_TITLE), Isso comments host, admin panel templates, and all content files updated
+- **Contact email changed to michael@beijer.uk** — updated across all pages and blog posts
+- **Header redesign** — brand ("Beijer.uk") left-aligned, nav links truly centred using CSS grid (`1fr auto 1fr`); mobile retains hamburger right / brand left layout
+
+### Fixed
+- **404 JS redirect exclusions** — added `/home` and `/rss.xml` to `localPaths` so they no longer bounce to beijerterm.com
+- **`/home` redirect** — added Astro redirect `/home` → `/` so the old wiki home URL lands on the personal site root
+
+### Infrastructure
+- **beijer.uk added to Cloudflare** — nameservers updated in Namecheap; GitHub Pages A records and www CNAME set up; AI crawlers allowed
+- **Cloudflare redirect rule** — `michaelbeijer.co.uk` → `beijer.uk` (301, dynamic, placed after wiki rule) so all personal site paths follow the domain change
+- **Cloudflare wiki rule updated** — added `/home` and `/home/*` exclusions so those paths are no longer sent to beijerterm.com
+
+---
+
 ## [1.13.0] - 2026-04-05
 
 ### Added
