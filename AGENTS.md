@@ -1,6 +1,6 @@
-# michaelbeijer.co.uk Admin Panel
+# beijer.uk Admin Panel
 
-A custom Flask-based CMS for managing the michaelbeijer.co.uk website content.
+A custom Flask-based CMS for managing the beijer.uk website content.
 
 ## Features
 
@@ -83,7 +83,7 @@ When `ADMIN_DEV_MODE=true` (set by start_dev.py), authentication is bypassed for
 | `FLASK_SECRET_KEY` | Random secret key for sessions |
 | `GITHUB_CLIENT_ID` | GitHub OAuth App client ID |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth App client secret |
-| `GITHUB_REPO` | Repository name (e.g., `michaelbeijer/michaelbeijer.co.uk`) |
+| `GITHUB_REPO` | Repository name (e.g., `michaelbeijer/beijer.uk`) |
 | `ALLOWED_GITHUB_USERS` | Comma-separated list of allowed GitHub usernames |
 | `CALLBACK_URL` | OAuth callback URL (e.g., `https://your-app.railway.app/auth/github/callback`) |
 | `PRODUCTION` | Set to `true` for production mode |
@@ -92,8 +92,8 @@ When `ADMIN_DEV_MODE=true` (set by start_dev.py), authentication is bypassed for
 
 1. Go to GitHub → Settings → Developer settings → OAuth Apps
 2. Create new OAuth App:
-   - **Application name**: michaelbeijer.co.uk Admin
-   - **Homepage URL**: https://michaelbeijer.co.uk
+   - **Application name**: beijer.uk Admin
+   - **Homepage URL**: https://beijer.uk
    - **Callback URL**: https://your-railway-url/auth/github/callback
 3. Copy Client ID and Client Secret to Railway environment variables
 

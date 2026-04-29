@@ -1,4 +1,4 @@
-# michaelbeijer.co.uk
+# beijer.uk
 
 Professional website of Michael Beijer (Dutch↔English patent & technical translator).
 
