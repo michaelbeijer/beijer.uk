@@ -33,7 +33,7 @@ IS_DEV = ADMIN_DEV_MODE and not PRODUCTION_MODE
 GITHUB_CLIENT_ID = os.environ.get('GITHUB_CLIENT_ID', '')
 GITHUB_CLIENT_SECRET = os.environ.get('GITHUB_CLIENT_SECRET', '')
 GITHUB_REPO_OWNER = 'michaelbeijer'
-GITHUB_REPO_NAME = 'michaelbeijer.co.uk'
+GITHUB_REPO_NAME = 'beijer.uk'
 ALLOWED_USERS = os.environ.get('ALLOWED_GITHUB_USERS', 'michaelbeijer').split(',')
 CALLBACK_URL = os.environ.get('CALLBACK_URL', 'http://localhost:5000/auth/github/callback')
 
