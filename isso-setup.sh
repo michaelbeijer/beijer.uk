@@ -1,13 +1,13 @@
 #!/bin/bash
 # ============================================================
-# Isso setup script for comments.michaelbeijer.co.uk
+# Isso setup script for comments.beijer.uk
 # Run this on the Hetzner VPS as root (or with sudo)
 # ============================================================
 set -euo pipefail
 
-DOMAIN="comments.michaelbeijer.co.uk"
+DOMAIN="comments.beijer.uk"
 ISSO_DIR="/opt/isso"
-EMAIL="info@michaelbeijer.co.uk"
+EMAIL="info@beijer.uk"
 
 echo "=== 1. Creating Isso directory ==="
 mkdir -p "$ISSO_DIR"
@@ -18,8 +18,8 @@ cat > isso.conf <<'CONF'
 [general]
 dbpath = /db/comments.db
 host =
-    https://michaelbeijer.co.uk
-    https://www.michaelbeijer.co.uk
+    https://beijer.uk
+    https://www.beijer.uk
 max-age = 15m
 notify = smtp
 reply-notifications = true
@@ -51,8 +51,8 @@ port = 587
 security = starttls
 username = $ISSO_SMTP_USERNAME
 password = $ISSO_SMTP_PASSWORD
-to = info@michaelbeijer.co.uk
-from = info@michaelbeijer.co.uk
+to = info@beijer.uk
+from = info@beijer.uk
 timeout = 10
 CONF
 
@@ -93,7 +93,7 @@ echo "=== 7. Setting up nginx reverse proxy ==="
 cat > /etc/nginx/sites-available/isso <<'NGINX'
 server {
     listen 80;
-    server_name comments.michaelbeijer.co.uk;
+    server_name comments.beijer.uk;
 
     location / {
         proxy_pass http://127.0.0.1:8042;
