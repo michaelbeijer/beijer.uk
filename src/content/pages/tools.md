@@ -32,6 +32,8 @@ I build and maintain tools that support real-world translation workflows. Everyt
 
 ## Beijerterm.com
 
+![Beijerterm – open multilingual terminology database with specialist Dutch/English terms](/blog-images/beijerterm.png)
+
 [Beijerterm](https://beijerterm.com/) is an open multilingual terminology database – one of the largest collections of specialist Dutch/English terminology available, built up over 30 years of professional translation work. Aimed at fellow translators and terminologists.
 
 ## WordCounter
