@@ -2,7 +2,7 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = 'Beijer.uk';
-export const SITE_SEO_TITLE = 'Beijer.uk — Dutch↔English patent & technical translator';
+export const SITE_SEO_TITLE = 'Michael Beijer – Dutch↔English patent & technical translator';
 export const SITE_DESCRIPTION =
 'Dutch↔English patent & technical translator and terminologist based in Hastings, UK.';
 
