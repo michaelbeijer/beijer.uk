@@ -7,8 +7,8 @@ I provide specialist Dutch↔English language services for patents, technical do
 
 ## Translation
 
-- Technical translation (documentation, manuals, UI strings, specifications)
-- Patent translation and related technical/legal materials
+- Dutch technical translation (documentation, manuals, UI strings, specifications)
+- Dutch patent translation and related technical/legal materials
 
 ## Editing & proofreading
 
