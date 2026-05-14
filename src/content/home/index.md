@@ -1,6 +1,6 @@
 ---
 title: Michael Beijer
-tagline: Dutch-English patent & technical translator · Hastings, UK
+tagline: Dutch-English technical and patent translator · Hastings, UK
 intro: 'I’ve spent over 30 years translating patents, technical manuals and specialist
   documentation between Dutch and English. My work focuses on precise terminology,
   clear technical language and reliable CAT-tool workflows.
