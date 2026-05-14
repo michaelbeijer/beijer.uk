@@ -1,6 +1,6 @@
 ---
 title: About Michael Beijer
-description: About Michael Beijer - Dutch and English patent translator and creator of Supervertaler
+description: About Michael Beijer - Dutch patent translator and creator of Supervertaler
 ---
 
 <img class="about-photo" src="/blog-images/michael-beijer.jpg" alt="Michael Beijer" width="600" height="643" />
