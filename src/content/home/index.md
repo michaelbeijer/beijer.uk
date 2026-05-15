@@ -19,7 +19,6 @@ intro: 'I’ve spent over 30 years translating patents, technical manuals and sp
 
 - <a href="https://supervertaler.com" target="_blank" rel="noopener">Supervertaler</a> – CAT-tool companion for AI-assisted translation workflows
 - <a href="https://beijerterm.com" target="_blank" rel="noopener">Beijerterm</a> – open multilingual terminology database for technical translators
-- <a href="https://github.com/michaelbeijer/Beijer.ink" target="_blank" rel="noopener">Beijer.ink</a> – personal note-taking web app
 - <a href="https://github.com/michaelbeijer/WordCounter" target="_blank" rel="noopener">WordCounter</a> – free and open-source word counting software for translators
 - <a href="https://tranzlashion.com" target="_blank" rel="noopener">Tranzlashion.com</a> – parody translation agency website
 
