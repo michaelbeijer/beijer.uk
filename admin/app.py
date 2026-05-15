@@ -51,6 +51,7 @@ NAV_FILE = NAV_DIR / 'nav.json'
 BLOG_PAGE_DIR = CONTENT_DIR / 'blog-page'
 SETTINGS_DIR = CONTENT_DIR / 'settings'
 APPEARANCE_FILE = SETTINGS_DIR / 'appearance.json'
+SITE_SETTINGS_FILE = SETTINGS_DIR / 'site.json'
 PAGES_ASTRO_DIR = BASE_DIR / 'src' / 'pages'
 USE_GITHUB_CONTENT = (
     os.environ.get('USE_GITHUB_CONTENT', '').lower() == 'true' or
@@ -1422,6 +1423,124 @@ def api_appearance():
 
         settings = {'fontTheme': font_theme}
         success, message = write_appearance(settings, f'Update font theme to {font_theme}')
+        if not success:
+            return jsonify({'error': message}), 500
+        return jsonify({'success': True})
+
+
+# =============================================================================
+# Site Settings (header brand, footer text, contact, external URLs)
+# =============================================================================
+
+SITE_SETTINGS_GH_PATH = 'src/content/settings/site.json'
+
+# Fields exposed to the admin form. Anything not in this set is rejected on save.
+SITE_SETTINGS_FIELDS = {
+    'siteTitle',
+    'siteSeoTitle',
+    'siteDescription',
+    'footerName',
+    'footerTagline',
+    'contactEmail',
+    'contactPhone',
+    'linkedinUrl',
+    'prozFeedbackUrl',
+    'supervertalerUrl',
+    'beijertermUrl',
+    'adminPanelUrl',
+}
+
+# Fallback defaults if site.json is missing entirely (first-run scenario).
+SITE_SETTINGS_DEFAULTS = {
+    'siteTitle': 'Beijer.uk',
+    'siteSeoTitle': 'Michael Beijer',
+    'siteDescription': '',
+    'footerName': 'Michael Beijer',
+    'footerTagline': '',
+    'contactEmail': '',
+    'contactPhone': '',
+    'linkedinUrl': '',
+    'prozFeedbackUrl': '',
+    'supervertalerUrl': '',
+    'beijertermUrl': '',
+    'adminPanelUrl': '',
+}
+
+
+def read_site_settings():
+    """Read site.json and return the settings dict, falling back to defaults."""
+    if USE_GITHUB_CONTENT:
+        content, _, error = gh_read_text(SITE_SETTINGS_GH_PATH)
+        if error == 'not_found':
+            return dict(SITE_SETTINGS_DEFAULTS), None
+        if error:
+            return None, error
+        try:
+            data = json.loads(content)
+        except json.JSONDecodeError as e:
+            return None, f"Invalid site.json: {e}"
+    else:
+        if not SITE_SETTINGS_FILE.exists():
+            return dict(SITE_SETTINGS_DEFAULTS), None
+        with open(SITE_SETTINGS_FILE, 'r', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError as e:
+                return None, f"Invalid site.json: {e}"
+
+    # Backfill any missing fields from defaults so the form always renders.
+    merged = dict(SITE_SETTINGS_DEFAULTS)
+    merged.update({k: v for k, v in data.items() if k in SITE_SETTINGS_FIELDS})
+    return merged, None
+
+
+def write_site_settings(settings, commit_message='Update site settings'):
+    """Write site.json with the given settings dict."""
+    content = json.dumps(settings, indent=2, ensure_ascii=False) + '\n'
+    if USE_GITHUB_CONTENT:
+        return gh_upsert_text(SITE_SETTINGS_GH_PATH, content, commit_message)
+    else:
+        SETTINGS_DIR.mkdir(parents=True, exist_ok=True)
+        with open(SITE_SETTINGS_FILE, 'w', encoding='utf-8') as f:
+            f.write(content)
+        return True, 'Saved site.json locally'
+
+
+@app.route('/site-settings')
+@require_auth
+def site_settings():
+    """Manage site-wide text and URLs (header brand, footer, contact, links)."""
+    settings, error = read_site_settings()
+    if error:
+        return f'Error loading site settings: {error}', 500
+    return render_template('site_editor.html', settings=settings)
+
+
+@app.route('/api/site-settings', methods=['GET', 'POST'])
+@require_auth
+def api_site_settings():
+    """Get or update site-wide settings."""
+    if request.method == 'GET':
+        settings, error = read_site_settings()
+        if error:
+            return jsonify({'error': error}), 500
+        return jsonify(settings)
+
+    elif request.method == 'POST':
+        data = request.json or {}
+
+        # Keep only known fields, coerce to string, strip whitespace.
+        settings = {
+            field: str(data.get(field, '')).strip()
+            for field in SITE_SETTINGS_FIELDS
+        }
+
+        # siteTitle is the only field we treat as required - the header would
+        # render empty otherwise.
+        if not settings['siteTitle']:
+            return jsonify({'error': 'Site title cannot be empty.'}), 400
+
+        success, message = write_site_settings(settings, 'Update site settings')
         if not success:
             return jsonify({'error': message}), 500
         return jsonify({'success': True})

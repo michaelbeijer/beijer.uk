@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Site Settings{% endblock %}
+
+{% block content %}
+<div class="editor-page">
+    <div class="editor-header">
+        <h1>Site Settings</h1>
+        <div class="editor-actions">
+            <button class="btn btn-secondary" onclick="history.back()">Cancel</button>
+            <button class="btn btn-primary" id="saveBtn" onclick="saveSiteSettings()">Save</button>
+        </div>
+    </div>
+
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+        Site-wide text and external links. Changes take effect after the site rebuilds (usually within a few minutes of saving).
+    </p>
+
+    <form id="siteForm" class="editor-form">
+        <h2 style="margin-top: 1.5rem;">Site identity</h2>
+
+        <div class="form-group">
+            <label for="siteTitle">Header brand</label>
+            <input type="text" id="siteTitle" name="siteTitle" value="{{ settings.siteTitle }}" required>
+            <small>The text shown in the top-left of every page (e.g. &ldquo;Beijer.uk&rdquo;).</small>
+        </div>
+
+        <div class="form-group">
+            <label for="siteSeoTitle">SEO title</label>
+            <input type="text" id="siteSeoTitle" name="siteSeoTitle" value="{{ settings.siteSeoTitle }}">
+            <small>Used as the browser-tab title and as the &lt;title&gt; tag for search engines.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="siteDescription">SEO description</label>
+            <textarea id="siteDescription" name="siteDescription" rows="2">{{ settings.siteDescription }}</textarea>
+            <small>Used as the meta description and Open Graph description. Around 150&ndash;160 characters works best for Google snippets.</small>
+        </div>
+
+        <h2 style="margin-top: 2rem;">Footer text</h2>
+
+        <div class="form-group">
+            <label for="footerName">Footer name</label>
+            <input type="text" id="footerName" name="footerName" value="{{ settings.footerName }}">
+            <small>Bold name shown in the footer (e.g. &ldquo;Michael Beijer&rdquo;).</small>
+        </div>
+
+        <div class="form-group">
+            <label for="footerTagline">Footer tagline</label>
+            <textarea id="footerTagline" name="footerTagline" rows="2">{{ settings.footerTagline }}</textarea>
+            <small>Short line under the footer name (e.g. &ldquo;Dutch&harr;English patent &amp; technical translator &middot; Hastings, UK&rdquo;).</small>
+        </div>
+
+        <h2 style="margin-top: 2rem;">Contact</h2>
+
+        <div class="form-group">
+            <label for="contactEmail">Email address</label>
+            <input type="email" id="contactEmail" name="contactEmail" value="{{ settings.contactEmail }}">
+            <small>Used in the footer and the &ldquo;Email me&rdquo; button. Becomes a mailto: link.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="contactPhone">Phone number</label>
+            <input type="text" id="contactPhone" name="contactPhone" value="{{ settings.contactPhone }}">
+            <small>Used in the footer. Becomes a tel: link.</small>
+        </div>
+
+        <h2 style="margin-top: 2rem;">External links</h2>
+
+        <div class="form-group">
+            <label for="linkedinUrl">LinkedIn URL</label>
+            <input type="url" id="linkedinUrl" name="linkedinUrl" value="{{ settings.linkedinUrl }}">
+        </div>
+
+        <div class="form-group">
+            <label for="prozFeedbackUrl">ProZ feedback URL</label>
+            <input type="url" id="prozFeedbackUrl" name="prozFeedbackUrl" value="{{ settings.prozFeedbackUrl }}">
+        </div>
+
+        <div class="form-group">
+            <label for="supervertalerUrl">Supervertaler URL</label>
+            <input type="url" id="supervertalerUrl" name="supervertalerUrl" value="{{ settings.supervertalerUrl }}">
+        </div>
+
+        <div class="form-group">
+            <label for="beijertermUrl">Beijerterm URL</label>
+            <input type="url" id="beijertermUrl" name="beijertermUrl" value="{{ settings.beijertermUrl }}">
+        </div>
+
+        <div class="form-group">
+            <label for="adminPanelUrl">Admin panel URL</label>
+            <input type="url" id="adminPanelUrl" name="adminPanelUrl" value="{{ settings.adminPanelUrl }}">
+            <small>Used by the small &ldquo;Admin&rdquo; link in the footer.</small>
+        </div>
+    </form>
+
+    <div id="status" class="status-message"></div>
+</div>
+
+<script>
+const FIELDS = [
+    'siteTitle', 'siteSeoTitle', 'siteDescription',
+    'footerName', 'footerTagline',
+    'contactEmail', 'contactPhone',
+    'linkedinUrl', 'prozFeedbackUrl',
+    'supervertalerUrl', 'beijertermUrl', 'adminPanelUrl'
+];
+
+function showStatus(message, isError = false) {
+    const status = document.getElementById('status');
+    status.textContent = message;
+    status.className = 'status-message ' + (isError ? 'error' : 'success');
+    status.style.display = 'block';
+    setTimeout(() => { status.style.display = 'none'; }, 5000);
+}
+
+function getFormData() {
+    const data = {};
+    for (const field of FIELDS) {
+        data[field] = document.getElementById(field).value;
+    }
+    return data;
+}
+
+function saveSiteSettings() {
+    const data = getFormData();
+
+    if (!data.siteTitle.trim()) {
+        showStatus('Header brand (site title) is required.', true);
+        return;
+    }
+
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    fetch('/api/site-settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showStatus('Saved. The site will update on the next rebuild (usually a few minutes).');
+        } else {
+            showStatus('Error: ' + (result.error || 'Unknown error'), true);
+        }
+    })
+    .catch(error => {
+        showStatus('Error saving site settings: ' + error.message, true);
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.textContent = 'Save';
+    });
+}
+</script>
+{% endblock %}
