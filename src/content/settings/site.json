@@ -1,14 +1,14 @@
 {
   "linkedinUrl": "https://www.linkedin.com/in/michaelbeijer",
-  "siteTitle": "Beijer.uk",
   "contactEmail": "michael@beijer.uk",
-  "footerName": "Michael Beijer",
-  "prozFeedbackUrl": "https://www.proz.com/feedback-card/652138",
+  "siteTitle": "Michael Beijer",
   "siteDescription": "Dutch↔English patent & technical translator and software developer based in Hastings, UK.",
   "footerTagline": "Dutch↔English patent & technical translator · Hastings, UK",
-  "contactPhone": "+44 7475 771720",
-  "adminPanelUrl": "https://michaelbeijercouk-production.up.railway.app",
-  "supervertalerUrl": "https://supervertaler.com",
+  "prozFeedbackUrl": "https://www.proz.com/feedback-card/652138",
   "beijertermUrl": "https://beijerterm.com",
-  "siteSeoTitle": "Michael Beijer – Dutch patent translator"
+  "siteSeoTitle": "Michael Beijer – Dutch patent translator",
+  "footerName": "Michael Beijer",
+  "supervertalerUrl": "https://supervertaler.com",
+  "adminPanelUrl": "https://michaelbeijercouk-production.up.railway.app",
+  "contactPhone": "+44 7475 771720"
 }
