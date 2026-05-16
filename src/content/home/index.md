@@ -1,9 +1,10 @@
 ---
 title: Michael Beijer – Dutch patent translator
 tagline: Patents and technical documentation · Hastings, UK
-intro: 'I’ve spent over 30 years translating patents, technical manuals and specialist
-  documentation between Dutch and English. My work focuses on precise terminology,
-  clear technical language and reliable CAT-tool workflows.
+intro: 'I''ve spent over 30 years working as a Dutch patent translator and Dutch technical
+  translator, handling patents, technical manuals and specialist documentation between
+  Dutch and English. My work focuses on precise terminology, clear technical language
+  and reliable CAT-tool workflows.
 
 
   Trusted by patent attorneys, engineers, and technical companies across Europe.'
@@ -12,7 +13,7 @@ intro: 'I’ve spent over 30 years translating patents, technical manuals and sp
 ## What I do
 
 - **Patents** – translation, editing, and terminology work. I make sure nothing gets lost between the legal and the technical.
-- **Technical translation** – manuals, software strings, specifications, documentation.
+- **Dutch technical translation** – as a Dutch technical translator I handle manuals, software strings, specifications and documentation of all kinds
 - **Terminology** – building and maintaining termbases, extraction, and cleanup.
 
 ## Side projects
