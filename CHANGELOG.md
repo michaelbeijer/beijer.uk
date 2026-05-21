@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.15.0] - 2026-05-21
+
+### Fixed
+- **404 page no longer redirects to beijerterm.com** — removed the JavaScript redirect (and "page moved" notice) from `src/pages/404.astro`. beijer.uk and beijerterm.com are now fully independent; unknown paths land on a clean, static "Page not found" page with a link back to the homepage. This was the last remaining redirect after the Cloudflare and cPanel/hosting rules were cleared.
+
 ## [1.14.0] - 2026-04-29
 
 ### Changed
