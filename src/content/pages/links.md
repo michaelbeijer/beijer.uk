@@ -56,7 +56,7 @@ This page contains a curated list of resources for translators, including paymen
 * https://multifarious.filkin.com/ – Paul Filkin’s blog
 * https://www.translationtribulations.com/ – Kevin Lossner’s blog
 * https://noradiaz.blogspot.com/ – Nora Díaz on Translation, Teaching, and Other Stuff
-* https://kv-emptypages.blogspot.com/ – **eMpTy Pages**, Kirti Vashee on machine translation, localization, and the language industry
+* https://kv-emptypages.blogspot.com/ – eMpTy Pages, Kirti Vashee on machine translation, localization, and the language industry
 
 
 ---
