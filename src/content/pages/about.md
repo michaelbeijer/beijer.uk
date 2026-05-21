@@ -1,5 +1,5 @@
 ---
-title: About Michael Beijer
+title: About
 description: About Michael Beijer – Dutch patent translator and Dutch technical translator
   based in Hastings, UK. Creator of Supervertaler.
 ---

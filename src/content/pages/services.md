@@ -1,5 +1,5 @@
 ---
-title: Services | Dutch patent and technical translator – Michael Beijer
+title: Services
 description: Dutch patent translator and Dutch technical translator based in Hastings,
   UK. Patents, technical manuals, terminology and editing services.
 ---
