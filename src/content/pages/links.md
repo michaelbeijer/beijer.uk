@@ -105,7 +105,7 @@ This page contains a curated list of resources for translators, including paymen
 * Ruud Harmsen (https://rudhar.com/) (retired technical translator, English/German>Dutch)
 * Hans van den Broek (†): https://cafetran4mac.blogspot.com/2015/04/the-big-mama-approach.html
 * Steven Segaert (Creative, legal and marketing translations, from Dutch/Flemish into English): https://www.confer.eu/
-* [Risto Siikarla](www.finnword.com): English to Finnish translator.
+* [Risto Siikarla](https://www.finnword.com/): English to Finnish translator
 
 ##### Working in other languages
 
