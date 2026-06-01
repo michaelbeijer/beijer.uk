@@ -22,10 +22,13 @@
  */
 
 const ALLOWED_ORIGINS = new Set([
-	'https://beijer.uk',
+	'https://beijerterm.com',      // canonical Beijerterm site (Cloudflare Pages)
+	'https://www.beijerterm.com',
+	'https://beijer.uk',           // hand-off search box on the main site
 	'https://www.beijer.uk',
-	'http://localhost:4321', // Astro dev
+	'http://localhost:4321',       // Astro dev
 	'http://127.0.0.1:4321',
+	'http://localhost:8788',       // wrangler pages dev
 ]);
 
 const MAX_LIMIT = 100;
