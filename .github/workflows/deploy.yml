@@ -37,6 +37,11 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # The Wordbook search API URL (the deployed Cloudflare Worker).
+          # Set as a repo Actions *variable*. If unset, the /wordbook page
+          # shows "Search API not configured" and ships no data — safe default.
+          PUBLIC_WORDBOOK_API: ${{ vars.PUBLIC_WORDBOOK_API }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -1,0 +1,15 @@
+{
+  "name": "wordbook-search",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Worker search API over D1 for Wordbook (beijer.uk/wordbook)",
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "load:local": "wrangler d1 execute wordbook --local --file=./data/d1_dump.sql",
+    "load:remote": "wrangler d1 execute wordbook --remote --file=./data/d1_dump.sql"
+  },
+  "devDependencies": {
+    "wrangler": "^3.78.0"
+  }
+}

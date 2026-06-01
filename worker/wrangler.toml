@@ -1,0 +1,13 @@
+name = "wordbook-search"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
+
+# D1 binding. Create the database once with:
+#   wrangler d1 create wordbook
+# then paste the printed database_id below (it is not a secret — it only
+# identifies the DB within your Cloudflare account).
+[[d1_databases]]
+binding = "DB"
+database_name = "wordbook"
+database_id = "REPLACE_WITH_ID_FROM_wrangler_d1_create"
