@@ -62,7 +62,11 @@ const apiBase = (
 	</dialog>
 </Page>
 
-<style>
+<style is:global>
+	/* is:global is REQUIRED: the result cards, sources table, etc. are injected
+	   by the client script via innerHTML, and Astro's scoped styles only apply
+	   to elements present in the static template (they carry the scope hash).
+	   All selectors here are wb-* prefixed, so global scope is safe. */
 	.wb-hero {
 		margin: 0 0 3em;
 	}
