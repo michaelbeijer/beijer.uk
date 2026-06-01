@@ -19,7 +19,7 @@ intro: 'I''ve spent over 30 years working as a Dutch patent translator and Dutch
 ## Side projects
 
 - <a href="https://supervertaler.com" target="_blank" rel="noopener">Supervertaler</a> – CAT-tool companion for AI-assisted translation workflows
-- <a href="https://beijerterm.com" target="_blank" rel="noopener">Beijerterm</a> – open multilingual terminology database for technical translators
+- <a href="https://beijerterm.com" target="_blank" rel="noopener">Beijerterm</a> – curated, searchable multilingual terminology database for technical translators
 - <a href="https://github.com/michaelbeijer/WordCounter" target="_blank" rel="noopener">WordCounter</a> – free and open-source word counting software for translators
 - <a href="https://tranzlashion.com" target="_blank" rel="noopener">Tranzlashion.com</a> – parody translation agency website
 
