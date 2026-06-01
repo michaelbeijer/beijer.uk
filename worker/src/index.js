@@ -34,8 +34,16 @@ const ALLOWED_ORIGINS = new Set([
 const MAX_LIMIT = 100;
 const DEFAULT_LIMIT = 50;
 
+// Also trust this account's own *.workers.dev / *.pages.dev preview subdomains
+// (e.g. beijerterm.michaelbeijer-co-uk.workers.dev) so previews work before the
+// custom domain is attached. The custom domains above are the real surfaces.
+function isAllowedOrigin(origin) {
+	if (ALLOWED_ORIGINS.has(origin)) return true;
+	return /^https:\/\/[a-z0-9-]+\.michaelbeijer-co-uk\.(workers|pages)\.dev$/.test(origin || '');
+}
+
 function corsHeaders(origin) {
-	const allow = ALLOWED_ORIGINS.has(origin) ? origin : 'https://beijer.uk';
+	const allow = isAllowedOrigin(origin) ? origin : 'https://beijerterm.com';
 	return {
 		'Access-Control-Allow-Origin': allow,
 		'Access-Control-Allow-Methods': 'GET, OPTIONS',
