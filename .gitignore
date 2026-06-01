@@ -155,3 +155,15 @@ __pycache__/
 
 # Claude Code session files
 .claude/
+
+
+# Wordbook terminology data is NEVER committed to this public repo. The data
+# stays private, in the separate private `wordbook` repo (its SQLite master
+# store). This public repo holds only the search *software*. In production the
+# search UI queries a server-side API (Cloudflare Worker + D1), so no data file
+# is shipped to the browser or stored here.
+#
+# For LOCAL dev only, you may generate a throwaway snapshot (gitignored below)
+# to exercise the client-side prototype:
+#   cd ../Wordbook && wordbook export --out ../michaelbeijer.co.uk-repo/public/wordbook/data.json
+public/wordbook/data.json
