@@ -10,5 +10,18 @@ const { Content } = await render(page);
 
 <Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
 	<h1>{page.data.title}</h1>
-	<Content />
+	<div class="tools-doc">
+		<Content />
+	</div>
 </Page>
+
+<style is:global>
+	/* A light divider above each top-level tool section, so they're easier to
+	   tell apart. Only the `##` tool headings are h2 — the Supervertaler
+	   sub-products (Workbench / for Trados) are h3 and stay undivided. */
+	.tools-doc h2 {
+		border-top: 1px solid rgb(var(--border));
+		padding-top: 1.75em;
+		margin-top: 2.5em;
+	}
+</style>
