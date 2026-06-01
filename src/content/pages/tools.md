@@ -30,11 +30,14 @@ I build and maintain tools that support real-world translation workflows. Everyt
 - [Source on GitHub](https://github.com/Supervertaler/Supervertaler-for-Trados)
 - 🎬 [Getting Started screencast](https://www.youtube.com/watch?v=bOIwMAoP7xc) (16 min) – a walkthrough of all the basics
 
-## Beijerterm.com
+## Beijerterm
 
-![Beijerterm – open multilingual terminology database with specialist Dutch/English terms](/blog-images/beijerterm.png)
+![Beijerterm – a curated multilingual terminology database: a From/To language search returning a Dutch headword with its English equivalents and a badge for each source the terms came from](/blog-images/beijerterm.png)
 
-[Beijerterm](https://beijerterm.com/) is an open multilingual terminology database – one of the largest collections of specialist Dutch/English terminology available, built up over 30 years of professional translation work. Aimed at fellow translators and terminologists.
+[Beijerterm](https://beijerterm.com/) is a curated, searchable **multilingual** terminology database for technical translators – Dutch, English, German, French and Spanish, and growing as new sources are added. It pulls together specialist glossaries and reference works gathered over a long translation career, with full **provenance** on every term: you can always see which glossary it came from, with author, year, languages and licence. Pick any source/target language pair, and equivalents and synonyms from different sources pool onto a single result card. Search runs server-side – you only ever get per-query snippets – and it's free to use. It's also built into Supervertaler as a SuperLookup resource.
+- [Search Beijerterm](https://beijerterm.com/)
+- [Sources behind it](https://beijerterm.com/sources/)
+- [How it works](https://beijerterm.com/about/)
 
 ## WordCounter
 
