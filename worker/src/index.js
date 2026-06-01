@@ -115,21 +115,26 @@ async function handleSearch(url, env, origin) {
 }
 
 async function handleMeta(env, origin) {
-	const sourcesP = env.DB.prepare(
-		`SELECT slug, title, author, publisher, year, url,
-		        source_lang, target_lang, primary_domain, subject_tags,
-		        licence, description, entry_count
-		 FROM sources ORDER BY slug`
-	).all();
-	const pairsP = env.DB.prepare(
-		`SELECT DISTINCT la, lb FROM entries WHERE la IS NOT NULL AND lb IS NOT NULL`
-	).all();
-	const countP = env.DB.prepare(`SELECT COUNT(*) AS n FROM entries`).first();
-
-	const [{ results: sources }, { results: rawPairs }, count] = await Promise.all([
-		sourcesP,
-		pairsP,
-		countP,
+	const SRC_BASE =
+		`slug, title, author, publisher, year, url, source_lang, target_lang,
+		 primary_domain, subject_tags, licence, description, entry_count`;
+	// `languages` is a newer column; tolerate an older dump that lacks it so a
+	// Worker deploy that lands before the D1 reload doesn't break /meta.
+	let sources;
+	try {
+		sources = (await env.DB.prepare(
+			`SELECT ${SRC_BASE}, languages FROM sources ORDER BY slug`
+		).all()).results;
+	} catch {
+		sources = (await env.DB.prepare(
+			`SELECT ${SRC_BASE} FROM sources ORDER BY slug`
+		).all()).results;
+	}
+	const [{ results: rawPairs }, count] = await Promise.all([
+		env.DB.prepare(
+			`SELECT DISTINCT la, lb FROM entries WHERE la IS NOT NULL AND lb IS NOT NULL`
+		).all(),
+		env.DB.prepare(`SELECT COUNT(*) AS n FROM entries`).first(),
 	]);
 
 	// Collapse (la, lb) into unordered pairs, matching the old lang_pairs shape.
@@ -143,11 +148,20 @@ async function handleMeta(env, origin) {
 		lang_pairs.push({ a, b });
 	}
 
+	// Expose each source's full language set as an array (the dump stores it
+	// comma-joined; fall back to source/target for older dumps).
+	const sourcesOut = (sources || []).map((s) => ({
+		...s,
+		languages: s.languages
+			? String(s.languages).split(',').map((c) => c.trim()).filter(Boolean)
+			: [s.source_lang, s.target_lang].filter(Boolean),
+	}));
+
 	return json(
 		{
-			sources: sources || [],
+			sources: sourcesOut,
 			lang_pairs,
-			counts: { sources: (sources || []).length, entries: count ? count.n : 0 },
+			counts: { sources: sourcesOut.length, entries: count ? count.n : 0 },
 		},
 		origin
 	);
