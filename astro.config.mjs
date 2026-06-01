@@ -38,6 +38,7 @@ export default defineConfig({
 site: 'https://beijer.uk',
 redirects: {
   '/home': '/',
+  '/wordbook': '/beijerterm',
 },
 integrations: [mdx(), sitemap()],
 markdown: {

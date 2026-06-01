@@ -13,15 +13,15 @@ const apiBase = (
 ---
 
 <Page
-	title={`Wordbook | ${SITE_SEO_TITLE}`}
-	description="A multilingual terminology database for technical translators — searchable, with provenance."
+	title={`Beijerterm | ${SITE_SEO_TITLE}`}
+	description="Beijerterm — a curated multilingual terminology database for technical translators, searchable with full provenance."
 >
 	<section class="wb-hero">
-		<h1>Wordbook</h1>
-		<p class="wb-tag">A multilingual terminology database for technical translators.</p>
+		<h1>Beijerterm</h1>
+		<p class="wb-tag">A curated multilingual terminology database for technical translators.</p>
 
 		<div class="wb-search">
-			<label class="sr-only" for="wb-q">Search the Wordbook</label>
+			<label class="sr-only" for="wb-q">Search Beijerterm</label>
 			<input
 				id="wb-q"
 				type="search"
@@ -44,7 +44,7 @@ const apiBase = (
 	</section>
 
 	<section class="wb-sources">
-		<h2>Inside the Wordbook</h2>
+		<h2>Sources behind Beijerterm</h2>
 		<p class="wb-tag">
 			The collection of glossaries, term lists and reference works behind the search.
 			Click any source for its full publication metadata.
@@ -700,7 +700,7 @@ const apiBase = (
 		try {
 			meta = await getJSON('/meta');
 		} catch (err) {
-			counts.textContent = 'Could not reach the Wordbook search API. ' + err.message;
+			counts.textContent = 'Could not reach the Beijerterm search API. ' + err.message;
 			document.getElementById('wb-sources-wrap').innerHTML =
 				'<p class="wb-loading">Could not load sources.</p>';
 			return;
