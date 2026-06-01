@@ -11,11 +11,13 @@ interface Props {
 	title: string;
 	description: string;
 	image?: ImageMetadata;
+	/** Override the canonical URL (e.g. to point a launcher page at another site). */
+	canonical?: string;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const { title, description, image = FallbackImage, canonical } = Astro.props;
 
-const { title, description, image = FallbackImage } = Astro.props;
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
 
 // Font theme definitions
 const fontThemes: Record<string, { heading: string; body: string; googleUrl?: string }> = {
