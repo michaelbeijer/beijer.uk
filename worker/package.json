@@ -10,6 +10,6 @@
     "load:remote": "wrangler d1 execute wordbook --remote --file=./data/d1_dump.sql"
   },
   "devDependencies": {
-    "wrangler": "^3.78.0"
+    "wrangler": "^4.75.0"
   }
 }
