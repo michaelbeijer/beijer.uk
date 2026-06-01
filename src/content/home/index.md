@@ -14,12 +14,12 @@ intro: 'I''ve spent over 30 years working as a Dutch patent translator and Dutch
 
 - **Patents** – translation, editing, and terminology work. I make sure nothing gets lost between the legal and the technical.
 - **Dutch technical translation** – as a Dutch technical translator I handle manuals, software strings, specifications and documentation of all kinds
-- **Terminology** – building and maintaining termbases, extraction, and cleanup.
+- **Terminology** – building and maintaining termbases and terminology software, extraction, cleanup and consulting
 
 ## Side projects
 
-- <a href="https://supervertaler.com" target="_blank" rel="noopener">Supervertaler</a> – CAT-tool companion for AI-assisted translation workflows
-- <a href="https://beijerterm.com" target="_blank" rel="noopener">Beijerterm</a> – curated, searchable multilingual terminology database for technical translators
+- <a href="https://supervertaler.com" target="_blank" rel="noopener">Supervertaler</a> – AI-enhanced translation tools
+- <a href="https://beijerterm.com" target="_blank" rel="noopener">Beijerterm</a> – curated, searchable multilingual terminology database
 - <a href="https://github.com/michaelbeijer/WordCounter" target="_blank" rel="noopener">WordCounter</a> – free and open-source word counting software for translators
 - <a href="https://tranzlashion.com" target="_blank" rel="noopener">Tranzlashion.com</a> – parody translation agency website
 
