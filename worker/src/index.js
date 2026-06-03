@@ -70,14 +70,20 @@ function json(data, origin, status = 200, extra = {}) {
  * ("octrooi" also matches "octrooien"); with wholeWord the tokens match whole
  * words only. Mirrors the local search.py logic.
  */
-function toFtsQuery(q, wholeWord) {
+function toFtsQuery(q, wholeWord, cols) {
 	const cleaned = (q || '').replace(/["'()*:.,;?!\[\]{}^$~-]/g, ' ').trim();
 	if (!cleaned) return '';
 	const tokens = cleaned.split(/\s+/).filter(Boolean);
 	if (!tokens.length) return '';
 	const suffix = wholeWord ? '' : '*';
-	return tokens.map((t) => `"${t}"${suffix}`).join(' AND ');
+	// Restrict matching to the chosen FTS columns ("{a b abbr} : tok").
+	const colFilter = (cols && cols.length) ? `{${cols.join(' ')}} : ` : '';
+	return tokens.map((t) => `${colFilter}"${t}"${suffix}`).join(' AND ');
 }
+
+// "Search in" scopes → FTS columns. Default is terms only (headword sides +
+// abbreviation), so long definitions/notes don't add noise unless asked for.
+const SCOPE_COLS = { terms: ['a', 'b', 'abbr'], def: ['def'], notes: ['notes'] };
 
 /**
  * Unicode-aware fold for case/accent-sensitive refinement. Diacritics are
@@ -106,8 +112,15 @@ async function handleSearch(url, env, origin) {
 	const has = (url.searchParams.get('has') || '')
 		.split(',').map((s) => s.trim()).filter((h) => HAS_COLS[h]);
 
+	// "Search in" scope. Default (none/invalid) is terms only.
+	let cols = [];
+	for (const f of (url.searchParams.get('fields') || '').split(',').map((s) => s.trim())) {
+		if (SCOPE_COLS[f]) cols.push(...SCOPE_COLS[f]);
+	}
+	cols = [...new Set(cols.length ? cols : SCOPE_COLS.terms)];
+
 	// Exact mode matches whole strings, so its FTS prefilter uses whole-word tokens.
-	const fts = toFtsQuery(q, wholeWord || exactMode);
+	const fts = toFtsQuery(q, wholeWord || exactMode, cols);
 	if (!fts) return json({ query: q, entries: [] }, origin);
 
 	// SQL field-presence filters.
@@ -147,8 +160,8 @@ async function handleSearch(url, env, origin) {
 			if (exactMode) {
 				return [r.a, r.b, r.abbr].some((f) => f && normFold(f, caseSens, accentSens) === nq);
 			}
-			return [r.a, r.b, r.def, r.notes, r.abbr].some(
-				(f) => f && normFold(f, caseSens, accentSens).includes(nq));
+			// Refine only over the searched columns (result keys match column names).
+			return cols.some((c) => r[c] && normFold(r[c], caseSens, accentSens).includes(nq));
 		}).slice(0, limit);
 	}
 
