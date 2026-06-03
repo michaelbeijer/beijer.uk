@@ -66,16 +66,32 @@ function json(data, origin, status = 200, extra = {}) {
 
 /**
  * Turn a user string into a safe FTS5 MATCH expression: strip FTS operator
- * punctuation, then AND the tokens together with prefix matching so "octrooi"
- * also matches "octrooien". Mirrors the local search.py logic.
+ * punctuation, then AND the tokens together. By default each token is a prefix
+ * ("octrooi" also matches "octrooien"); with wholeWord the tokens match whole
+ * words only. Mirrors the local search.py logic.
  */
-function toFtsQuery(q) {
+function toFtsQuery(q, wholeWord) {
 	const cleaned = (q || '').replace(/["'()*:.,;?!\[\]{}^$~-]/g, ' ').trim();
 	if (!cleaned) return '';
 	const tokens = cleaned.split(/\s+/).filter(Boolean);
 	if (!tokens.length) return '';
-	return tokens.map((t) => `"${t}"*`).join(' AND ');
+	const suffix = wholeWord ? '' : '*';
+	return tokens.map((t) => `"${t}"${suffix}`).join(' AND ');
 }
+
+/**
+ * Unicode-aware fold for case/accent-sensitive refinement. Diacritics are
+ * stripped unless accentSensitive; text is lower-cased unless caseSensitive.
+ */
+function normFold(s, caseSensitive, accentSensitive) {
+	let x = s || '';
+	if (!accentSensitive) x = x.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+	if (!caseSensitive) x = x.toLowerCase();
+	return x;
+}
+
+// Field-presence filters: column must be non-empty.
+const HAS_COLS = { abbr: 'e.abbr', def: 'e.def', notes: 'e.notes' };
 
 async function handleSearch(url, env, origin) {
 	const q = url.searchParams.get('q') || '';
@@ -83,13 +99,32 @@ async function handleSearch(url, env, origin) {
 	if (!Number.isFinite(limit) || limit <= 0) limit = DEFAULT_LIMIT;
 	limit = Math.min(limit, MAX_LIMIT);
 
-	const fts = toFtsQuery(q);
+	const exactMode  = url.searchParams.get('exact')  === '1';
+	const wholeWord  = url.searchParams.get('whole')  === '1';
+	const caseSens   = url.searchParams.get('case')   === '1';
+	const accentSens = url.searchParams.get('accent') === '1';
+	const has = (url.searchParams.get('has') || '')
+		.split(',').map((s) => s.trim()).filter((h) => HAS_COLS[h]);
+
+	// Exact mode matches whole strings, so its FTS prefilter uses whole-word tokens.
+	const fts = toFtsQuery(q, wholeWord || exactMode);
 	if (!fts) return json({ query: q, entries: [] }, origin);
+
+	// SQL field-presence filters.
+	const whereExtra = has.length
+		? ' AND ' + has.map((h) => `${HAS_COLS[h]} IS NOT NULL AND TRIM(${HAS_COLS[h]}) <> ''`).join(' AND ')
+		: '';
 
 	// Exact whole-string matches on the headword or abbreviation must win over
 	// mere prefix matches: a query of "AFF" should surface the abbreviation
 	// "AFF" ahead of "afferent"/"affidavit"/… which only share the "aff" prefix.
 	const exact = (q || '').trim();
+
+	// Case/accent/exact need a Unicode-aware refinement the FTS tokenizer can't
+	// do (it folds case + diacritics), so pull a larger candidate set ordered by
+	// boost+bm25 and slice after filtering. Otherwise the SQL LIMIT is the cut.
+	const refine = exactMode || caseSens || accentSens;
+	const fetchN = refine ? 1200 : limit;
 
 	const stmt = env.DB.prepare(
 		`SELECT e.id, e.la, e.a, e.qa, e.lb, e.b, e.qb,
@@ -97,13 +132,26 @@ async function handleSearch(url, env, origin) {
 		        bm25(entries_fts) AS rank
 		 FROM entries_fts
 		 JOIN entries e ON e.id = entries_fts.rowid
-		 WHERE entries_fts MATCH ?
+		 WHERE entries_fts MATCH ?${whereExtra}
 		 ORDER BY (UPPER(e.a) = UPPER(?) OR UPPER(COALESCE(e.abbr, '')) = UPPER(?)) DESC,
 		          rank
 		 LIMIT ?`
-	).bind(fts, exact, exact, limit);
+	).bind(fts, exact, exact, fetchN);
 
-	const { results } = await stmt.all();
+	let { results } = await stmt.all();
+	results = results || [];
+
+	if (refine) {
+		const nq = normFold(exact, caseSens, accentSens);
+		results = results.filter((r) => {
+			if (exactMode) {
+				return [r.a, r.b, r.abbr].some((f) => f && normFold(f, caseSens, accentSens) === nq);
+			}
+			return [r.a, r.b, r.def, r.notes, r.abbr].some(
+				(f) => f && normFold(f, caseSens, accentSens).includes(nq));
+		}).slice(0, limit);
+	}
+
 	// Drop the rank field from the wire payload; strip null/empty keys to keep
 	// it compact, matching the old snapshot shape.
 	const entries = (results || []).map((r) => {
