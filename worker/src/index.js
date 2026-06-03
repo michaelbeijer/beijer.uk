@@ -86,6 +86,11 @@ async function handleSearch(url, env, origin) {
 	const fts = toFtsQuery(q);
 	if (!fts) return json({ query: q, entries: [] }, origin);
 
+	// Exact whole-string matches on the headword or abbreviation must win over
+	// mere prefix matches: a query of "AFF" should surface the abbreviation
+	// "AFF" ahead of "afferent"/"affidavit"/… which only share the "aff" prefix.
+	const exact = (q || '').trim();
+
 	const stmt = env.DB.prepare(
 		`SELECT e.id, e.la, e.a, e.qa, e.lb, e.b, e.qb,
 		        e.reg, e.pos, e.dom, e.def, e.notes, e.abbr, e.srcs,
@@ -93,9 +98,10 @@ async function handleSearch(url, env, origin) {
 		 FROM entries_fts
 		 JOIN entries e ON e.id = entries_fts.rowid
 		 WHERE entries_fts MATCH ?
-		 ORDER BY rank
+		 ORDER BY (UPPER(e.a) = UPPER(?) OR UPPER(COALESCE(e.abbr, '')) = UPPER(?)) DESC,
+		          rank
 		 LIMIT ?`
-	).bind(fts, limit);
+	).bind(fts, exact, exact, limit);
 
 	const { results } = await stmt.all();
 	// Drop the rank field from the wire payload; strip null/empty keys to keep
@@ -134,19 +140,26 @@ async function handleMeta(env, origin) {
 	}
 	const [{ results: rawPairs }, count] = await Promise.all([
 		env.DB.prepare(
-			`SELECT DISTINCT la, lb FROM entries WHERE la IS NOT NULL AND lb IS NOT NULL`
+			// Include monolingual entries (lb IS NULL): same-language glossaries
+			// (e.g. English-only abbreviation lists) must be advertised too, as an
+			// X→X pair, or the UI never offers a direction that can reach them.
+			`SELECT DISTINCT la, lb FROM entries WHERE la IS NOT NULL`
 		).all(),
 		env.DB.prepare(`SELECT COUNT(*) AS n FROM entries`).first(),
 	]);
 
 	// Collapse (la, lb) into unordered pairs, matching the old lang_pairs shape.
+	// A monolingual entry (no target language) collapses to an X→X pair so the
+	// UI can offer a same-language direction for it.
 	const seen = new Set();
 	const lang_pairs = [];
 	for (const p of rawPairs || []) {
-		const key = [p.la, p.lb].sort().join('>');
+		const a0 = p.la;
+		const b0 = p.lb == null ? p.la : p.lb;
+		const key = [a0, b0].sort().join('>');
 		if (seen.has(key)) continue;
 		seen.add(key);
-		const [a, b] = [p.la, p.lb].sort();
+		const [a, b] = [a0, b0].sort();
 		lang_pairs.push({ a, b });
 	}
 
