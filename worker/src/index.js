@@ -141,7 +141,7 @@ async function handleSearch(url, env, origin) {
 
 	const stmt = env.DB.prepare(
 		`SELECT e.id, e.la, e.a, e.qa, e.lb, e.b, e.qb,
-		        e.reg, e.pos, e.dom, e.def, e.notes, e.abbr, e.srcs,
+		        e.reg, e.pos, e.dom, e.def, e.notes, e.abbr, e.links, e.srcs,
 		        bm25(entries_fts) AS rank
 		 FROM entries_fts
 		 JOIN entries e ON e.id = entries_fts.rowid
@@ -177,6 +177,7 @@ async function handleSearch(url, env, origin) {
 		if (r.def) o.def = r.def;
 		if (r.notes) o.notes = r.notes;
 		if (r.abbr) o.abbr = r.abbr;
+		if (r.links) o.links = r.links;
 		if (r.srcs) o.src = r.srcs;
 		return o;
 	});
