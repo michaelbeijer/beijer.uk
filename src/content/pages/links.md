@@ -11,7 +11,8 @@ This page contains a curated list of resources for translators, including paymen
 
 ### Groups‌.io mailing lists
 
-* [AI4LanguageProfessionals.groups.io](https://ai4languageprofessionals.groups.io/g/main) – "A group created to exchange information about AI for translators, sponsored by CotranslatorAI. Discussion of other programs and AI solutions is also welcome" (841 Members)
+* [TranslationTech.io](https://translationtech.io/index.php) – A community for translators & localisers who work with CAT tools, AI, automation and terminology
+*  [AI4LanguageProfessionals.groups.io](https://ai4languageprofessionals.groups.io/g/main) – "A group created to exchange information about AI for translators, sponsored by CotranslatorAI. Discussion of other programs and AI solutions is also welcome" (841 Members)
 * [IT help for translators - IThelpforXL8](https://groups.io/g/IThelpforXL8/topics)
 * [Boekvertalerslijst](https://groups.io/g/boekvertalers) – Een lijst voor mensen die boeken naar en uit het Nederlands vertalen, waar we elkaar bijstaan als we zelf net even niet op die ene uitdrukking kunnen komen, maar waar ook ruimte is voor gezelligheid. (572 members)
 * DejaVu user forum (https://groups.io/g/DejaVu)
