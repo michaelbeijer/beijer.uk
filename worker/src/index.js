@@ -181,7 +181,44 @@ async function handleSearch(url, env, origin) {
 		if (r.srcs) o.src = r.srcs;
 		return o;
 	});
-	return json({ query: q, entries }, origin);
+
+	// Consolidated senses (Phase 2). Each entry may carry a sense-group id (sg);
+	// we return the referenced sense groups once so the front-end can render the
+	// collapsed card (group a headword's result rows by sense). Wrapped in a
+	// try/catch and kept OUT of the main FTS query so an older D1 dump without
+	// the `sg` column / `sense_groups` table degrades gracefully to no senses —
+	// search still works regardless of Worker-vs-dump deploy order.
+	let senses = [];
+	try {
+		const ids = entries.map((e) => e.id).filter((x) => x != null);
+		if (ids.length) {
+			const ph = ids.map(() => '?').join(',');
+			const { results: sgMap } = await env.DB.prepare(
+				`SELECT id, sg FROM entries WHERE id IN (${ph})`
+			).bind(...ids).all();
+			const id2sg = {};
+			for (const r of sgMap || []) if (r.sg != null) id2sg[r.id] = r.sg;
+			for (const e of entries) if (id2sg[e.id] != null) e.sg = id2sg[e.id];
+			const sgIds = [...new Set(Object.values(id2sg))];
+			if (sgIds.length) {
+				const ph2 = sgIds.map(() => '?').join(',');
+				const { results: sgRows } = await env.DB.prepare(
+					`SELECT id, a, "key" AS k, no, label, tr, dom
+					 FROM sense_groups WHERE id IN (${ph2}) ORDER BY "key", no`
+				).bind(...sgIds).all();
+				senses = (sgRows || []).map((s) => {
+					const o = { id: s.id, a: s.a, k: s.k, no: s.no, label: s.label };
+					if (s.tr) o.tr = s.tr;
+					if (s.dom) o.dom = s.dom;
+					return o;
+				});
+			}
+		}
+	} catch (_) {
+		senses = []; // dump predates senses — degrade to flat results
+	}
+
+	return json({ query: q, entries, senses }, origin);
 }
 
 async function handleMeta(env, origin) {
