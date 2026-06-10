@@ -9,8 +9,6 @@ This page contains a curated list of resources for translators, including paymen
 
 ## Forums and mailing lists
 
-### My own
-* [TranslationTech.io](https://translationtech.io/index.php) – A community for translators & localisers who work with CAT tools, AI, automation and terminology
 
 ### Groups‌.io mailing lists
 
