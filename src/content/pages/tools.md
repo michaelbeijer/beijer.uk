@@ -23,10 +23,10 @@ I build and maintain tools that support real-world translation workflows. Everyt
 
 ![Supervertaler for Trados – TermLens inline terminology, Term Picker, and Supervertaler Assistant in Trados Studio](/blog-images/supervertaler-for-trados.png)
 
-[Supervertaler for Trados](https://supervertaler.com/trados/) is a Trados Studio plugin bringing inline contextual terminology display (TermLens), an AI chat assistant, batch translation, and a prompt library directly into Trados Studio. Two paid tiers: TermLens (€10/month) for terminology features, and TermLens + Supervertaler Assistant (€15/month) adding AI chat, batch translate, and prompt library. 14-day free trial, no credit card required.
+[Supervertaler for Trados](https://supervertaler.com/trados/) is a Trados Studio plugin bringing inline contextual terminology display (TermLens), an AI chat assistant, batch translation, and a prompt library directly into Trados Studio. One price, everything included: €20/month or €200/year (two months free). 14-day free trial, no credit card required.
 - [Product page](https://supervertaler.com/trados/)
 - [RWS App Store](https://appstore.rws.com/plugin/432)
-- [Help documentation](https://supervertaler.gitbook.io/trados)
+- [Help documentation](https://docs.supervertaler.com/trados/)
 - [Source on GitHub](https://github.com/Supervertaler/Supervertaler-for-Trados)
 - 🎬 [Getting Started screencast](https://www.youtube.com/watch?v=bOIwMAoP7xc) (16 min) – a walkthrough of all the basics
 
