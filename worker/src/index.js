@@ -203,13 +203,13 @@ async function handleSearch(url, env, origin) {
 			if (sgIds.length) {
 				const ph2 = sgIds.map(() => '?').join(',');
 				const { results: sgRows } = await env.DB.prepare(
-					`SELECT id, a, "key" AS k, no, label, tr, dom
+					`SELECT *
 					 FROM sense_groups WHERE id IN (${ph2}) ORDER BY "key", no`
 				).bind(...sgIds).all();
 				senses = (sgRows || []).map((s) => {
-					const o = { id: s.id, a: s.a, k: s.k, no: s.no, label: s.label };
+					const o = { id: s.id, a: s.a, k: s.key, no: s.no, label: s.label };
 					if (s.tr) o.tr = s.tr;
-					if (s.dom) o.dom = s.dom;
+					if (s.dom) o.dom = s.dom; if (s.def) o.def = s.def; if (s.notes) o.notes = s.notes;
 					return o;
 				});
 			}
