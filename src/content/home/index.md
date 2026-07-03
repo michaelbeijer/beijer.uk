@@ -16,7 +16,7 @@ intro: 'I''ve spent over 30 years working as a Dutch patent translator and Dutch
 - **Dutch technical translation** – as a Dutch technical translator I handle manuals, software strings, specifications and documentation of all kinds
 - **Terminology** – building and maintaining termbases and terminology software, extraction, cleanup and consulting
 
-## Side projects
+## Tools I've built
 
 - <a href="https://supervertaler.com" target="_blank" rel="noopener">Supervertaler</a> – AI-enhanced translation tools
 - <a href="https://superterm.io" target="_blank" rel="noopener">SuperTerm</a> – curated, searchable multilingual terminology database
