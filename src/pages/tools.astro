@@ -174,4 +174,33 @@ const tools = await Promise.all(
 	.tools-doc h3 {
 		margin-top: 1.75em;
 	}
+
+	/* On mobile the wrapped row reads as an accidental grid, so stack the tabs
+	   into a full-width list — the same treatment as the collapsed header nav.
+	   Active tool: bold with a left accent bar instead of the desktop underline. */
+	@media (max-width: 720px) {
+		.tab-list {
+			flex-direction: column;
+			flex-wrap: nowrap;
+			gap: 0;
+			border-bottom: none;
+			border-top: 1px solid rgb(var(--border));
+		}
+
+		.tab {
+			width: 100%;
+			text-align: left;
+			padding: 0.7em 0 0.7em 0.85em;
+			margin-bottom: 0;
+			border-bottom: 1px solid rgb(var(--border));
+			border-left: 3px solid transparent;
+		}
+
+		.tab[aria-selected='true'] {
+			color: rgb(var(--text));
+			font-weight: 700;
+			border-bottom-color: rgb(var(--border));
+			border-left-color: rgb(var(--text));
+		}
+	}
 </style>
