@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.16.0] - 2026-07-03
+
+### Changed
+- **Tools page redesigned as tabs** – each tool (Supervertaler, SuperTerm, WordCounter, Beijer.ink) now has its own tab instead of one long scroll, so it's clear where each one starts and ends. Desktop uses the site's underline-nav style; on mobile the tabs stack into a full-width list (matching the collapsed header nav) rather than wrapping into an odd 2×2 grid. Each tool is now its own entry in a new `tools` content collection (`src/content/tools/`), so adding another is just a new Markdown file.
+- **Homepage "Side projects" heading renamed to "Tools I've built"** – better reflects that these are finished, maintained tools (some paid) rather than hobby projects.
+
+### Removed
+- **SuperTerm dropped from the top nav** – it's still reachable from the Tools page and the homepage "Tools I've built" list (and still linked in the footer), so the top nav goes back to being about translation services rather than singling out one product.
+
 ## [1.15.0] - 2026-05-21
 
 ### Fixed
