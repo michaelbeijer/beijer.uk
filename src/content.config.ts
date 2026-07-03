@@ -26,6 +26,16 @@ const pages = defineCollection({
 	}),
 });
 
+const tools = defineCollection({
+	// Individual tool entries rendered as tabs on the /tools page.
+	loader: glob({ base: './src/content/tools', pattern: '**/*.md' }),
+	schema: z.object({
+		title: z.string(),
+		order: z.number(),
+		tagline: z.string().optional(),
+	}),
+});
+
 const home = defineCollection({
 	// Homepage content
 	loader: glob({ base: './src/content/home', pattern: '**/*.md' }),
@@ -45,4 +55,4 @@ const blogPage = defineCollection({
 	}),
 });
 
-export const collections = { blog, pages, home, 'blog-page': blogPage };
+export const collections = { blog, pages, tools, home, 'blog-page': blogPage };

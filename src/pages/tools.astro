@@ -1,27 +1,177 @@
 ---
 import Page from '../layouts/Page.astro';
-import { getEntry, render } from 'astro:content';
+import { getEntry, getCollection, render } from 'astro:content';
 import { SITE_SEO_TITLE } from '../consts';
 
 const page = await getEntry('pages', 'tools');
 if (!page) throw new Error('tools.md not found');
-const { Content } = await render(page);
+const { Content: Intro } = await render(page);
+
+const entries = (await getCollection('tools')).sort(
+	(a, b) => a.data.order - b.data.order,
+);
+const tools = await Promise.all(
+	entries.map(async (entry) => ({
+		id: entry.id,
+		data: entry.data,
+		Content: (await render(entry)).Content,
+	})),
+);
 ---
 
 <Page title={`${page.data.title} | ${SITE_SEO_TITLE}`} description={page.data.description}>
 	<h1>{page.data.title}</h1>
-	<div class="tools-doc">
-		<Content />
+	<div class="tools-intro">
+		<Intro />
+	</div>
+
+	<div class="tools-tabs">
+		<div class="tab-list" role="tablist" aria-label="Tools">
+			{tools.map((tool, i) => (
+				<button
+					class="tab"
+					role="tab"
+					data-tool={tool.id}
+					id={`tab-${tool.id}`}
+					aria-controls={`panel-${tool.id}`}
+					aria-selected={i === 0 ? 'true' : 'false'}
+					tabindex={i === 0 ? 0 : -1}
+				>
+					{tool.data.title}
+				</button>
+			))}
+		</div>
+
+		{tools.map((tool, i) => (
+			<section
+				class="tab-panel"
+				role="tabpanel"
+				id={`panel-${tool.id}`}
+				aria-labelledby={`tab-${tool.id}`}
+				tabindex="0"
+				hidden={i !== 0}
+			>
+				<div class="panel-head">
+					<h2>{tool.data.title}</h2>
+					{tool.data.tagline && <p class="panel-tagline">{tool.data.tagline}</p>}
+				</div>
+				<div class="tools-doc">
+					<tool.Content />
+				</div>
+			</section>
+		))}
 	</div>
 </Page>
 
-<style is:global>
-	/* A light divider above each top-level tool section, so they're easier to
-	   tell apart. Only the `##` tool headings are h2 — the Supervertaler
-	   sub-products (Workbench / for Trados) are h3 and stay undivided. */
-	.tools-doc h2 {
-		border-top: 1px solid rgb(var(--border));
-		padding-top: 1.75em;
-		margin-top: 2.5em;
+<script>
+	document.querySelectorAll<HTMLElement>('.tools-tabs').forEach((container) => {
+		const tabs = Array.from(container.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+		const panels = Array.from(container.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+		if (!tabs.length) return;
+
+		function select(index: number, focus = false) {
+			tabs.forEach((tab, i) => {
+				const selected = i === index;
+				tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+				tab.tabIndex = selected ? 0 : -1;
+				panels[i].hidden = !selected;
+			});
+			const id = tabs[index].dataset.tool;
+			if (id) history.replaceState(null, '', `#${id}`);
+			if (focus) tabs[index].focus();
+		}
+
+		tabs.forEach((tab, i) => {
+			tab.addEventListener('click', () => select(i));
+			tab.addEventListener('keydown', (e) => {
+				let next: number | null = null;
+				if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % tabs.length;
+				else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + tabs.length) % tabs.length;
+				else if (e.key === 'Home') next = 0;
+				else if (e.key === 'End') next = tabs.length - 1;
+				if (next !== null) {
+					e.preventDefault();
+					select(next, true);
+				}
+			});
+		});
+
+		// Open a specific tool if the URL points at one (e.g. /tools#superterm).
+		const hash = decodeURIComponent(location.hash.slice(1));
+		const initial = tabs.findIndex((tab) => tab.dataset.tool === hash);
+		if (initial > 0) select(initial);
+	});
+</script>
+
+<style>
+	.tools-intro {
+		margin-bottom: 2em;
+	}
+
+	/* Tabs mirror the header nav: plain text labels on a shared baseline,
+	   with an underline marking the active tool. */
+	.tab-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35em 1.5em;
+		margin-bottom: 2.25em;
+		border-bottom: 1px solid rgb(var(--border));
+	}
+
+	.tab {
+		appearance: none;
+		background: none;
+		border: none;
+		border-bottom: 2px solid transparent;
+		margin-bottom: -1px;
+		padding: 0.5em 0;
+		color: rgb(var(--muted));
+		font: inherit;
+		font-weight: 600;
+		line-height: 1.2;
+		cursor: pointer;
+		transition:
+			color 0.15s ease,
+			border-color 0.15s ease;
+	}
+
+	.tab:hover {
+		color: rgb(var(--text));
+	}
+
+	.tab[aria-selected='true'] {
+		color: rgb(var(--text));
+		border-bottom-color: rgb(var(--text));
+	}
+
+	.tab:focus-visible {
+		outline: 2px solid rgb(var(--accent));
+		outline-offset: 3px;
+	}
+
+	.tab-panel[hidden] {
+		display: none;
+	}
+
+	.tab-panel:focus {
+		outline: none;
+	}
+
+	.panel-head {
+		margin-bottom: 1.5em;
+	}
+
+	.panel-head h2 {
+		margin: 0;
+	}
+
+	.panel-tagline {
+		margin: 0.25em 0 0;
+		color: rgb(var(--muted));
+		font-size: 0.9em;
+	}
+
+	.tools-doc h3 {
+		margin-top: 1.75em;
 	}
 </style>
