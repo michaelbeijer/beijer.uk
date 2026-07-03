@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.17.0] - 2026-07-03
+
+### Changed
+- **Brand name restyled SuperTerm → Superterm** (lowercase "t") everywhere it's shown – the Superterm page, Tools page, homepage list, footer link and admin label. The `superterm.io` URL and `/superterm` route are unchanged.
+
 ## [1.16.0] - 2026-07-03
 
 ### Changed

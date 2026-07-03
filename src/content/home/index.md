@@ -19,7 +19,7 @@ intro: 'I''ve spent over 30 years working as a Dutch patent translator and Dutch
 ## Tools I've built
 
 - <a href="https://supervertaler.com" target="_blank" rel="noopener">Supervertaler</a> – AI-enhanced translation tools
-- <a href="https://superterm.io" target="_blank" rel="noopener">SuperTerm</a> – curated, searchable multilingual terminology database
+- <a href="https://superterm.io" target="_blank" rel="noopener">Superterm</a> – curated, searchable multilingual terminology database
 - <a href="https://github.com/michaelbeijer/WordCounter" target="_blank" rel="noopener">WordCounter</a> – free and open-source word counting software for translators
 - <a href="https://tranzlashion.com" target="_blank" rel="noopener">Tranzlashion.com</a> – parody translation agency website
 
