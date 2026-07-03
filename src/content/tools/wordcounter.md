@@ -1,6 +1,6 @@
 ---
 title: WordCounter
-order: 3
+order: 4
 tagline: Free, open-source word counting for translators
 ---
 

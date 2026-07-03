@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Activity — Michael Beijer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --bg: #0f1114;
+    --bg-card: #16181d;
+    --bg-card-hover: #1c1f26;
+    --border: #2a2d35;
+    --border-subtle: #1e2128;
+    --text: #c8ccd4;
+    --text-muted: #6b7280;
+    --text-dim: #4b5058;
+    --accent: #7eb8da;
+    --accent-dim: rgba(126, 184, 218, 0.12);
+    --green: #5fa07a;
+    --green-dim: rgba(95, 160, 122, 0.15);
+    --orange: #d4976a;
+    --purple: #a78bca;
+    --mono: 'JetBrains Mono', monospace;
+    --serif: 'Source Serif 4', Georgia, serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+
+  .github-widget {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .widget-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .widget-header h2 {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+    letter-spacing: -0.01em;
+  }
+
+  .widget-header p {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 300;
+  }
+
+  .widget-header a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .widget-header a:hover {
+    text-decoration: underline;
+  }
+
+  /* Profile card */
+  .profile-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    margin-bottom: 2rem;
+  }
+
+  .profile-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .profile-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .profile-name {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.15rem;
+  }
+
+  .profile-bio {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-weight: 300;
+  }
+
+  .profile-stats {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+  }
+
+  /* Activity feed */
+  .activity-feed {
+    margin-bottom: 2rem;
+  }
+
+  .activity-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0 1rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background 0.15s;
+  }
+
+  .activity-item:last-child {
+    border-bottom: none;
+  }
+
+  .activity-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    margin-top: 0.1rem;
+    flex-shrink: 0;
+  }
+
+  .activity-icon.push { background: var(--green-dim); color: var(--green); }
+  .activity-icon.issue { background: var(--accent-dim); color: var(--accent); }
+  .activity-icon.pr { background: rgba(167, 139, 202, 0.12); color: var(--purple); }
+  .activity-icon.comment { background: rgba(212, 151, 106, 0.12); color: var(--orange); }
+  .activity-icon.star { background: rgba(212, 180, 106, 0.12); color: #d4b46a; }
+  .activity-icon.fork { background: rgba(120, 160, 200, 0.1); color: #78a0c8; }
+  .activity-icon.create { background: var(--green-dim); color: var(--green); }
+  .activity-icon.other { background: rgba(107, 114, 128, 0.1); color: var(--text-muted); }
+
+  .activity-body {
+    min-width: 0;
+  }
+
+  .activity-desc {
+    font-size: 0.82rem;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .activity-desc strong {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .activity-desc .repo {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 400;
+  }
+
+  .activity-desc .repo:hover {
+    text-decoration: underline;
+  }
+
+  .activity-meta {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    margin-top: 0.2rem;
+    font-weight: 300;
+  }
+
+  .activity-detail {
+    margin-top: 0.4rem;
+    padding: 0.5rem 0.7rem;
+    background: rgba(126, 184, 218, 0.04);
+    border-left: 2px solid var(--border);
+    border-radius: 0 3px 3px 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    max-height: 3.2em;
+    overflow: hidden;
+  }
+
+  /* Repos */
+  .repos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 540px) {
+    .repos-grid { grid-template-columns: 1fr; }
+  }
+
+  .repo-card {
+    padding: 0.85rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .repo-card:hover {
+    border-color: var(--border);
+    background: var(--bg-card-hover);
+  }
+
+  .repo-name {
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-weight: 400;
+    margin-bottom: 0.25rem;
+  }
+
+  .repo-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .repo-meta {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+    font-size: 0.65rem;
+    color: var(--text-dim);
+  }
+
+  .repo-meta span::before {
+    margin-right: 0.25rem;
+  }
+
+  /* Loading */
+  .loading {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    font-weight: 300;
+  }
+
+  .loading-dot {
+    display: inline-block;
+    animation: pulse 1.4s infinite both;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
+  }
+
+  /* Error */
+  .error-msg {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 300;
+  }
+
+  .error-msg a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* Load more */
+  .load-more {
+    display: block;
+    width: 100%;
+    padding: 0.65rem;
+    margin-top: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .load-more:hover {
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  /* Footer */
+  .widget-footer {
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    text-align: center;
+  }
+
+  .widget-footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .widget-footer a:hover {
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+
+<div class="github-widget" id="github-widget">
+  <div class="widget-header">
+    <h2>Open source activity</h2>
+    <p>Live from <a href="https://github.com/michaelbeijer" target="_blank" rel="noopener">github.com/michaelbeijer</a></p>
+  </div>
+
+  <div id="profile-section">
+    <div class="loading">
+      <span class="loading-dot">·</span>
+      <span class="loading-dot">·</span>
+      <span class="loading-dot">·</span>
+    </div>
+  </div>
+
+  <div id="repos-section"></div>
+
+  <div id="activity-section">
+    <div class="loading">
+      <span class="loading-dot">·</span>
+      <span class="loading-dot">·</span>
+      <span class="loading-dot">·</span>
+    </div>
+  </div>
+
+  <div class="widget-footer" id="widget-footer" style="display:none;">
+    Data from the <a href="https://docs.github.com/en/rest/activity/events" target="_blank" rel="noopener">GitHub Events API</a> · updates every few minutes
+  </div>
+</div>
+
+<script>
+const USERNAME = 'michaelbeijer';
+const API = 'https://api.github.com';
+const EVENTS_PER_PAGE = 10;
+
+let allEvents = [];
+let displayedCount = 0;
+
+// — Helpers —
+
+function timeAgo(dateStr) {
+  const now = new Date();
+  const then = new Date(dateStr);
+  const diff = Math.floor((now - then) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
+  if (diff < 2592000) return `${Math.floor(diff / 604800)}w ago`;
+  return then.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
+
+function repoLink(repoName) {
+  return `<a class="repo" href="https://github.com/${repoName}" target="_blank" rel="noopener">${repoName.split('/')[1]}</a>`;
+}
+
+function truncate(str, n) {
+  if (!str) return '';
+  return str.length > n ? str.slice(0, n).trim() + '…' : str;
+}
+
+// — Event descriptions —
+
+function describeEvent(event) {
+  const repo = repoLink(event.repo.name);
+  const p = event.payload;
+
+  switch (event.type) {
+    case 'PushEvent': {
+      const count = p.commits ? p.commits.length : 0;
+      const commitWord = count === 1 ? 'commit' : 'commits';
+      const msg = p.commits && p.commits.length > 0
+        ? truncate(p.commits[p.commits.length - 1].message.split('\n')[0], 80)
+        : null;
+      return {
+        icon: 'push',
+        symbol: '↑',
+        desc: `Pushed ${count} ${commitWord} to ${repo}`,
+        detail: msg
+      };
+    }
+
+    case 'IssueCommentEvent': {
+      const title = truncate(p.issue?.title, 60);
+      return {
+        icon: 'comment',
+        symbol: '💬',
+        desc: `Commented on <strong>${title}</strong> in ${repo}`,
+        detail: truncate(p.comment?.body, 120)
+      };
+    }
+
+    case 'IssuesEvent': {
+      const action = p.action;
+      const title = truncate(p.issue?.title, 60);
+      return {
+        icon: 'issue',
+        symbol: action === 'opened' ? '◉' : '○',
+        desc: `${action.charAt(0).toUpperCase() + action.slice(1)} issue <strong>${title}</strong> in ${repo}`,
+        detail: action === 'opened' ? truncate(p.issue?.body, 120) : null
+      };
+    }
+
+    case 'PullRequestEvent': {
+      const action = p.action;
+      const title = truncate(p.pull_request?.title, 60);
+      return {
+        icon: 'pr',
+        symbol: '⑂',
+        desc: `${action.charAt(0).toUpperCase() + action.slice(1)} PR <strong>${title}</strong> in ${repo}`,
+        detail: null
+      };
+    }
+
+    case 'PullRequestReviewEvent': {
+      const title = truncate(p.pull_request?.title, 60);
+      return {
+        icon: 'pr',
+        symbol: '✓',
+        desc: `Reviewed PR <strong>${title}</strong> in ${repo}`,
+        detail: null
+      };
+    }
+
+    case 'PullRequestReviewCommentEvent': {
+      const title = truncate(p.pull_request?.title, 60);
+      return {
+        icon: 'comment',
+        symbol: '💬',
+        desc: `Commented on PR <strong>${title}</strong> in ${repo}`,
+        detail: truncate(p.comment?.body, 120)
+      };
+    }
+
+    case 'CreateEvent': {
+      const refType = p.ref_type;
+      const ref = p.ref;
+      if (refType === 'repository') {
+        return {
+          icon: 'create',
+          symbol: '+',
+          desc: `Created new repository ${repo}`,
+          detail: truncate(p.description, 120)
+        };
+      }
+      return {
+        icon: 'create',
+        symbol: '+',
+        desc: `Created ${refType} <strong>${ref || ''}</strong> in ${repo}`,
+        detail: null
+      };
+    }
+
+    case 'DeleteEvent': {
+      return {
+        icon: 'other',
+        symbol: '×',
+        desc: `Deleted ${p.ref_type} <strong>${p.ref || ''}</strong> from ${repo}`,
+        detail: null
+      };
+    }
+
+    case 'WatchEvent': {
+      return {
+        icon: 'star',
+        symbol: '★',
+        desc: `Starred ${repo}`,
+        detail: null
+      };
+    }
+
+    case 'ForkEvent': {
+      return {
+        icon: 'fork',
+        symbol: '⑂',
+        desc: `Forked ${repo}`,
+        detail: null
+      };
+    }
+
+    case 'ReleaseEvent': {
+      const tag = p.release?.tag_name;
+      return {
+        icon: 'create',
+        symbol: '🏷',
+        desc: `Released <strong>${tag || 'new version'}</strong> of ${repo}`,
+        detail: truncate(p.release?.name, 80)
+      };
+    }
+
+    case 'PublicEvent': {
+      return {
+        icon: 'create',
+        symbol: '🔓',
+        desc: `Made ${repo} public`,
+        detail: null
+      };
+    }
+
+    default: {
+      const typeName = event.type.replace('Event', '').replace(/([A-Z])/g, ' $1').trim();
+      return {
+        icon: 'other',
+        symbol: '·',
+        desc: `${typeName} in ${repo}`,
+        detail: null
+      };
+    }
+  }
+}
+
+// — Rendering —
+
+function renderProfile(user) {
+  const section = document.getElementById('profile-section');
+  section.innerHTML = `
+    <div class="profile-card">
+      <img class="profile-avatar" src="${user.avatar_url}" alt="${user.login}" loading="lazy" />
+      <div class="profile-info">
+        <div class="profile-name">${user.name || user.login}</div>
+        <div class="profile-bio">${user.bio || ''}</div>
+        <div class="profile-stats">
+          <div class="stat">
+            <span class="stat-value">${user.public_repos}</span>
+            <span class="stat-label">repos</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">${user.followers}</span>
+            <span class="stat-label">followers</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">${user.following}</span>
+            <span class="stat-label">following</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRepos(repos) {
+  if (!repos.length) return;
+  const section = document.getElementById('repos-section');
+  const top = repos
+    .filter(r => !r.fork)
+    .sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at))
+    .slice(0, 4);
+
+  section.innerHTML = `
+    <div class="section-label">Pinned & active repositories</div>
+    <div class="repos-grid">
+      ${top.map(r => `
+        <a class="repo-card" href="${r.html_url}" target="_blank" rel="noopener">
+          <div class="repo-name">${r.name}</div>
+          ${r.description ? `<div class="repo-desc">${truncate(r.description, 90)}</div>` : ''}
+          <div class="repo-meta">
+            ${r.language ? `<span>● ${r.language}</span>` : ''}
+            ${r.stargazers_count > 0 ? `<span>★ ${r.stargazers_count}</span>` : ''}
+            <span>updated ${timeAgo(r.pushed_at)}</span>
+          </div>
+        </a>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderActivityBatch(events, append) {
+  const section = document.getElementById('activity-section');
+
+  if (!append) {
+    section.innerHTML = `<div class="section-label">Recent activity</div><div id="activity-list"></div>`;
+  }
+
+  const list = document.getElementById('activity-list');
+  const existingButton = list.parentElement.querySelector('.load-more');
+  if (existingButton) existingButton.remove();
+
+  events.forEach(event => {
+    const { icon, symbol, desc, detail } = describeEvent(event);
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    item.innerHTML = `
+      <div class="activity-icon ${icon}">${symbol}</div>
+      <div class="activity-body">
+        <div class="activity-desc">${desc}</div>
+        ${detail ? `<div class="activity-detail">${detail}</div>` : ''}
+        <div class="activity-meta">${timeAgo(event.created_at)}</div>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+
+  displayedCount += events.length;
+
+  if (displayedCount < allEvents.length) {
+    const btn = document.createElement('button');
+    btn.className = 'load-more';
+    btn.textContent = `Show more activity (${allEvents.length - displayedCount} remaining)`;
+    btn.addEventListener('click', () => {
+      const next = allEvents.slice(displayedCount, displayedCount + EVENTS_PER_PAGE);
+      renderActivityBatch(next, true);
+    });
+    section.appendChild(btn);
+  }
+}
+
+function renderError(msg) {
+  document.getElementById('profile-section').innerHTML = '';
+  document.getElementById('activity-section').innerHTML = `
+    <div class="error-msg">
+      ${msg}<br>
+      <a href="https://github.com/${USERNAME}" target="_blank" rel="noopener">View my GitHub profile directly →</a>
+    </div>
+  `;
+}
+
+// — Data fetching —
+
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+  return res.json();
+}
+
+async function init() {
+  try {
+    const [user, repos, events] = await Promise.all([
+      fetchJSON(`${API}/users/${USERNAME}`),
+      fetchJSON(`${API}/users/${USERNAME}/repos?per_page=10&sort=pushed`),
+      fetchJSON(`${API}/users/${USERNAME}/events/public?per_page=100`)
+    ]);
+
+    renderProfile(user);
+    renderRepos(repos);
+
+    allEvents = events;
+    const first = allEvents.slice(0, EVENTS_PER_PAGE);
+    renderActivityBatch(first, false);
+
+    document.getElementById('widget-footer').style.display = 'block';
+
+  } catch (err) {
+    console.error('GitHub widget error:', err);
+    if (err.message.includes('403')) {
+      renderError('GitHub API rate limit reached. Please try again in a few minutes.');
+    } else {
+      renderError('Could not load GitHub activity right now.');
+    }
+  }
+}
+
+init();
+</script>
+
+</body>
+</html>

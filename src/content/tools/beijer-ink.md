@@ -1,6 +1,6 @@
 ---
 title: Beijer.ink
-order: 4
+order: 5
 tagline: Personal markdown note-taking web app
 ---
 
