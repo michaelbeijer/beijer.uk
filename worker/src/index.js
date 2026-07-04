@@ -22,10 +22,10 @@
  */
 
 const ALLOWED_ORIGINS = new Set([
-	'https://superterm.io',        // canonical Superterm site (Cloudflare Pages)
-	'https://www.superterm.io',
-	'https://beijerterm.com',      // former domain — kept during the 301 grace window
+	'https://beijerterm.com',      // canonical Beijerterm site (Cloudflare)
 	'https://www.beijerterm.com',
+	'https://superterm.io',        // former domain — kept during the 301 grace window
+	'https://www.superterm.io',
 	'https://beijer.uk',           // hand-off search box on the main site
 	'https://www.beijer.uk',
 	'http://localhost:4321',       // Astro dev
@@ -45,7 +45,7 @@ function isAllowedOrigin(origin) {
 }
 
 function corsHeaders(origin) {
-	const allow = isAllowedOrigin(origin) ? origin : 'https://superterm.io';
+	const allow = isAllowedOrigin(origin) ? origin : 'https://beijerterm.com';
 	return {
 		'Access-Control-Allow-Origin': allow,
 		'Access-Control-Allow-Methods': 'GET, OPTIONS',

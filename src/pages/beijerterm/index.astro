@@ -2,18 +2,18 @@
 import Page from '../../layouts/Page.astro';
 import { SITE_SEO_TITLE } from '../../consts';
 
-// superterm.io is the canonical site. This page is a PREVIEW + link, not a
+// beijerterm.com is the canonical site. This page is a PREVIEW + link, not a
 // search box: a screenshot of the real tool, a short blurb, and a button.
-const SUPERTERM = 'https://superterm.io';
+const BEIJERTERM = 'https://beijerterm.com';
 ---
 
 <Page
-	title={`Superterm | ${SITE_SEO_TITLE}`}
-	description="Superterm — my curated multilingual terminology database for technical translators. Search it free at superterm.io, or inside Supervertaler."
-	canonical={`${SUPERTERM}/`}
+	title={`Beijerterm | ${SITE_SEO_TITLE}`}
+	description="Beijerterm — my curated multilingual terminology database for technical translators. Search it free at beijerterm.com, or inside Supervertaler."
+	canonical={`${BEIJERTERM}/`}
 >
 	<section class="bt">
-		<h1>Superterm</h1>
+		<h1>Beijerterm</h1>
 		<p class="bt-lede">
 			My curated, searchable multilingual terminology database for technical
 			translators — Dutch&nbsp;↔&nbsp;English and more, with full provenance for
@@ -21,20 +21,20 @@ const SUPERTERM = 'https://superterm.io';
 		</p>
 
 		<p class="bt-cta">
-			<a class="bt-btn" href={`${SUPERTERM}/`}>Open Superterm ↗</a>
+			<a class="bt-btn" href={`${BEIJERTERM}/`}>Open Beijerterm ↗</a>
 		</p>
 
-		<a class="bt-shot" href={`${SUPERTERM}/`} aria-label="Open Superterm">
+		<a class="bt-shot" href={`${BEIJERTERM}/`} aria-label="Open Beijerterm">
 			<img
 				src="/superterm-preview.png?v=2"
 				width="1280"
 				height="820"
-				alt="The Superterm terminology search at superterm.io — a search box with matching terms below, and a Sources tab listing every glossary behind the database."
+				alt="The Beijerterm terminology search at beijerterm.com — a search box with matching terms below, and a Sources tab listing every glossary behind the database."
 			/>
 		</a>
 
 		<p class="bt-foot">
-			Search it at <a href={`${SUPERTERM}/`}>superterm.io</a>, or one keystroke
+			Search it at <a href={`${BEIJERTERM}/`}>beijerterm.com</a>, or one keystroke
 			away as a SuperLookup resource inside Supervertaler Workbench and Supervertaler
 			for Trados.
 		</p>

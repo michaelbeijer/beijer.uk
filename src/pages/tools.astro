@@ -96,7 +96,7 @@ const tools = await Promise.all(
 			});
 		});
 
-		// Open a specific tool if the URL points at one (e.g. /tools#superterm).
+		// Open a specific tool if the URL points at one (e.g. /tools#beijerterm).
 		const hash = decodeURIComponent(location.hash.slice(1));
 		const initial = tabs.findIndex((tab) => tab.dataset.tool === hash);
 		if (initial > 0) select(initial);
