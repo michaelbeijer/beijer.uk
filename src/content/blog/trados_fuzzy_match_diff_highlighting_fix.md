@@ -1,7 +1,10 @@
 ---
-title: "Trados Studio 2024: how to fix the fuzzy match diff highlighting glitch in the Translation Results pane"
-description: "If coloured diff highlighting in Trados Studio 2024's Translation Results pane has stopped working or is garbling text, here's the reliable fix – delete two settings folders and restore your user profile."
-pubDate: 2026-03-28
+title: 'Trados Studio 2024: how to fix the fuzzy match diff highlighting glitch in
+  the Translation Results pane'
+description: If coloured diff highlighting in Trados Studio 2024's Translation Results
+  pane has stopped working or is garbling text, here's the reliable fix – delete two
+  settings folders and restore your user profile.
+pubDate: '2026-03-28'
 ---
 
 If you use Trados Studio 2024 and have noticed that the coloured diff highlighting in the Translation Results pane has stopped working for fuzzy matches – or worse, that text from the TM source and your active segment is being garbled and concatenated together (think "ThisThe decision" instead of showing the two versions cleanly) – you're not alone. This is a recurring bug that has been reported by multiple users on the RWS Community forum, and it has a reliable fix.
@@ -20,6 +23,7 @@ When the bug is active, all of that diff highlighting disappears. The Translatio
 The underlying TM data is fine – if you double-click a match to open the Edit Translation Unit dialog, the correct text is shown. It's purely a rendering glitch in the preview pane.
 
 This has been discussed on the RWS Community forum in a thread titled ["Differences in fuzzy matches not displayed correctly in Trados Studio 2024"](https://community.rws.com/product-groups/trados-portfolio/trados-studio/f/studio/57904/differences-in-fuzzy-matches-not-displayed-correctly-in-trados-studio-2024), where multiple users reported the same problem. The fix that worked for them, and that I can now confirm also works for me, involves deleting Trados Studio's settings folders and restoring your user profile.
+I also started my own thread about this (["Longstanding fuzzy match diff highlighting bug not yet fixed in Trados Studio 2026 beta?"](https://community.rws.com/product-groups/trados-portfolio/beta-groups/studio-beta/f/forum/61354/longstanding-fuzzy-match-diff-highlighting-bug-not-yet-fixed-in-trados-studio-2026-beta)), where we are trying to solve the issue in Trados Studio 2026.
 
 ## The fix
 
