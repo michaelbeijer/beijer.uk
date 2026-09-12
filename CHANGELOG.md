@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.18.0] - 2026-09-12
+
+### Changed
+- **The page ground is now a warm off-white (#F0EEE6) rather than pure white.**
+  Chosen after looking at white, this cream and a dark ground side by side on the
+  real site. The site is almost entirely text, so nothing on the page competes
+  with the ground, and the warmth takes the clinical edge off black-on-white at no
+  real cost in contrast: body text is still 16:1 and the subtitle grey keeps the
+  same separation from the body text it had on white (2.78:1, against 2.74:1
+  before). The muted grey and the borders are warmed to match - a neutral grey
+  hairline on a warm ground reads as dirt rather than as a line.
 ## [1.17.0] - 2026-07-03
 
 ### Changed
