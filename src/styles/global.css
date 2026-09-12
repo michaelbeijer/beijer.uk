@@ -11,6 +11,7 @@
 	--border: 225, 225, 225;
 	--accent: 51, 102, 204;
 	--accent-soft: 51, 102, 204;
+	--code-bg: 245, 245, 245;
 	--box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 	--font-heading: "Inter", sans-serif;
 	--font-body: "Inter", sans-serif;
@@ -110,7 +111,7 @@ img {
 }
 code {
 	padding: 2px 5px;
-	background-color: rgb(245, 245, 245);
+	background-color: rgb(var(--code-bg));
 	border-radius: 2px;
 }
 pre {
@@ -158,4 +159,33 @@ hr {
 	clip-path: inset(50%);
 	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
+}
+
+/* ---- grounds to try ---------------------------------------------------
+   Set by /theme-preview.js, which only runs when the URL carries ?themes.
+   Nothing here changes what a visitor sees. Delete this block and that
+   script together once the question is settled.
+
+   Cream is #F0EEE6, the ground Dario Amodei's essays use. Its border is
+   warmed to match: a neutral hairline on a warm ground reads as dirt.
+
+   Dark is not an inversion. The link blue has to be lifted or it fails -
+   #3366cc is 2.7:1 on #121212, where #7aa7f5 is 6.5:1. */
+:root[data-theme="cream"] {
+	--bg: 240, 238, 230;
+	--text: 20, 19, 15;
+	--muted: 96, 92, 80;
+	--border: 219, 215, 201;
+	--code-bg: 233, 230, 220;
+}
+
+:root[data-theme="dark"] {
+	--bg: 18, 18, 18;
+	--text: 237, 237, 237;
+	--muted: 160, 160, 160;
+	--border: 47, 47, 47;
+	--code-bg: 30, 30, 30;
+	--accent: 122, 167, 245;
+	--accent-soft: 122, 167, 245;
+	--box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }

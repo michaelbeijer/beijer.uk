@@ -102,3 +102,8 @@ const isAtkinson = appearance.fontTheme === 'atkinson';
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<!-- A ground to look at, not a setting to keep: the panel appears only when
+     the URL carries ?themes. Remove with the [data-theme] blocks in
+     global.css once the question is answered. -->
+<script is:inline defer src="/theme-preview.js?v=1"></script>
