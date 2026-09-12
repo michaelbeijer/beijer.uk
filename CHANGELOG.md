@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [1.18.0] - 2026-09-12
 
 ### Changed
+- **Visited links are a muted blue rather than a purple.** The distinction stays -
+  it was a deliberate colour, not a browser default - but in the link's own hue: a
+  purple beside a blue made two links on adjacent lines of one list read as two
+  unrelated kinds of thing. 5.05:1 on the new ground, where the purple was 4.54:1.
+- **The page ground is declared to mobile browsers** (`theme-color`), so a phone
+  paints its own chrome to match instead of leaving a white seam above the page.
 - **The page ground is now a warm off-white (#F0EEE6) rather than pure white.**
   Chosen after looking at white, this cream and a dark ground side by side on the
   real site. The site is almost entirely text, so nothing on the page competes

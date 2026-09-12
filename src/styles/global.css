@@ -82,8 +82,12 @@ a {
 	color: rgb(var(--accent));
 	text-decoration: none;
 }
+/* Visited links keep a colour of their own, but in the link's own hue: a
+   purple beside a blue made two links in one list read as two unrelated
+   kinds of thing. Muted and a little darker says 'spent' without saying
+   'different'. 5.05:1 on the ground, where the purple was 4.54:1. */
 a:visited {
-	color: #795cb2;
+	color: #43659c;
 }
 a:hover {
 	color: rgb(var(--accent));
