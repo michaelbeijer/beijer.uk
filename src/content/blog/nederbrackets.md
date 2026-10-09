@@ -28,7 +28,7 @@ To make life more interesting, Dutch writers *sometimes* use brackets the Englis
 
 | (Neder)bracket | Dutch-style reading | English-style reading |
 |---|---|---|
-| (blinde) geleidehonden | guide dogs and/or guide dogs for the blind | guide dogs for the blind |
+| (blinde) geleidehonden | guide dogs of any kind and/or guide dogs for the blind | guide dogs for the blind |
 | (Ver)Huurder | landlord and/or tenant | – |
 | (on)belangrijk | important and/or unimportant | unimportant |
 | (on)rechtstreeks | directly or indirectly | indirectly |
@@ -40,7 +40,7 @@ To make life more interesting, Dutch writers *sometimes* use brackets the Englis
 
 A few favourites:
 
-- Translate *(blinde) geleidehonden* literally and you get "(blind) guide dogs". Nobody wants a blind guide dog.
+- Translate *(blinde) geleidehonden* literally and you get "(blind) guide dogs". Nobody wants a blind guide dog. (And in Dutch the bracket isn't even redundant: a *geleidehond* can also be an *autismegeleidehond*, a guide dog for a child with autism.)
 - *(Ver)Huurder* fits both parties to a lease into one word. Very efficient, until you have to decide who is liable.
 - *(on)belangrijk* means "important and/or unimportant", which covers everything and therefore says nothing.
 - *(potentiële) (interne) klant* is two brackets stacked, giving four customers for the price of one.
