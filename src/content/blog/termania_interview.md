@@ -12,7 +12,7 @@ In October 2014, the interviews were collected in the free e-book *Why is termin
 
 ![Why is terminology your passion? on the old EU Bookshop website](/blog-images/why-is-terminology-your-passion-on-EU-bookshop.jpg)
 
-The interview below is reproduced as published in the e-book.
+The interview below is reproduced as published in the e-book, with one answer removed because it no longer reflects how I work.
 
 ---
 
@@ -37,10 +37,6 @@ I translate mainly business and technical texts from Dutch and Flemish into Engl
 ### 2) Could you briefly describe what the following phrases remind you of?
 
 **Terminology:** I used to call myself just a translator. I added 'terminologist' only recently because I realised that my particular style of translating relies heavily on knowing the correct terminology. I don't translate novels, and neither do I like doing expressive marketing material (I leave that to my brother, Steven Beijer). My forte is technical contracts or specialised and detailed product manuals. These are areas with highly standardised and specific terminology where consistency is of prime importance. For example, using three slightly different terms to refer to a specific device in a 50-page manual is not going to do anyone any good. Correct terminology and terminological consistency are therefore both extremely important in my work and this realisation soon led me to start paying much more attention to terminology.
-
-**Mother tongue:** Rule number one: Only translate into your native language. No matter how talented you are, someone will notice. Although I was raised fully bilingually (with a Dutch father and an American mother), I only translate into English. I have been writing and speaking English all my life, and I find it easier to express myself in English. I did try translating into Dutch once, long ago, but was lucky enough to have a friend of mine suggest I 'stick to English'.
-
-Of course, there are people who do it, and even people who do a good job. However, they are most likely having their finished translations checked by a native speaker, which ensures the finished text is indistinguishable from one produced in the target language.
 
 **Simultaneous interpreting:** I don't feel that simultaneous interpreting is a good mesh with my own abilities and so I have steered away from it. As befits a terminologist, my working style involves extensive use of computer-based tools and other reference materials. I am much better suited to meticulous research and cross-referencing than speed and ease of translation, and this has led me to develop these skills instead, although I have the greatest respect for those who can work under such pressure and at such high speed – and for their excellent memories! My focus continues to be on improving the industry's terminology research and glossary creation methodologies and technologies. Language work is a broad field and there are as many different aptitudes within it as translators – knowing your own strengths and working on developing them is key to a successful career.
 
