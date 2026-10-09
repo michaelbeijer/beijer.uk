@@ -12,7 +12,7 @@ In October 2014, the interviews were collected in the free e-book *Why is termin
 
 ![Why is terminology your passion? on the old EU Bookshop website](/blog-images/why-is-terminology-your-passion-on-EU-bookshop.jpg)
 
-The interview below is reproduced as published in the e-book, with one answer removed because it no longer reflects how I work.
+The interview below is reproduced as published in the e-book, with a few passages removed that no longer reflect how I work. The Wordbook.nl project I talk about was the first version of what is now [Beijerterm](https://beijerterm.com).
 
 ---
 
@@ -36,7 +36,7 @@ I translate mainly business and technical texts from Dutch and Flemish into Engl
 
 ### 2) Could you briefly describe what the following phrases remind you of?
 
-**Terminology:** I used to call myself just a translator. I added 'terminologist' only recently because I realised that my particular style of translating relies heavily on knowing the correct terminology. I don't translate novels, and neither do I like doing expressive marketing material (I leave that to my brother, Steven Beijer). My forte is technical contracts or specialised and detailed product manuals. These are areas with highly standardised and specific terminology where consistency is of prime importance. For example, using three slightly different terms to refer to a specific device in a 50-page manual is not going to do anyone any good. Correct terminology and terminological consistency are therefore both extremely important in my work and this realisation soon led me to start paying much more attention to terminology.
+**Terminology:** I used to call myself just a translator. I added 'terminologist' only recently because I realised that my particular style of translating relies heavily on knowing the correct terminology. My forte is technical contracts or specialised and detailed product manuals. These are areas with highly standardised and specific terminology where consistency is of prime importance. For example, using three slightly different terms to refer to a specific device in a 50-page manual is not going to do anyone any good. Correct terminology and terminological consistency are therefore both extremely important in my work and this realisation soon led me to start paying much more attention to terminology.
 
 **Simultaneous interpreting:** I don't feel that simultaneous interpreting is a good mesh with my own abilities and so I have steered away from it. As befits a terminologist, my working style involves extensive use of computer-based tools and other reference materials. I am much better suited to meticulous research and cross-referencing than speed and ease of translation, and this has led me to develop these skills instead, although I have the greatest respect for those who can work under such pressure and at such high speed – and for their excellent memories! My focus continues to be on improving the industry's terminology research and glossary creation methodologies and technologies. Language work is a broad field and there are as many different aptitudes within it as translators – knowing your own strengths and working on developing them is key to a successful career.
 
@@ -46,7 +46,7 @@ I translate mainly business and technical texts from Dutch and Flemish into Engl
 
 The term 'Wordbook', for me, encompasses a range of different possibilities. Perhaps the most concrete and accessible of these right now is the Wordbook webpage, hosted on my website. Here visitors can access over 350 resources, including different Dutch-English dictionaries, glossaries and search websites. Between one and five glossaries are downloaded daily, and the site attracts hundreds of visitors per month. Much of my work has been to source appropriate resources and to present them in a variety of formats, including tab-delimited UTF-8 text files – that is, files that can be imported directly into CAT tools. This puts high-quality, specialised terminology at your fingertips, so you can spend less time looking up terms and more time translating.
 
-Wordbook has been my pet project for the last five years, as can be seen from the glossaries in my own CAT tool, memoQ, currently comprised of over 500,000 entries. I recently conducted an experiment, asking my copywriter wife, Jen Rouse, to 'translate' a small Dutch text using my memoQ glossaries. With her writing skills and the extensive glossary in memoQ she managed to turn out an acceptable translation without any real knowledge of Dutch. Of course, this is far from the ideal situation, but it goes some way towards demonstrating the benefits of extensive, accurate glossaries when deployed by a skilled translator. My dream is to one day develop Wordbook into a collaborative online dictionary for translators, rather like a wiki in principle, where community members will be able to contribute to a bank of language resources that would be available for all to use freely.
+Wordbook has been my pet project for the last five years, as can be seen from the glossaries in my own CAT tool, memoQ, currently comprised of over 500,000 entries. My dream is to one day develop Wordbook into a collaborative online dictionary for translators, rather like a wiki in principle, where community members will be able to contribute to a bank of language resources that would be available for all to use freely.
 
 ### 4) Isn't it hard to keep the glossaries update all the time?
 
@@ -73,12 +73,6 @@ I am probably the wrong person to ask, as funnily enough I have no academic trai
 ### 9) Do you define yourself more as a Translator or a Terminologist? Or which work do you prefer more and why?
 
 Although I have a lot of fun hunting down the right term online or in my many dictionaries and slowly improving my own glossaries and term bases, I will always be a translator at heart. Anyone who knows me will tell you that terminology is always at the forefront of my mind when working on a translation, and I turn this to my advantage when choosing work to undertake. So, for me, the two are inextricable.
-
-### 10) You prefer to translate into one language only. What are the advantages and disadvantages of this choice in the market?
-
-I have always been slightly sceptical that anyone could do a good job translating into more than one language. How many languages a person can translate out of, on the other hand, is a different matter, although I am often deeply sceptical about the credentials of some multilingual translators. I think that, as translation relies on fluency and ease of communication, a person should do themselves and their readers a favour, and only translate into their native language. Excellent research, extensive vocabulary and grammar and wide reading can only get you so far, and ultimately working in your native language lends your writing an authority it can otherwise lack. You can also feel much more confident in the quality of your work.
-
-Another more practical reason to focus on one language pair and direction is the amount of money you will save on resources. I spend quite a bit of money every month on dictionary subscriptions and this is only for my pair and direction Dutch into English. If I also undertook English to Dutch, or added more languages to my repertoire, this would soon increase substantially. For me personally, choosing to specialise in a particular pair, a particular direction and particular subject fields has allowed me to carve out a niche in the market, and with hard work I am now in the fortunate position of being able to choose which jobs to take. Reputation goes a long way in this industry. We have all heard the horror stories about cowboy operators and machine translators working for pennies and delivering shoddy work. In my experience, specialisation has allowed me to develop my visibility as a trustworthy identity in the industry, got me work, and allowed me to create good working relationships.
 
 ---
 
