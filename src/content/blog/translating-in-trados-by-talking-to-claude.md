@@ -31,7 +31,7 @@ Supervertaler for Trados is built on those APIs:
 - The **Translation Memory API** allows searching and updating TMs, and the **terminology provider API** does the same for termbases.
 - And when it's all built, the **RWS AppStore** gives you a distribution channel straight into your users' copies of Studio.
 
-The Supervertaler MCP Server is, in a sense, a thin translation layer on top of all this: a small program that Claude for Desktop talks to, which forwards each request to the plug-in running inside Trados Studio. Every tool Claude can use – "get me the segments", "search the TM", "update this target", "add a comment" – maps down to those same public Trados APIs. The reason I could expose over forty different operations to an AI assistant is simply that Studio's API surface is rich enough to support them. If RWS hadn't invested in that developer platform over the years, none of this would exist.
+The Supervertaler MCP Server is, in a sense, a thin translation layer on top of all this: a small program that Claude for Desktop talks to, which forwards each request to the plug-in running inside Trados Studio. Every tool Claude can use – "get me the segments", "search the TM", "update this target", "add a comment" – maps down to those same public Trados APIs. The reason I could expose around fifty different operations to an AI assistant is simply that Studio's API surface is rich enough to support them. If RWS hadn't invested in that developer platform over the years, none of this would exist.
 
 ## An app store before app stores were cool
 
@@ -78,7 +78,7 @@ Any decent dictation tool would work, but a fast, accurate one like Wispr Flow m
 
 ## QA on a whole new level
 
-Here's a small real example: I asked Claude to go through the open project and give me a working glossary I could use while translating. It read the whole job, checked my termbase, and produced this – noting where a rendering was already confirmed in my own termbase:
+A small real example: I asked Claude to go through the open project and give me a working glossary I could use while translating. It read the whole job, checked my termbase, and produced this – noting where a rendering was already confirmed in my own termbase:
 
 ![Claude building an English–Dutch glossary from the open Trados project](/blog-images/supervertaler-mcp-glossary.png)
 
