@@ -5,7 +5,7 @@ description: Why Dutch writers put half a word in brackets, why it baffles every
 pubDate: '2026-10-09'
 ---
 
-Today I was translating a set of parking terms and conditions for the City of Amsterdam. One of the definitions is "PMS", and it reads:
+Today I was translating a set of Dutch municipal parking terms and conditions. One of the definitions is "PMS", and it reads:
 
 > Een (parkeermanagement)systeem dat parkeerapparatuur in een Parkeerlocatie aanstuurt, bestaande uit een (centrale) computer …
 
@@ -47,7 +47,7 @@ A few favourites:
 
 ## Today's catch
 
-The Amsterdam parking terms alone gave me:
+Those parking terms alone gave me:
 
 - **een (parkeermanagement)systeem** → *a parking management system*. The bracket does nothing: the document spells out "PMS (parkeermanagementsysteem)" itself later on.
 - **een (centrale) computer** → *a computer, typically a central one*
@@ -69,6 +69,6 @@ In patent translation, (Neder)brackets are particularly hazardous, because the c
 
 ## Further reading
 
-The best explanation I know of is the chapter "Bracket (ab)use" in Joy Burrough-Boenisch's *Righting English that's gone Dutch* – essential reading for anyone who works between the two languages.
+The best explanation I know of is the chapter "Bracket (ab)use" in Joy Burrough-Boenisch's [*Righting English that's Gone Dutch*](https://www.linnaeusboekhandel.nl/righting-english-that-s-gone-dutch-9789076542652) (3rd edition, Kemper Conseil Publishing, 2013, ISBN 978-90-76542-65-2) – essential reading for anyone who works between the two languages.
 
 And to my Dutch clients: if you mean both, please just write both. (Your translator will thank you.)
