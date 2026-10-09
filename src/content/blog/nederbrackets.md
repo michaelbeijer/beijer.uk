@@ -1,8 +1,8 @@
 ---
-title: "(Neder)brackets"
-description: "Why Dutch writers put half a word in brackets, why it baffles everyone else, and how to translate it without guessing."
-pubDate: 2026-10-09
-hidden: true
+title: (Neder)brackets
+description: Why Dutch writers put half a word in brackets, why it baffles everyone
+  else, and how to translate it without guessing.
+pubDate: '2026-10-09'
 ---
 
 Today I was translating a set of parking terms and conditions for the City of Amsterdam. One of the definitions is "PMS", and it reads:
