@@ -6,9 +6,9 @@ description: In 2013 I was one of 26 terminologists interviewed by trainees from
 pubDate: '2013-06-15'
 ---
 
-In 2013, I was one of 26 terminologists interviewed by trainees from the European Parliament's Terminology Coordination Unit (TermCoord) for '[Termania](https://termcoord.eu/termania/)', a section of their blog at termcoord.eu.
+In 2013, I was one of 26 terminologists interviewed by trainees from the European Parliament's Terminology Coordination Unit (TermCoord) for 'Termania', a section of their blog at termcoord.eu. That website has since been taken offline.
 
-In October 2014, the interviews were collected in the free e-book *Why is terminology your passion? A collection of interviews with prominent terminologists* (European Union, 2014, ISBN 978-92-823-6176-4, doi:[10.2861/7415](https://doi.org/10.2861/7415)). My interview is on pages 95–101. You can download the PDF from the [Publications Office of the EU](https://op.europa.eu/en/publication-detail/-/publication/7715ab40-e880-4634-9a0b-b7260da99795), and the original interview is still online at [termcoord.eu](https://termcoord.eu/termania/why-is-terminology-your-passion/interview-with-michael-beijer/).
+In October 2014, the interviews were collected in the free e-book *Why is terminology your passion? A collection of interviews with prominent terminologists* (European Union, 2014, ISBN 978-92-823-6176-4, doi:[10.2861/7415](https://doi.org/10.2861/7415)). My interview is on pages 95–101. You can download the PDF from the [Publications Office of the EU](https://op.europa.eu/en/publication-detail/-/publication/7715ab40-e880-4634-9a0b-b7260da99795).
 
 ![Why is terminology your passion? on the old EU Bookshop website](/blog-images/why-is-terminology-your-passion-on-EU-bookshop.jpg)
 
