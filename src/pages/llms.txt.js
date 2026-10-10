@@ -17,7 +17,7 @@ export async function GET(context) {
 		['About', '/about', 'Who Michael Beijer is: Dutch–English patent and technical translator and translation-tech developer'],
 		['Services', '/services', 'Translation, MT post-editing, terminology and consultancy services'],
 		['Patents', '/patents', 'Patent translation specialisation and experience'],
-		['Tools', '/tools', 'Software and tools built by Michael (Supervertaler, Beijerterm, and more)'],
+		['Tools', '/tools', 'Software and tools built by Michael (Supervertaler, Beijerdictionary, and more)'],
 		['Testimonials', '/testimonials', 'Client testimonials'],
 		['Links', '/links', 'Curated links'],
 		['Contact', '/contact', 'How to get in touch'],
@@ -29,7 +29,7 @@ export async function GET(context) {
 		`> ${SITE_DESCRIPTION}`,
 		'',
 		'Personal site of Michael Beijer: Dutch–English patent/technical translator,',
-		'terminologist, and developer of translation tools (Supervertaler, Beijerterm).',
+		'terminologist, and developer of translation tools (Supervertaler, Beijerdictionary).',
 		'',
 		'## Pages',
 		'',
@@ -45,7 +45,7 @@ export async function GET(context) {
 		'',
 		`- [Full content dump](${site}/llms-full.txt): all blog posts in one Markdown file`,
 		'- [Supervertaler docs](https://docs.supervertaler.com/llms.txt): AI-readable docs for the Supervertaler translation tools',
-		'- [Beijerterm](https://beijerterm.com/llms.txt): Michael\'s Dutch–English terminology site',
+		'- [Beijerdictionary](https://beijerdictionary.com/llms.txt): Michael\'s Dutch–English terminology site',
 		'',
 	];
 

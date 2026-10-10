@@ -24,7 +24,9 @@
  */
 
 const ALLOWED_ORIGINS = new Set([
-	'https://beijerterm.com',      // canonical Beijerterm site (Cloudflare)
+	'https://beijerdictionary.com', // canonical Beijerdictionary site (Cloudflare)
+	'https://www.beijerdictionary.com',
+	'https://beijerterm.com',      // the old name; redirects to beijerdictionary.com
 	'https://www.beijerterm.com',
 	'https://superterm.io',        // former domain — kept during the 301 grace window
 	'https://www.superterm.io',
@@ -51,7 +53,7 @@ function isAllowedOrigin(origin) {
 }
 
 function corsHeaders(origin) {
-	const allow = isAllowedOrigin(origin) ? origin : 'https://beijerterm.com';
+	const allow = isAllowedOrigin(origin) ? origin : 'https://beijerdictionary.com';
 	return {
 		'Access-Control-Allow-Origin': allow,
 		'Access-Control-Allow-Methods': 'GET, OPTIONS',
