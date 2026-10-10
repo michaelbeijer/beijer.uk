@@ -2,19 +2,19 @@
 import Page from '../../layouts/Page.astro';
 import { SITE_SEO_TITLE } from '../../consts';
 
-// This page is a PREVIEW + link for beijerdictionary.com, not a search box: a
+// This page is a PREVIEW + link for BeijerDictionary.com, not a search box: a
 // screenshot of the real tool, a short blurb, and a button. It is its own
 // page with its own (self-referencing) canonical — authority flows to
-// beijerdictionary.com through the ordinary <a> links below, never via canonical.
+// BeijerDictionary.com through the ordinary <a> links below, never via canonical.
 const BEIJERTERM = 'https://beijerdictionary.com';
 ---
 
 <Page
-	title={`Beijerdictionary | ${SITE_SEO_TITLE}`}
-	description="Beijerdictionary — my curated multilingual terminology database for technical translators. Search it free at beijerdictionary.com, or inside Supervertaler."
+	title={`Beijer Dictionary | ${SITE_SEO_TITLE}`}
+	description="Beijer Dictionary — my curated multilingual terminology database for technical translators. Search it free at BeijerDictionary.com, or inside Supervertaler."
 >
 	<section class="bt">
-		<h1>Beijerdictionary</h1>
+		<h1>Beijer Dictionary</h1>
 		<p class="bt-lede">
 			My curated, searchable multilingual terminology database for technical
 			translators — Dutch&nbsp;↔&nbsp;English and more, with full provenance for
@@ -22,20 +22,20 @@ const BEIJERTERM = 'https://beijerdictionary.com';
 		</p>
 
 		<p class="bt-cta">
-			<a class="bt-btn" href={`${BEIJERTERM}/`}>Open Beijerdictionary ↗</a>
+			<a class="bt-btn" href={`${BEIJERTERM}/`}>Open Beijer Dictionary ↗</a>
 		</p>
 
-		<a class="bt-shot" href={`${BEIJERTERM}/`} aria-label="Open Beijerdictionary">
+		<a class="bt-shot" href={`${BEIJERTERM}/`} aria-label="Open Beijer Dictionary">
 			<img
 				src="/beijerterm-preview.png?v=1"
 				width="1369"
 				height="1109"
-				alt="The Beijerdictionary terminology search at beijerdictionary.com – a Dutch-to-English search for ‘trein’ returning matching terms, each with a source badge, above a Sources tab listing every glossary behind the database."
+				alt="The Beijer Dictionary terminology search at BeijerDictionary.com – a Dutch-to-English search for ‘trein’ returning matching terms, each with a source badge, above a Sources tab listing every glossary behind the database."
 			/>
 		</a>
 
 		<p class="bt-foot">
-			Search it at <a href={`${BEIJERTERM}/`}>beijerdictionary.com</a>, or one keystroke
+			Search it at <a href={`${BEIJERTERM}/`}>BeijerDictionary.com</a>, or one keystroke
 			away as a SuperLookup resource inside Supervertaler Workbench and Supervertaler
 			for Trados.
 		</p>
