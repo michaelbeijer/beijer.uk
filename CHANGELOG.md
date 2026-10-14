@@ -11,6 +11,11 @@ All notable changes to this project will be documented in this file.
   30 days). Linked from the footer, the home page's "Get in touch", the Patents
   and Services pages, and llms.txt.
 
+### Changed
+- **Thinner underlines** on the current page in the menu and on blog titles under
+  the pointer: 1px with a 3px offset, like the footer's links, instead of the
+  font's own thickness.
+
 ## [1.18.0] - 2026-09-12
 
 ### Changed
