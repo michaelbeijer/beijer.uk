@@ -10,6 +10,10 @@ I used a published Belgian patent (BE1029761B1, a roller brake tester) that WIPO
 
 I pre-translated it twice in memoQ, using Supervertaler for memoQ, with the same settings both times: once with **Gemma 4 31B**, about the largest model a well-equipped PC can run, and once with **Claude Opus 5.5**. (I ran Gemma through Ollama's cloud service to save time; it's the same model you can download.) Then I compared both with the published English, paragraph by paragraph and claim by claim.
 
+[![The comparison spreadsheet for claims 1 to 6, with columns for the Dutch source, the published English, Gemma 4 31B, notes on Gemma, and Claude Opus 5.5. Gemma's cells are mostly red and amber; Claude's are plain or pale blue.](/blog-images/patent-test-spreadsheet-claims.jpg)](/blog-images/patent-test-spreadsheet-claims.jpg)
+
+*Claims 1 to 6 in the comparison spreadsheet. Red: a problem that breaks the claims. Amber: meaning or consistency. Pale yellow: minor. Blue: a comment from the model on the Dutch source. Click to enlarge.*
+
 What I found:
 
 - **Gemma writes fluent, mostly accurate patent English**, but its terminology drifts. The same *inrichting* became "apparatus" in claims 1–4 and "device" in claims 5–9, and in a patent that breaks the claims.
