@@ -26,3 +26,5 @@ intro: 'I''ve spent over 30 years working as a Dutch patent translator and Dutch
 ## Get in touch
 
 Drop me an email at michael@beijer.uk – it helps if you can mention the word count, deadline, subject area, and source format.
+
+NDAs welcome – see [how I handle confidential documents](/confidentiality).
