@@ -12,9 +12,8 @@ All notable changes to this project will be documented in this file.
   and Services pages, and llms.txt.
 
 ### Changed
-- **Thinner underlines** on the current page in the menu and on blog titles under
-  the pointer: 1px with a 3px offset, like the footer's links, instead of the
-  font's own thickness.
+- **Thinner underlines on blog titles under the pointer:** 1px with a 3px offset,
+  like the footer's links, instead of the font's own thickness.
 
 ## [1.18.0] - 2026-09-12
 
