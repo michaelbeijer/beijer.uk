@@ -7,7 +7,7 @@ Dutch-English patent translation and editing, with a focus on clarity, consisten
 
 ## How I work
 
-- Confidentiality-first workflow (NDAs welcome).
+- Confidentiality-first workflow (NDAs welcome) – see [how I handle confidential documents](/confidentiality), including how AI is used.
 - Terminology alignment and consistency checks.
 - CAT-tool compatible delivery and revision-friendly formats.
 

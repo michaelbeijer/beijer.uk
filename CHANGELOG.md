@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.19.0] - 2026-10-14
+
+### Added
+- **A Confidentiality page** (`/confidentiality`): NDAs, how client documents are
+  handled, and how AI is used - Claude only, under Anthropic's Commercial Terms
+  (treated as confidential information, not used for training, API data deleted within
+  30 days). Linked from the footer, the Patents and Services pages, and llms.txt.
+
 ## [1.18.0] - 2026-09-12
 
 ### Changed

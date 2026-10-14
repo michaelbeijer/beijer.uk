@@ -17,6 +17,7 @@ export async function GET(context) {
 		['About', '/about', 'Who Michael Beijer is: Dutch–English patent and technical translator and translation-tech developer'],
 		['Services', '/services', 'Translation, MT post-editing, terminology and consultancy services'],
 		['Patents', '/patents', 'Patent translation specialisation and experience'],
+		['Confidentiality', '/confidentiality', 'How client documents are handled, including how AI is used and under which terms'],
 		['Tools', '/tools', 'Software and tools built by Michael (Supervertaler, Beijer Dictionary, and more)'],
 		['Testimonials', '/testimonials', 'Client testimonials'],
 		['Links', '/links', 'Curated links'],

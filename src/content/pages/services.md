@@ -21,3 +21,7 @@ I provide specialist Dutch↔English language services for patents, technical do
 - Termbase cleanup and consolidation
 - Extraction and terminology governance support
 - Translation workflow and CAT-tool consulting
+
+## Confidentiality
+
+I sign NDAs on request, and I use AI only under business terms that keep your text out of model training. See [how I handle confidential documents](/confidentiality).
