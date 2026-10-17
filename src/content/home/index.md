@@ -22,7 +22,6 @@ intro: 'I''ve spent over 30 years working as a Dutch patent translator and Dutch
 - <a href="https://beijerdictionary.com" target="_blank" rel="noopener">Beijer Dictionary</a> – curated, searchable multilingual terminology database
 - <a href="https://memdesk.app/" target="_blank" rel="noopener">MemDesk</a> – a task board, notes and calendar that live inside Gmail 
 - <a href="https://github.com/michaelbeijer/WordCounter" target="_blank" rel="noopener">WordCounter</a> – free and open-source word counting software for translators
-- <a href="https://tranzlashion.com" target="_blank" rel="noopener">Tranzlashion.com</a> – parody translation agency website
 
 ## Get in touch
 
