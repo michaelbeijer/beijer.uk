@@ -18,6 +18,9 @@
  *     direction-grouping logic is unchanged. `limit` is capped server-side.
  *     `from`/`to` are the UI's search direction (ISO 639-1, or "any"); they
  *     don't filter, they only steer ranking — see buildRankSql().
+ *     Also returns `concepts`: the multilingual concepts a term matches, each
+ *     whole with all its languages (see searchConcepts()). If that lookup
+ *     fails, `concepts_error` says why and the entries still come back.
  *
  * D1 schema is produced by the private repo's `wordbook build-d1` command and
  * loaded with `wrangler d1 execute`. See worker/README.md for the runbook.
@@ -116,6 +119,15 @@ const HAS_COLS = { abbr: 'e.abbr', def: 'e.def', notes: 'e.notes' };
 // same as not having any. Chunk instead, with headroom.
 const ID_CHUNK = 90;
 
+// Multilingual concepts: a row of a multilingual source, kept whole (see
+// CONCEPTS-DESIGN.md in the private repo). One search returns at most this
+// many, each with every term in every language.
+const CONCEPT_LIMIT = 20;
+// Matching term rows ranked before they are grouped into concepts. One concept
+// can match many times (EuroVoc's "executive agency" lists 19 agencies), so
+// this is well above CONCEPT_LIMIT.
+const CONCEPT_TERM_FETCH = 400;
+
 /** Run an `id IN (...)` SELECT over `ids` in chunks, concatenating the rows. */
 async function selectByIds(env, buildSql, ids) {
 	const out = [];
@@ -183,6 +195,110 @@ function buildRankSql(exact, srcLang) {
 	return { sql: `CASE ${tiers.join(' ')} ELSE 3 END`, binds };
 }
 
+/**
+ * Find the concepts a query matches and return each one whole.
+ *
+ * A concept is matched by any of its terms (ranked in the same tiers as
+ * entries: exact in the search language, exact in any language, whole word,
+ * anything else) or, when "Search in" asks for it, by its definition or notes.
+ * The best CONCEPT_LIMIT concepts are then fetched with ALL their terms. Their
+ * ids go to D1 as ONE JSON parameter (json_each), so the 100-parameter limit
+ * can never be reached however many concepts come back.
+ */
+async function searchConcepts(env, o) {
+	const { q, exact, srcLang, scopeCols, ftsWhole, refine, nq, caseSens, accentSens, has } = o;
+	// Concepts carry no abbreviations, so "has an abbreviation" rules them out.
+	if (has.includes('abbr')) return [];
+	const hasSql = has.map((h) => ` AND c.${h} IS NOT NULL AND TRIM(c.${h}) <> ''`).join('');
+	const fold = (s) => normFold(s, caseSens, accentSens);
+	const hits = [];   // { cid, lang, t, tier }, best first
+
+	if (scopeCols.includes('a')) {
+		const fts = toFtsQuery(q, ftsWhole, null);
+		const tiers = [];
+		const binds = [];
+		if (srcLang && srcLang !== 'any') {
+			tiers.push('WHEN ct.lang = ? AND UPPER(ct.t) = UPPER(?) THEN 0');
+			binds.push(srcLang, exact);
+		}
+		tiers.push('WHEN UPPER(ct.t) = UPPER(?) THEN 1');
+		binds.push(exact);
+		tiers.push("WHEN ' ' || ct.t || ' ' LIKE ? ESCAPE '\\' THEN 2");
+		binds.push('% ' + exact.replace(/[\\%_]/g, (c) => '\\' + c) + ' %');
+		const { results } = await env.DB.prepare(
+			`SELECT ct.cid, ct.lang, ct.t, CASE ${tiers.join(' ')} ELSE 3 END AS tier
+			 FROM concept_terms_fts
+			 JOIN concept_terms ct ON ct.id = concept_terms_fts.rowid
+			 ${hasSql ? 'JOIN concepts c ON c.id = ct.cid' : ''}
+			 WHERE concept_terms_fts MATCH ?${hasSql}
+			 ORDER BY tier, ct.ord > 0, bm25(concept_terms_fts)
+			 LIMIT ?`
+		).bind(...binds, fts, refine ? 2000 : CONCEPT_TERM_FETCH).all();
+		for (const r of results || []) {
+			if (refine && !(o.exactMode ? fold(r.t) === nq : fold(r.t).includes(nq))) continue;
+			hits.push(r);
+		}
+	}
+
+	const textCols = scopeCols.filter((c) => c === 'def' || c === 'notes');
+	if (textCols.length) {
+		const fts = toFtsQuery(q, ftsWhole, textCols);
+		const { results } = await env.DB.prepare(
+			`SELECT c.id AS cid, c.def, c.notes
+			 FROM concepts_fts JOIN concepts c ON c.id = concepts_fts.rowid
+			 WHERE concepts_fts MATCH ?${hasSql}
+			 ORDER BY bm25(concepts_fts)
+			 LIMIT ?`
+		).bind(fts, refine ? 2000 : CONCEPT_TERM_FETCH).all();
+		for (const r of results || []) {
+			if (refine && !textCols.some((c) => r[c] && fold(r[c]).includes(nq))) continue;
+			hits.push({ cid: r.cid, field: textCols.find((c) => r[c]) || textCols[0], tier: 3 });
+		}
+	}
+
+	// One concept per id. `hits` is best first (term hits by tier then bm25,
+	// then definition hits), so a concept's first hit is its best one.
+	const best = new Map();
+	for (const h of hits) if (!best.has(h.cid)) best.set(h.cid, h);
+	const picked = [...best.values()].slice(0, CONCEPT_LIMIT);
+	if (!picked.length) return [];
+
+	const ids = JSON.stringify(picked.map((h) => h.cid));
+	const [{ results: rows }, { results: terms }] = await Promise.all([
+		env.DB.prepare(
+			'SELECT id, src, dom, def, notes, links, langs FROM concepts ' +
+			'WHERE id IN (SELECT value FROM json_each(?))').bind(ids).all(),
+		env.DB.prepare(
+			'SELECT cid, lang, t, q FROM concept_terms ' +
+			'WHERE cid IN (SELECT value FROM json_each(?)) ORDER BY cid, id').bind(ids).all(),
+	]);
+	const byId = new Map((rows || []).map((r) => [r.id, r]));
+	const termsById = new Map();
+	for (const t of terms || []) {
+		let per = termsById.get(t.cid);
+		if (!per) termsById.set(t.cid, (per = {}));
+		(per[t.lang] = per[t.lang] || []).push(t.q ? { t: t.t, q: t.q } : { t: t.t });
+	}
+
+	const out = [];
+	for (const h of picked) {
+		const c = byId.get(h.cid);
+		if (!c) continue;
+		const o2 = {
+			id: c.id, src: c.src,
+			langs: String(c.langs || '').split(',').filter(Boolean),
+			hit: h.field ? { field: h.field, tier: h.tier } : { lang: h.lang, t: h.t, tier: h.tier },
+			terms: termsById.get(c.id) || {},
+		};
+		if (c.dom) o2.dom = c.dom;
+		if (c.def) o2.def = c.def;
+		if (c.notes) o2.notes = c.notes;
+		if (c.links) o2.links = c.links;
+		out.push(o2);
+	}
+	return out;
+}
+
 async function handleSearch(url, env, origin) {
 	const q = url.searchParams.get('q') || '';
 	let limit = parseInt(url.searchParams.get('limit') || '', 10);
@@ -208,7 +324,7 @@ async function handleSearch(url, env, origin) {
 
 	// Exact mode matches whole strings, so its FTS prefilter uses whole-word tokens.
 	const fts = toFtsQuery(q, wholeWord || exactMode, cols);
-	if (!fts) return json({ query: q, entries: [] }, origin);
+	if (!fts) return json({ query: q, entries: [], concepts: [] }, origin);
 
 	// SQL field-presence filters.
 	const whereExtra = has.length
@@ -228,6 +344,21 @@ async function handleSearch(url, env, origin) {
 	// boost+bm25 and slice after filtering. Otherwise the SQL LIMIT is the cut.
 	const refine = exactMode || caseSens || accentSens;
 	const fetchN = refine ? 1200 : limit;
+
+	// Concepts are looked up alongside the entries. A failure there must not
+	// cost the entries, and must not pass for "no concepts matched" either (a
+	// caught-and-ignored error is how every search once lost its senses), so
+	// it is logged and reported in the payload.
+	const conceptsP = searchConcepts(env, {
+		q, exact, srcLang, scopeCols: cols, ftsWhole: wholeWord || exactMode, refine,
+		nq: normFold(exact, caseSens, accentSens), exactMode, caseSens, accentSens, has,
+	}).then(
+		(concepts) => ({ concepts }),
+		(err) => {
+			const msg = String((err && err.message) || err);
+			console.error('concept search failed:', msg);
+			return { concepts: [], error: msg };
+		});
 
 	const stmt = env.DB.prepare(
 		`SELECT e.id, e.la, e.a, e.qa, e.lb, e.b, e.qb,
@@ -325,24 +456,29 @@ async function handleSearch(url, env, origin) {
 		senses = []; // dump predates senses — degrade to flat results
 	}
 
-	return json({ query: q, entries, senses }, origin);
+	const c = await conceptsP;
+	const payload = { query: q, entries, senses, concepts: c.concepts };
+	if (c.error) payload.concepts_error = c.error;
+	return json(payload, origin);
 }
 
 async function handleMeta(env, origin) {
 	const SRC_BASE =
 		`slug, title, author, publisher, year, url, source_lang, target_lang,
 		 primary_domain, subject_tags, licence, description, entry_count`;
-	// `languages` is a newer column; tolerate an older dump that lacks it so a
-	// Worker deploy that lands before the D1 reload doesn't break /meta.
+	// `languages` and the concept counts are newer columns; tolerate an older
+	// dump that lacks them so a Worker deploy that lands before the D1 reload
+	// doesn't break /meta.
 	let sources;
-	try {
-		sources = (await env.DB.prepare(
-			`SELECT ${SRC_BASE}, languages FROM sources ORDER BY slug`
-		).all()).results;
-	} catch {
-		sources = (await env.DB.prepare(
-			`SELECT ${SRC_BASE} FROM sources ORDER BY slug`
-		).all()).results;
+	for (const extra of [', languages, concept_count, term_count', ', languages', '']) {
+		try {
+			sources = (await env.DB.prepare(
+				`SELECT ${SRC_BASE}${extra} FROM sources ORDER BY slug`
+			).all()).results;
+			break;
+		} catch (err) {
+			if (!extra) throw err;
+		}
 	}
 	const [{ results: rawPairs }, count] = await Promise.all([
 		env.DB.prepare(
@@ -378,11 +514,32 @@ async function handleMeta(env, origin) {
 			: [s.source_lang, s.target_lang].filter(Boolean),
 	}));
 
+	// A source shown as concepts has no entries of its own, so its language
+	// pairs (German–French, Spanish–Italian, …) come from its language list.
+	// Without this the From/To menus would lose every pair that only a
+	// multilingual source covers.
+	let concepts = 0, terms = 0;
+	for (const s of sourcesOut) {
+		if (!s.concept_count) continue;
+		concepts += s.concept_count;
+		terms += s.term_count || 0;
+		const langs = s.languages;
+		for (let i = 0; i < langs.length; i++) {
+			for (let j = i + 1; j < langs.length; j++) {
+				const [a, b] = [langs[i], langs[j]].sort();
+				const key = a + '>' + b;
+				if (seen.has(key)) continue;
+				seen.add(key);
+				lang_pairs.push({ a, b });
+			}
+		}
+	}
+
 	return json(
 		{
 			sources: sourcesOut,
 			lang_pairs,
-			counts: { sources: sourcesOut.length, entries: count ? count.n : 0 },
+			counts: { sources: sourcesOut.length, entries: count ? count.n : 0, concepts, terms },
 		},
 		origin
 	);

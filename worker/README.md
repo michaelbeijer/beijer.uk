@@ -23,8 +23,8 @@ contains terminology data (`data/*.sql` is gitignored).
 
 | Route | Returns |
 |---|---|
-| `GET /meta` | Source inventory, language pairs, total counts (page-load payload). |
-| `GET /search?q=<q>&limit=<n>` | FTS5 prefix search over term A / term B / definition. `limit` capped at 100. |
+| `GET /meta` | Source inventory, language pairs (including those of multilingual sources), total counts (page-load payload). |
+| `GET /search?q=<q>&limit=<n>` | FTS5 prefix search over term A / term B / definition. `limit` capped at 300. Also returns up to 20 multilingual `concepts` (a row of a multilingual source, whole, with all its languages), or `concepts_error` if that lookup failed. |
 | `GET /health` | Liveness check. |
 
 CORS is locked to the site origins in `src/index.js` (`ALLOWED_ORIGINS`).
@@ -55,7 +55,8 @@ cp ../../Wordbook/data/d1_dump.sql ./data/d1_dump.sql
 npx wrangler d1 execute wordbook --remote --file=./data/d1_dump.sql
 ```
 
-The dump drops + recreates its three tables, so a reload fully refreshes D1.
+The dump drops + recreates all its tables (sources, entries, sense groups,
+concepts and their search indexes), so a reload fully refreshes D1.
 
 ## Deploy
 
