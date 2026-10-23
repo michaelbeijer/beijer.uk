@@ -5,8 +5,12 @@ Outputs ``src/assets/social-card.png`` (1200x630) — the default ``og:image``
 that ``src/components/BaseHead.astro`` uses for any page that doesn't set its
 own ``image`` prop.
 
-Minimalist black-on-white to match the site. Edit the CONTENT constants below
-and re-run:
+Minimalist, in the site's ink on its cream ground. Everything is centred and
+sized to fill the middle 630 x 630 square: WhatsApp's small preview is that
+square shrunk to about 115 pixels, so a left-aligned card lost the start of
+the name and anything small turned to mush. Hence the name on two lines, as
+large as the square allows, and one short line under it. Edit the CONTENT
+constants below and re-run:
 
     python scripts/make-social-card.py
 
@@ -18,19 +22,17 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 # ── Content (edit me) ─────────────────────────────────────────────
-NAME    = "Michael Beijer"
+NAME    = ["Michael", "Beijer"]  # one line each
 ROLE    = "Dutch patent translator"
-TAGLINE = "Patents and technical documentation · Hastings, UK"
-DOMAIN  = "Beijer.uk"
 
 # ── Style / layout ────────────────────────────────────────────────
 SS = 2                       # supersample factor → crisp text after downscale
 W, H = 1200 * SS, 630 * SS
-MARGIN = 96 * SS
-BLACK  = (17, 17, 17)
+SQUARE = 630 * SS            # the middle square a small preview keeps
+FIT = 540 * SS               # the widest line may be this wide
+INK    = (20, 19, 15)        # global.css --text
 GREY   = (74, 74, 74)
-GREY2  = (122, 122, 122)
-WHITE  = (255, 255, 255)
+GROUND = (240, 238, 230)     # global.css --bg
 
 REPO = Path(__file__).resolve().parent.parent
 OUT = REPO / "src" / "assets" / "social-card.png"
@@ -55,27 +57,40 @@ def _font(bold: bool, pt: int) -> ImageFont.FreeTypeFont:
 
 
 def main() -> None:
-    name_f = _font(True, 98)
-    role_f = _font(False, 46)
-    tag_f = _font(False, 29)
-    domain_f = _font(True, 30)
+    # The name as large as the widest of its lines allows.
+    pt = 200
+    while max(_font(True, pt).getlength(w) for w in NAME) > FIT:
+        pt -= 2
+    name_f = _font(True, pt)
+    role_f = _font(False, 44)
 
-    img = Image.new("RGB", (W, H), WHITE)
+    img = Image.new("RGB", (W, H), GROUND)
     d = ImageDraw.Draw(img)
 
-    x, y = MARGIN, 168 * SS
-    d.text((x, y), NAME, font=name_f, fill=BLACK)
-    y = d.textbbox((x, y), NAME, font=name_f)[3] + 26 * SS
+    # Line boxes from the font's own ascent and descent, so both name lines
+    # sit on the same rhythm whatever their letters.
+    asc, desc = name_f.getmetrics()
+    name_step = int((asc + desc) * 0.92)
+    rule_gap, rule_h, role_gap = 22 * SS, 6 * SS, 40 * SS
+    ra, rd = role_f.getmetrics()
+    total = name_step * (len(NAME) - 1) + asc + desc + rule_gap + rule_h + role_gap + ra + rd
+    y = (H - total) // 2
 
+    cx = W // 2
+    for i, w in enumerate(NAME):
+        d.text((cx, y + i * name_step), w, font=name_f, fill=INK, anchor="ma")
+    # below the last line's descenders (the j of Beijer), not its baseline
+    y += name_step * (len(NAME) - 1) + asc + desc + rule_gap
     # Short underline accent — echoes the site's nav underline.
-    d.rectangle([x, y, x + 132 * SS, y + 6 * SS], fill=BLACK)
-    y += 6 * SS + 40 * SS
+    d.rectangle([cx - 66 * SS, y, cx + 66 * SS, y + rule_h], fill=INK)
+    y += rule_h + role_gap
+    d.text((cx, y), ROLE, font=role_f, fill=GREY, anchor="ma")
 
-    d.text((x, y), ROLE, font=role_f, fill=GREY)
-    y = d.textbbox((x, y), ROLE, font=role_f)[3] + 20 * SS
-
-    d.text((x, y), TAGLINE, font=tag_f, fill=GREY2)
-    d.text((x, H - MARGIN - 32 * SS), DOMAIN, font=domain_f, fill=BLACK)
+    # Refuse a card whose words leave the middle square.
+    box = d.textbbox((cx, 0), ROLE, font=role_f, anchor="ma")
+    widest = max(max(name_f.getlength(w) for w in NAME), box[2] - box[0])
+    if widest > SQUARE or y + ra + rd > H:
+        raise SystemExit("The card's text no longer fits the middle square.")
 
     img = img.resize((1200, 630), Image.LANCZOS)
     OUT.parent.mkdir(parents=True, exist_ok=True)
