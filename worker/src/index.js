@@ -22,6 +22,13 @@
  *     whole with all its languages (see searchConcepts()). If that lookup
  *     fails, `concepts_error` says why and the entries still come back.
  *
+ *   GET /concordance?q=<query>&from=en|nl&offset=<n>
+ *     EU legislation in context: English–Dutch sentence pairs from DGT-TM that
+ *     contain the query as an exact phrase on the `from` side, shortest first,
+ *     each with the CELEX number of its document. Served from a second D1
+ *     database (binding DGT); without it the endpoint answers
+ *     `available: false` and the site leaves the section out.
+ *
  * D1 schema is produced by the private repo's `wordbook build-d1` command and
  * loaded with `wrangler d1 execute`. See worker/README.md for the runbook.
  */
@@ -462,6 +469,71 @@ async function handleSearch(url, env, origin) {
 	return json(payload, origin);
 }
 
+// ── EU legislation in context (DGT-TM) ───────────────────────────────────
+// A separate D1 database: ~3.6M distinct English–Dutch sentence pairs from EU
+// legislation, numbered shortest first (see dgt.py in the private repo). Every
+// query below is bounded by a LIMIT that FTS5 can stop at, because matches are
+// returned in rowid order and never scored: "the" costs no more than
+// "trackside". That is the whole scaling design, so don't add an ORDER BY
+// bm25() here — it would score every match of a common word.
+const CONC_PAGE = 20;
+const CONC_MAX_OFFSET = 400;   // 20 pages; past that, refine the phrase
+const CONC_COUNT_CAP = 1000;   // "1,000+" rather than counting millions
+const CONC_LANGS = new Set(['en', 'nl']);
+
+/** The query as one exact FTS5 phrase on one column, or '' if nothing's left. */
+function toPhraseQuery(q, col) {
+	const cleaned = (q || '').replace(/["'()*:.,;?!\[\]{}^$~+\-\/\\]/g, ' ').trim();
+	const tokens = cleaned.split(/\s+/).filter(Boolean);
+	if (!tokens.length || tokens.length > 12) return '';
+	return `${col} : "${tokens.join(' ')}"`;
+}
+
+async function handleConcordance(url, env, origin) {
+	const q = (url.searchParams.get('q') || '').trim();
+	const from = (url.searchParams.get('from') || '').trim().toLowerCase();
+	const base = { query: q, from };
+	if (!env.DGT) return json({ ...base, available: false, pairs: [] }, origin);
+	if (!CONC_LANGS.has(from)) return json({ ...base, error: 'from must be en or nl', pairs: [] }, origin, 400);
+	const to = from === 'en' ? 'nl' : 'en';
+	let offset = parseInt(url.searchParams.get('offset') || '0', 10);
+	if (!Number.isFinite(offset) || offset < 0) offset = 0;
+	offset = Math.min(offset, CONC_MAX_OFFSET);
+
+	const match = toPhraseQuery(q, from);
+	if (!match || q.length < 2) return json({ ...base, to, total: 0, pairs: [] }, origin);
+
+	// One more row than shown tells whether there is a next page.
+	const [{ results }, countRow] = await Promise.all([
+		env.DGT.prepare(
+			`SELECT s.id, s.${from} AS src, s.${to} AS tgt, s.n, d.celex
+			 FROM segs_fts
+			 JOIN segs s ON s.id = segs_fts.rowid
+			 JOIN docs d ON d.id = s.doc
+			 WHERE segs_fts MATCH ?
+			 ORDER BY segs_fts.rowid
+			 LIMIT ? OFFSET ?`
+		).bind(match, CONC_PAGE + 1, offset).all(),
+		offset === 0
+			? env.DGT.prepare(
+				`SELECT COUNT(*) AS n FROM
+				 (SELECT rowid FROM segs_fts WHERE segs_fts MATCH ? LIMIT ?)`
+			).bind(match, CONC_COUNT_CAP + 1).first()
+			: Promise.resolve(null),
+	]);
+	const rows = results || [];
+	const payload = {
+		...base, to, offset,
+		more: rows.length > CONC_PAGE && offset + CONC_PAGE <= CONC_MAX_OFFSET,
+		pairs: rows.slice(0, CONC_PAGE).map((r) => ({ id: r.id, src: r.src, tgt: r.tgt, n: r.n, celex: r.celex })),
+	};
+	if (countRow) {
+		payload.total = Math.min(countRow.n, CONC_COUNT_CAP);
+		payload.capped = countRow.n > CONC_COUNT_CAP;
+	}
+	return json(payload, origin);
+}
+
 async function handleMeta(env, origin) {
 	const SRC_BASE =
 		`slug, title, author, publisher, year, url, source_lang, target_lang,
@@ -560,6 +632,7 @@ export default {
 		try {
 			if (url.pathname === '/search') return await handleSearch(url, env, origin);
 			if (url.pathname === '/meta') return await handleMeta(env, origin);
+			if (url.pathname === '/concordance') return await handleConcordance(url, env, origin);
 			if (url.pathname === '/' || url.pathname === '/health') {
 				return json({ ok: true, service: 'wordbook-search' }, origin);
 			}

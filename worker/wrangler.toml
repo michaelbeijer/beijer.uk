@@ -11,3 +11,12 @@ workers_dev = true
 binding = "DB"
 database_name = "wordbook"
 database_id = "47f7ec0c-56de-419a-b44b-4f97837bc55f"
+
+# EU legislation in context (DGT-TM English–Dutch sentence pairs, ~2 GB), kept
+# apart from "wordbook" so a dictionary publish never re-uploads it. Built by
+# `wordbook dgt-build` + `wordbook dgt-d1` in the private repo; see README.md.
+# Created 2026-11-04 with `wrangler d1 create dgt-tm --location weur`.
+[[d1_databases]]
+binding = "DGT"
+database_name = "dgt-tm"
+database_id = "fd792a45-0e0c-47d4-ad20-8b529b289eee"
