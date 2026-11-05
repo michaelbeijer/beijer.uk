@@ -576,6 +576,38 @@ async function entryStats(env) {
 	return { n: row ? row.n : 0, pairs: results || [] };
 }
 
+// Sentence corpora: the EU legislation tab's sentences (binding DGT), listed
+// beside the dictionary sources on the Sources page. They aren't dictionary
+// sources (no search result carries their slug), so /meta gives them their
+// own key and anything that reads `sources` sees no change. The numbers come
+// from the eu-legislation build (beijerterm-database dgt.py) and change only
+// when that database is reloaded.
+const CORPORA = [
+	{
+		slug: 'dgt-tm',
+		title: 'DGT-TM: translation memory of EU legislation',
+		author: 'European Commission, Directorate-General for Translation',
+		publisher: 'European Commission, Joint Research Centre',
+		year: 2021,
+		url: 'https://joint-research-centre.ec.europa.eu/language-technology-resources/dgt-translation-memory_en',
+		languages: ['en', 'nl', 'fr', 'de', 'it', 'es'],
+		primary_domain: 'law',
+		subject_tags: 'EU law, legislation, translation memory, sentences in context',
+		licence: 'permissive',
+		description:
+			'Sentences from EU legislation, each beside its official translations in English, Dutch, ' +
+			'French, German, Italian and Spanish: the translation memory of the European Commission\'s ' +
+			'Directorate-General for Translation, as released through OPUS in 2021 (legislation up to ' +
+			'2020). It is searched in the EU legislation tab of the search results, not in the ' +
+			'dictionary: about 3.5 million different sentence pairs for each two of the six languages, ' +
+			'each linked to its document on EUR-Lex. Source: DGT-TM, joint-research-centre.ec.europa.eu; ' +
+			'the data remain the property of the European Commission and are reused under its decision ' +
+			'of 12 December 2011 on the re-use of Commission documents.',
+		sentence_count: 4513639,
+		document_count: 42701,
+	},
+];
+
 async function handleMeta(env, origin) {
 	const SRC_BASE =
 		`slug, title, author, publisher, year, url, source_lang, target_lang,
@@ -644,8 +676,9 @@ async function handleMeta(env, origin) {
 	return json(
 		{
 			sources: sourcesOut,
+			corpora: CORPORA,
 			lang_pairs,
-			counts: { sources: sourcesOut.length, entries: stats.n, concepts, terms },
+			counts: { sources: sourcesOut.length, corpora: CORPORA.length, entries: stats.n, concepts, terms },
 		},
 		origin
 	);
