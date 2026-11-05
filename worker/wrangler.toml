@@ -12,11 +12,14 @@ binding = "DB"
 database_name = "wordbook"
 database_id = "47f7ec0c-56de-419a-b44b-4f97837bc55f"
 
-# EU legislation in context (DGT-TM English–Dutch sentence pairs, ~2 GB), kept
-# apart from "wordbook" so a dictionary publish never re-uploads it. Built by
-# `wordbook dgt-build` + `wordbook dgt-d1` in the private repo; see README.md.
-# Created 2026-11-04 with `wrangler d1 create dgt-tm --location weur`.
+# EU legislation in context (DGT-TM in English, Dutch, French, German, Italian
+# and Spanish, ~7 GB of D1's 10 GB per database), kept apart from "wordbook"
+# so a dictionary publish never re-uploads it. Built by `wordbook dgt-build` +
+# `wordbook dgt-d1` in the private repo; see README.md. The Worker's
+# /concordance query needs this database's layout (the n_<a>_<b> columns).
+# Created 2026-11-05 with `wrangler d1 create eu-legislation --location weur`;
+# it replaced "dgt-tm" (English–Dutch only, fd792a45-…).
 [[d1_databases]]
 binding = "DGT"
-database_name = "dgt-tm"
-database_id = "fd792a45-0e0c-47d4-ad20-8b529b289eee"
+database_name = "eu-legislation"
+database_id = "3447ab0a-662e-4d00-bef6-894c02eafe76"
