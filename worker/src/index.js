@@ -534,6 +534,33 @@ async function handleConcordance(url, env, origin) {
 	return json(payload, origin);
 }
 
+// The entry count and the entries' (la, lb) language pairs. Every publish
+// works them out once into `entry_stats` (d1sync.py); working them out here
+// scanned all ~1.3M entries twice (~3.5M rows read) on every page load. A D1 loaded before
+// entry_stats existed, or an unreadable row, falls back to counting live.
+async function entryStats(env) {
+	try {
+		const { results } = await env.DB.prepare(`SELECT key, value FROM entry_stats`).all();
+		const stats = Object.fromEntries((results || []).map((r) => [r.key, r.value]));
+		const n = Number(stats.count);
+		const pairs = JSON.parse(stats.lang_pairs);
+		if (Number.isFinite(n) && Array.isArray(pairs)) {
+			return { n, pairs: pairs.map(([la, lb]) => ({ la, lb })) };
+		}
+	} catch (err) {
+		// No entry_stats table, or lang_pairs isn't JSON: count live below.
+	}
+	console.warn('/meta: entry_stats missing or unreadable, counting entries live');
+	const [{ results }, row] = await Promise.all([
+		// Include monolingual entries (lb IS NULL): same-language glossaries
+		// (e.g. English-only abbreviation lists) must be advertised too, as an
+		// X→X pair, or the UI never offers a direction that can reach them.
+		env.DB.prepare(`SELECT DISTINCT la, lb FROM entries WHERE la IS NOT NULL`).all(),
+		env.DB.prepare(`SELECT COUNT(*) AS n FROM entries`).first(),
+	]);
+	return { n: row ? row.n : 0, pairs: results || [] };
+}
+
 async function handleMeta(env, origin) {
 	const SRC_BASE =
 		`slug, title, author, publisher, year, url, source_lang, target_lang,
@@ -552,22 +579,14 @@ async function handleMeta(env, origin) {
 			if (!extra) throw err;
 		}
 	}
-	const [{ results: rawPairs }, count] = await Promise.all([
-		env.DB.prepare(
-			// Include monolingual entries (lb IS NULL): same-language glossaries
-			// (e.g. English-only abbreviation lists) must be advertised too, as an
-			// X→X pair, or the UI never offers a direction that can reach them.
-			`SELECT DISTINCT la, lb FROM entries WHERE la IS NOT NULL`
-		).all(),
-		env.DB.prepare(`SELECT COUNT(*) AS n FROM entries`).first(),
-	]);
+	const stats = await entryStats(env);
 
 	// Collapse (la, lb) into unordered pairs, matching the old lang_pairs shape.
 	// A monolingual entry (no target language) collapses to an X→X pair so the
 	// UI can offer a same-language direction for it.
 	const seen = new Set();
 	const lang_pairs = [];
-	for (const p of rawPairs || []) {
+	for (const p of stats.pairs) {
 		const a0 = p.la;
 		const b0 = p.lb == null ? p.la : p.lb;
 		const key = [a0, b0].sort().join('>');
@@ -611,7 +630,7 @@ async function handleMeta(env, origin) {
 		{
 			sources: sourcesOut,
 			lang_pairs,
-			counts: { sources: sourcesOut.length, entries: count ? count.n : 0, concepts, terms },
+			counts: { sources: sourcesOut.length, entries: stats.n, concepts, terms },
 		},
 		origin
 	);

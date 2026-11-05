@@ -23,7 +23,7 @@ contains terminology data (`data/*.sql` is gitignored).
 
 | Route | Returns |
 |---|---|
-| `GET /meta` | Source inventory, language pairs (including those of multilingual sources), total counts (page-load payload). |
+| `GET /meta` | Source inventory, language pairs (including those of multilingual sources), total counts (page-load payload). The entry count and the entries' language pairs come from `entry_stats`, which every publish (full or quick) fills on D1; without it, /meta counts all entries live (~0.6 s, ~3.5M rows read) and logs a warning. |
 | `GET /search?q=<q>&limit=<n>` | FTS5 prefix search over term A / term B / definition. `limit` capped at 300. Also returns up to 20 multilingual `concepts` (a row of a multilingual source, whole, with all its languages), or `concepts_error` if that lookup failed. |
 | `GET /concordance?q=<q>&from=en\|nl&offset=<n>` | EU legislation in context: up to 20 English–Dutch sentence pairs from DGT-TM containing `q` as an exact phrase on the `from` side, shortest first, each with its document's CELEX number. `total` is capped at 1,000 (`capped: true` beyond), `more` says whether another page exists (offset up to 400). From the separate `dgt-tm` D1 (binding `DGT`); without it the answer is `available: false`. |
 | `GET /health` | Liveness check. |
