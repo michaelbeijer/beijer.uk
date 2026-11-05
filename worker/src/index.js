@@ -22,11 +22,12 @@
  *     whole with all its languages (see searchConcepts()). If that lookup
  *     fails, `concepts_error` says why and the entries still come back.
  *
- *   GET /concordance?q=<query>&from=en|nl&offset=<n>
- *     EU legislation in context: English–Dutch sentence pairs from DGT-TM that
- *     contain the query as an exact phrase on the `from` side, shortest first,
- *     each with the CELEX number of its document. Served from a second D1
- *     database (binding DGT); without it the endpoint answers
+ *   GET /concordance?q=<query>&from=<lang>&to=<lang>&offset=<n>
+ *     EU legislation in context: sentence pairs from DGT-TM in any two of
+ *     en, nl, fr, de, it, es that contain the query as an exact phrase on the
+ *     `from` side, shortest first, each with the CELEX number of its document.
+ *     Without `to`, en pairs with nl and any other language with en. Served
+ *     from a second D1 database (binding DGT); without it the endpoint answers
  *     `available: false` and the site leaves the section out.
  *
  * D1 schema is produced by the private repo's `wordbook build-d1` command and
@@ -470,16 +471,21 @@ async function handleSearch(url, env, origin) {
 }
 
 // ── EU legislation in context (DGT-TM) ───────────────────────────────────
-// A separate D1 database: ~3.6M distinct English–Dutch sentence pairs from EU
-// legislation, numbered shortest first (see dgt.py in the private repo). Every
-// query below is bounded by a LIMIT that FTS5 can stop at, because matches are
-// returned in rowid order and never scored: "the" costs no more than
-// "trackside". That is the whole scaling design, so don't add an ORDER BY
+// A separate D1 database: EU legislation sentence by sentence in English,
+// Dutch, French, German, Italian and Spanish, one row per sentence with all
+// six, numbered shortest first (see dgt.py in the private repo). For each two
+// languages a and b, the column n_<a>_<b> (codes in alphabetical order) is set
+// only on the first row of each distinct sentence pair, to how often the pair
+// occurs; filtering on it lists every pair once.
+//
+// Every query below is bounded by a LIMIT that FTS5 can stop at, because
+// matches are returned in rowid order and never scored: "the" costs no more
+// than "trackside". That is the whole scaling design, so don't add an ORDER BY
 // bm25() here — it would score every match of a common word.
 const CONC_PAGE = 20;
 const CONC_MAX_OFFSET = 400;   // 20 pages; past that, refine the phrase
 const CONC_COUNT_CAP = 1000;   // "1,000+" rather than counting millions
-const CONC_LANGS = new Set(['en', 'nl']);
+const CONC_LANGS = new Set(['en', 'nl', 'fr', 'de', 'it', 'es']);
 
 /** The query as one exact FTS5 phrase on one column, or '' if nothing's left. */
 function toPhraseQuery(q, col) {
@@ -492,38 +498,47 @@ function toPhraseQuery(q, col) {
 async function handleConcordance(url, env, origin) {
 	const q = (url.searchParams.get('q') || '').trim();
 	const from = (url.searchParams.get('from') || '').trim().toLowerCase();
-	const base = { query: q, from };
+	// Without `to`, English pairs with Dutch and every other language with
+	// English: what the site asked for before it could ask for a pair.
+	const to = (url.searchParams.get('to') || (from === 'en' ? 'nl' : 'en')).trim().toLowerCase();
+	const base = { query: q, from, to };
 	if (!env.DGT) return json({ ...base, available: false, pairs: [] }, origin);
-	if (!CONC_LANGS.has(from)) return json({ ...base, error: 'from must be en or nl', pairs: [] }, origin, 400);
-	const to = from === 'en' ? 'nl' : 'en';
+	if (!CONC_LANGS.has(from) || !CONC_LANGS.has(to) || from === to) {
+		return json({ ...base, error: `from and to must be two different languages of ${[...CONC_LANGS].join(', ')}`, pairs: [] }, origin, 400);
+	}
+	// Both are checked against CONC_LANGS above, so they are safe to put in SQL.
+	const pairCol = `n_${[from, to].sort().join('_')}`;
 	let offset = parseInt(url.searchParams.get('offset') || '0', 10);
 	if (!Number.isFinite(offset) || offset < 0) offset = 0;
 	offset = Math.min(offset, CONC_MAX_OFFSET);
 
 	const match = toPhraseQuery(q, from);
-	if (!match || q.length < 2) return json({ ...base, to, total: 0, pairs: [] }, origin);
+	if (!match || q.length < 2) return json({ ...base, total: 0, pairs: [] }, origin);
 
-	// One more row than shown tells whether there is a next page.
+	// One more row than shown tells whether there is a next page. Rows that
+	// aren't the first of their pair (or lack the `to` language) are skipped
+	// as FTS5 hands them over in rowid order, so the LIMIT still ends the scan.
 	const [{ results }, countRow] = await Promise.all([
 		env.DGT.prepare(
-			`SELECT s.id, s.${from} AS src, s.${to} AS tgt, s.n, d.celex
+			`SELECT s.id, s.${from} AS src, s.${to} AS tgt, s.${pairCol} AS n, d.celex
 			 FROM segs_fts
 			 JOIN segs s ON s.id = segs_fts.rowid
 			 JOIN docs d ON d.id = s.doc
-			 WHERE segs_fts MATCH ?
+			 WHERE segs_fts MATCH ? AND s.${pairCol} IS NOT NULL
 			 ORDER BY segs_fts.rowid
 			 LIMIT ? OFFSET ?`
 		).bind(match, CONC_PAGE + 1, offset).all(),
 		offset === 0
 			? env.DGT.prepare(
 				`SELECT COUNT(*) AS n FROM
-				 (SELECT rowid FROM segs_fts WHERE segs_fts MATCH ? LIMIT ?)`
+				 (SELECT 1 FROM segs_fts JOIN segs s ON s.id = segs_fts.rowid
+				  WHERE segs_fts MATCH ? AND s.${pairCol} IS NOT NULL LIMIT ?)`
 			).bind(match, CONC_COUNT_CAP + 1).first()
 			: Promise.resolve(null),
 	]);
 	const rows = results || [];
 	const payload = {
-		...base, to, offset,
+		...base, offset,
 		more: rows.length > CONC_PAGE && offset + CONC_PAGE <= CONC_MAX_OFFSET,
 		pairs: rows.slice(0, CONC_PAGE).map((r) => ({ id: r.id, src: r.src, tgt: r.tgt, n: r.n, celex: r.celex })),
 	};
