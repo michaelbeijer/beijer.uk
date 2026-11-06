@@ -135,6 +135,11 @@ const CONCEPT_LIMIT = 20;
 // can match many times (EuroVoc's "executive agency" lists 19 agencies), so
 // this is well above CONCEPT_LIMIT.
 const CONCEPT_TERM_FETCH = 400;
+// The most of the CONCEPT_LIMIT slots one source may take while other sources
+// have matches waiting. The Getty AAT alone has 19 of the best 20 matches for
+// "raam" (openslaand raam, schuifraam, …), which left no room for CPV's
+// "raamkozijnen". With fewer matches elsewhere it still fills the rest.
+const CONCEPT_PER_SOURCE = 12;
 
 /** Run an `id IN (...)` SELECT over `ids` in chunks, concatenating the rows. */
 async function selectByIds(env, buildSql, ids) {
@@ -204,6 +209,29 @@ function buildRankSql(exact, srcLang) {
 }
 
 /**
+ * The best CONCEPT_LIMIT of `ranked` (best first), taking at most
+ * CONCEPT_PER_SOURCE from one source until the others run out, in rank order.
+ */
+function pickConcepts(ranked) {
+	const perSrc = new Map();
+	const chosen = new Set();
+	for (const h of ranked) {
+		if (chosen.size === CONCEPT_LIMIT) break;
+		const n = perSrc.get(h.src) || 0;
+		if (n < CONCEPT_PER_SOURCE) {
+			perSrc.set(h.src, n + 1);
+			chosen.add(h);
+		}
+	}
+	// Room left: the other sources had too few; fill it in rank order.
+	for (const h of ranked) {
+		if (chosen.size === CONCEPT_LIMIT) break;
+		chosen.add(h);
+	}
+	return ranked.filter((h) => chosen.has(h));
+}
+
+/**
  * Find the concepts a query matches and return each one whole.
  *
  * A concept is matched by any of its terms (ranked in the same tiers as
@@ -234,10 +262,10 @@ async function searchConcepts(env, o) {
 		tiers.push("WHEN ' ' || ct.t || ' ' LIKE ? ESCAPE '\\' THEN 2");
 		binds.push('% ' + exact.replace(/[\\%_]/g, (c) => '\\' + c) + ' %');
 		const { results } = await env.DB.prepare(
-			`SELECT ct.cid, ct.lang, ct.t, CASE ${tiers.join(' ')} ELSE 3 END AS tier
+			`SELECT ct.cid, ct.lang, ct.t, c.src, CASE ${tiers.join(' ')} ELSE 3 END AS tier
 			 FROM concept_terms_fts
 			 JOIN concept_terms ct ON ct.id = concept_terms_fts.rowid
-			 ${hasSql ? 'JOIN concepts c ON c.id = ct.cid' : ''}
+			 JOIN concepts c ON c.id = ct.cid
 			 WHERE concept_terms_fts MATCH ?${hasSql}
 			 ORDER BY tier, ct.ord > 0, bm25(concept_terms_fts)
 			 LIMIT ?`
@@ -252,7 +280,7 @@ async function searchConcepts(env, o) {
 	if (textCols.length) {
 		const fts = toFtsQuery(q, ftsWhole, textCols);
 		const { results } = await env.DB.prepare(
-			`SELECT c.id AS cid, c.def, c.notes
+			`SELECT c.id AS cid, c.src, c.def, c.notes
 			 FROM concepts_fts JOIN concepts c ON c.id = concepts_fts.rowid
 			 WHERE concepts_fts MATCH ?${hasSql}
 			 ORDER BY bm25(concepts_fts)
@@ -260,7 +288,7 @@ async function searchConcepts(env, o) {
 		).bind(fts, refine ? 2000 : CONCEPT_TERM_FETCH).all();
 		for (const r of results || []) {
 			if (refine && !textCols.some((c) => r[c] && fold(r[c]).includes(nq))) continue;
-			hits.push({ cid: r.cid, field: textCols.find((c) => r[c]) || textCols[0], tier: 3 });
+			hits.push({ cid: r.cid, src: r.src, field: textCols.find((c) => r[c]) || textCols[0], tier: 3 });
 		}
 	}
 
@@ -268,7 +296,7 @@ async function searchConcepts(env, o) {
 	// then definition hits), so a concept's first hit is its best one.
 	const best = new Map();
 	for (const h of hits) if (!best.has(h.cid)) best.set(h.cid, h);
-	const picked = [...best.values()].slice(0, CONCEPT_LIMIT);
+	const picked = pickConcepts([...best.values()]);
 	if (!picked.length) return [];
 
 	const ids = JSON.stringify(picked.map((h) => h.cid));
