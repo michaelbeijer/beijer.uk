@@ -242,12 +242,19 @@ function pickConcepts(ranked) {
  * A concept is matched by any of its terms (ranked in the same tiers as
  * entries: exact in the search language, exact in any language, whole word,
  * anything else) or, when "Search in" asks for it, by its definition or notes.
+ * Within a tier: cards that have the target language (`to`) first, then
+ * matches on a card's lead term, then bm25. Measured in Nov 2026 on the words
+ * that are an exact term of 2+ IATE cards, with "the top card's translation is
+ * one the rest of the dictionary also gives" as the yardstick: nl→en 55.0% →
+ * 57.5% (top card without English: 849 → 59 words), en→nl 40.8% → 53.6%
+ * (without Dutch: 6,332 → 997). IATE's "primary" flag as a further tie-break
+ * added under 2 points and was about as often worse as better: left out.
  * The best CONCEPT_LIMIT concepts are then fetched with ALL their terms. Their
  * ids go to D1 as ONE JSON parameter (json_each), so the 100-parameter limit
  * can never be reached however many concepts come back.
  */
 async function searchConcepts(env, o) {
-	const { q, exact, srcLang, scopeCols, ftsWhole, refine, nq, caseSens, accentSens, has } = o;
+	const { q, exact, srcLang, tgtLang, scopeCols, ftsWhole, refine, nq, caseSens, accentSens, has } = o;
 	// Concepts carry no abbreviations, so "has an abbreviation" rules them out.
 	if (has.includes('abbr')) return [];
 	const hasSql = has.map((h) => ` AND c.${h} IS NOT NULL AND TRIM(c.${h}) <> ''`).join('');
@@ -266,15 +273,18 @@ async function searchConcepts(env, o) {
 		binds.push(exact);
 		tiers.push("WHEN ' ' || ct.t || ' ' LIKE ? ESCAPE '\\' THEN 2");
 		binds.push('% ' + exact.replace(/[\\%_]/g, (c) => '\\' + c) + ' %');
+		// `langs` is the card's languages, comma-joined: 1 = lacks the target.
+		const lacksTgt = tgtLang ? "(',' || c.langs || ',') NOT LIKE ?, " : '';
+		const tgtBinds = tgtLang ? ['%,' + tgtLang + ',%'] : [];
 		const { results } = await env.DB.prepare(
 			`SELECT ct.cid, ct.lang, ct.t, c.src, CASE ${tiers.join(' ')} ELSE 3 END AS tier
 			 FROM concept_terms_fts
 			 JOIN concept_terms ct ON ct.id = concept_terms_fts.rowid
 			 JOIN concepts c ON c.id = ct.cid
 			 WHERE concept_terms_fts MATCH ?${hasSql}
-			 ORDER BY tier, ct.ord > 0, bm25(concept_terms_fts)
+			 ORDER BY tier, ${lacksTgt}ct.ord > 0, bm25(concept_terms_fts)
 			 LIMIT ?`
-		).bind(...binds, fts, refine ? 2000 : CONCEPT_TERM_FETCH).all();
+		).bind(...binds, fts, ...tgtBinds, refine ? 2000 : CONCEPT_TERM_FETCH).all();
 		for (const r of results || []) {
 			if (refine && !(o.exactMode ? fold(r.t) === nq : fold(r.t).includes(nq))) continue;
 			hits.push(r);
@@ -355,6 +365,11 @@ async function handleSearch(url, env, origin) {
 	// The UI's search direction. Ranking hint only (see buildRankSql) — never a
 	// filter, so an unknown or absent code just drops tier 0.
 	const srcLang = (url.searchParams.get('from') || '').trim().toLowerCase();
+	// The UI's target language: concept cards that have it rank first (see
+	// searchConcepts). A ranking hint like `from`; anything but a plain language
+	// code (absent, "any") is ignored.
+	const tgtRaw = (url.searchParams.get('to') || '').trim().toLowerCase();
+	const tgtLang = /^[a-z]{2,3}$/.test(tgtRaw) && tgtRaw !== 'any' ? tgtRaw : '';
 
 	// "Search in" scope. Default (none/invalid) is terms only.
 	let cols = [];
@@ -391,7 +406,7 @@ async function handleSearch(url, env, origin) {
 	// caught-and-ignored error is how every search once lost its senses), so
 	// it is logged and reported in the payload.
 	const conceptsP = searchConcepts(env, {
-		q, exact, srcLang, scopeCols: cols, ftsWhole: wholeWord || exactMode, refine,
+		q, exact, srcLang, tgtLang, scopeCols: cols, ftsWhole: wholeWord || exactMode, refine,
 		nq: normFold(exact, caseSens, accentSens), exactMode, caseSens, accentSens, has,
 	}).then(
 		(concepts) => ({ concepts }),
