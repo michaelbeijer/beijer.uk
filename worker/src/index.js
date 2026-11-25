@@ -129,17 +129,22 @@ const ID_CHUNK = 90;
 
 // Multilingual concepts: a row of a multilingual source, kept whole (see
 // CONCEPTS-DESIGN.md in the private repo). One search returns at most this
-// many, each with every term in every language.
-const CONCEPT_LIMIT = 20;
+// many, each with every term in every language. 20 until IATE became a
+// concept source (Nov 2026, ~384k entries): IATE has hundreds of entries for
+// a common word ("douane", "belasting"), and as Henk Sanderson's pairs they
+// filled most of the 200 entry rows; 20 cards left room for a dozen. 50 cards
+// measured locally: ~50 KB per response, under 0.15 s.
+const CONCEPT_LIMIT = 50;
 // Matching term rows ranked before they are grouped into concepts. One concept
 // can match many times (EuroVoc's "executive agency" lists 19 agencies), so
 // this is well above CONCEPT_LIMIT.
-const CONCEPT_TERM_FETCH = 400;
+const CONCEPT_TERM_FETCH = 1000;
 // The most of the CONCEPT_LIMIT slots one source may take while other sources
 // have matches waiting. The Getty AAT alone has 19 of the best 20 matches for
 // "raam" (openslaand raam, schuifraam, …), which left no room for CPV's
 // "raamkozijnen". With fewer matches elsewhere it still fills the rest.
-const CONCEPT_PER_SOURCE = 12;
+// 12 of 20 until Nov 2026; now 30 of 50.
+const CONCEPT_PER_SOURCE = 30;
 
 /** Run an `id IN (...)` SELECT over `ids` in chunks, concatenating the rows. */
 async function selectByIds(env, buildSql, ids) {
